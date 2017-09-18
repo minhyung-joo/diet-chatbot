@@ -76,6 +76,32 @@ public class KitchenSinkTester {
 	}
 	
 	@Test
+	public void testMultipleFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("abcHi");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown);
+		assertThat(result.equals("Hey, how things going?"));
+	}
+	
+	@Test
+	public void testNestedFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("How is the grade of this course?");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown);
+		assertThat(result.equals("This is absolute good grade for good student. And I am sure you are!"));
+	}
+	
+	@Test
 	public void testPartialFound() throws Exception {
 		boolean thrown = false;
 		String result = null;
