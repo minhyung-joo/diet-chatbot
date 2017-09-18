@@ -69,9 +69,22 @@ public class KitchenSinkTester {
 		try {
 			result = this.databaseEngine.search("abc");
 		} catch (Exception e) {
-			thrown = true;
+			thrown = true;			
 		}
 		assertThat(!thrown);
 		assertThat(result.equals("def"));
+	}
+	
+	@Test
+	public void testPartialFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("Do you know what comes after abc?");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown);
+		assertThat(result.equals("abc"));
 	}
 }
