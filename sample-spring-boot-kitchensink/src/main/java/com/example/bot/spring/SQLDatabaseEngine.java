@@ -18,12 +18,12 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		try {
 			Connection connection = getConnection();
 			PreparedStatement stmt = connection.prepareStatement(
-					"SELECT response, hits FROM responsetable where concat('%', ?, '%') LIKE '%' || keyword || '%'");
+					"UPDATE responsetable SET hits = hits+1 WHERE concat('%', ?, '%') LIKE '%' || keyword || '%' RETURNING response, hits");
 			stmt.setString(1, text);
 			ResultSet rs = stmt.executeQuery();
 			
 			while (rs.next()) {
-				result = rs.getString(1);
+				result = rs.getString(1) + " Hits: " + rs.getInt(2);
 			}
 			rs.close();
 			stmt.close();
