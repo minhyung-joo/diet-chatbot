@@ -69,7 +69,8 @@ public class KitchenSinkTester {
 		try {
 			result = this.databaseEngine.search("ping");			
 		} catch (Exception e) {
-			thrown = true;			
+			System.out.println(e);
+			thrown = true;
 		}
 		System.out.println(result);
 		assertThat(thrown).isEqualTo(false);
@@ -83,6 +84,7 @@ public class KitchenSinkTester {
 		try {
 			result = this.databaseEngine.search("ping tapping");
 		} catch (Exception e) {
+			System.out.println(e);
 			thrown = true;
 		}
 		assertThat(thrown).isEqualTo(false);

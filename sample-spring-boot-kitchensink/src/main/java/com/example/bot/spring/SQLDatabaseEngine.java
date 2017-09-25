@@ -11,28 +11,20 @@ import java.net.URI;
 public class SQLDatabaseEngine extends DatabaseEngine {
 	@Override
 	String search(String text) throws Exception {
-		String result = null;
+		String response = null;
 		Connection connection = this.getConnection();
-		PreparedStatement stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE keyword= ?");
+		PreparedStatement stmt = connection.prepareStatement("UPDATE KEYWORDS SET hits=hits+1 WHERE concat('%', ?, '%') LIKE '%' || keyword || '%' RETURNING response, hits");
 		stmt.setString(1, text);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
-			result = rs.getString(1);
-		}
-
-		if (result == null) {
-			stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE \'" + text + "\' ~ keyword;");
-			rs = stmt.executeQuery();
-			if (rs.next()) {
-				result = rs.getString(1);
-			}
+			response = rs.getString(1) + rs.getInt(2);
 		}
 		
 		rs.close();
 		stmt.close();
 		connection.close();
-		if (result != null) {
-			return result;
+		if (response != null) {
+			return response;
 		}
 
 		throw new Exception("NOT FOUND");
