@@ -11,10 +11,31 @@ import java.net.URI;
 public class SQLDatabaseEngine extends DatabaseEngine {
 	@Override
 	String search(String text) throws Exception {
-		//Write your code here
-		return null;
+		String result = null;
+		Connection connection = this.getConnection();
+		PreparedStatement stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE keyword=" + text + ";");
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+			result = rs.getString(1);
+		}
+
+		if (result == null) {
+			stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE " + text + " ~ keyword;");
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				result = rs.getString(1);
+			}
+		}
+		
+		rs.close();
+		stmt.close();
+		connection.close();
+		if (result != null) {
+			return result;
+		}
+
+		throw new Exception("NOT FOUND");
 	}
-	
 	
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
@@ -28,6 +49,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		log.info ("dbUrl: {}", dbUrl);
 		
 		connection = DriverManager.getConnection(dbUrl, username, password);
+		System.out.println("Connection established");
 
 		return connection;
 	}

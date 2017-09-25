@@ -43,10 +43,10 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.DatabaseEngine;
-
+import com.example.bot.spring.SQLDatabaseEngine;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
+@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
 public class KitchenSinkTester {
 	@Autowired
 	private DatabaseEngine databaseEngine;
@@ -67,12 +67,12 @@ public class KitchenSinkTester {
 		boolean thrown = false;
 		String result = null;
 		try {
-			result = this.databaseEngine.search("abc");
+			result = this.databaseEngine.search("ping");
+			assertThat(result.equals("pong"));
 		} catch (Exception e) {
 			thrown = true;			
 		}
 		assertThat(!thrown);
-		assertThat(result.equals("def"));
 	}
 	
 	@Test
@@ -80,12 +80,12 @@ public class KitchenSinkTester {
 		boolean thrown = false;
 		String result = null;
 		try {
-			result = this.databaseEngine.search("abcHi");
+			result = this.databaseEngine.search("ping tapping");
+			assertThat(result.equals("pong"));
 		} catch (Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown);
-		assertThat(result.equals("Hey, how things going?"));
 	}
 	
 	@Test
@@ -93,12 +93,12 @@ public class KitchenSinkTester {
 		boolean thrown = false;
 		String result = null;
 		try {
-			result = this.databaseEngine.search("How is the grade of this course?");
+			result = this.databaseEngine.search("tapping");
+			assertThat(result.equals("tap tap"));
 		} catch (Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown);
-		assertThat(result.equals("This is absolute good grade for good student. And I am sure you are!"));
 	}
 	
 	@Test
@@ -106,11 +106,11 @@ public class KitchenSinkTester {
 		boolean thrown = false;
 		String result = null;
 		try {
-			result = this.databaseEngine.search("Do you know what comes after abc?");
+			result = this.databaseEngine.search("pinghey");
+			assertThat(result.equals("pong"));
 		} catch (Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown);
-		assertThat(result.equals("abc"));
 	}
 }
