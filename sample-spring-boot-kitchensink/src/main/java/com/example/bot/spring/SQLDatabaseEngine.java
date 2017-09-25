@@ -13,14 +13,15 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 	String search(String text) throws Exception {
 		String result = null;
 		Connection connection = this.getConnection();
-		PreparedStatement stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE keyword=" + text + ";");
+		PreparedStatement stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE keyword= ?");
+		stmt.setString(1, text);
 		ResultSet rs = stmt.executeQuery();
 		if (rs.next()) {
 			result = rs.getString(1);
 		}
 
 		if (result == null) {
-			stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE " + text + " ~ keyword;");
+			stmt = connection.prepareStatement("SELECT response FROM KEYWORDS WHERE \'" + text + "\' ~ keyword;");
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				result = rs.getString(1);
