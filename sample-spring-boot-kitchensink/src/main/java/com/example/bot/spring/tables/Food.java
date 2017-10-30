@@ -1,3 +1,10 @@
+package com.example.bot.spring.tables;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 @Entity
 public class Food{
 	@Id

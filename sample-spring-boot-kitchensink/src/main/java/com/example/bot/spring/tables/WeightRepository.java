@@ -1,6 +1,8 @@
 package com.example.bot.spring.tables;
 
-@Slf4j
-public interface WeightRepository extends CrudRepository<User, Long>{
+import org.springframework.data.repository.CrudRepository;
+import com.example.bot.spring.tables.Weight;
+
+public interface WeightRepository extends CrudRepository<Weight, Long>{
 	
 }
