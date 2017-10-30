@@ -1,3 +1,12 @@
+package com.example.bot.spring.tables;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 @Entity
 public class Meal{
 	@Id
@@ -15,7 +24,7 @@ public class Meal{
 		return userID;
 	}
 
-	public long get foodID() {
+	public long getFoodID() {
 		return foodID;
 	}
 
