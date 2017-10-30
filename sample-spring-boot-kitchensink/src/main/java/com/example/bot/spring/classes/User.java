@@ -1,7 +1,5 @@
 package com.example.bot.spring.classes;
 
-@Slf4j
-
 public class User {
 	
 	public long userID;

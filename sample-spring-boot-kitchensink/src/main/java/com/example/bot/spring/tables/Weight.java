@@ -2,6 +2,9 @@ package com.example.bot.spring.tables;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 
 @Entity
 public class Weight {
