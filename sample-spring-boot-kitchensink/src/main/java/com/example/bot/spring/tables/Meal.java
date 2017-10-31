@@ -10,6 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class Meal{
 	@Id
+	long id;
 	long userID;
 	private long foodID;
 	private Timestamp time;

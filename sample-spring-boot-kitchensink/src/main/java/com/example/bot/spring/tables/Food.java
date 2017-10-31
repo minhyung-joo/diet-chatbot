@@ -8,6 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Food{
 	@Id
+	long id;
 	long foodID;
 	String name;
 	String category;

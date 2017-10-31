@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 
 @Entity
 public class Weight {
+	@Id
+	long id;
 	long userID;
 	private double weight;
 	private Timestamp time;
