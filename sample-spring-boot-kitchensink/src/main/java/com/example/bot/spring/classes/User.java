@@ -20,15 +20,15 @@ public class User {
 	}
 	
 	public void createProfile() {
-		Profile p1 = new Profile();
-		ProfileRepository repo = (ProfileRepository) SpringApplication.run(Application.class, args).
-		getBean("profileRepository");
-		
-		repo.save(p1);
+//		Profile p1 = new Profile();
+//		ProfileRepository repo = (ProfileRepository) SpringApplication.run(Application.class, args).
+//		getBean("profileRepository");
+//		
+//		repo.save(p1);
 	}
 	
 	public void showProfile() {
-		Profile p1 = repo.findById(userID);
+//		Profile p1 = repo.findById(userID);
 		
 	}
 	
