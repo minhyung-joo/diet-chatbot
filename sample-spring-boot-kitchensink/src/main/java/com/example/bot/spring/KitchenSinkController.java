@@ -31,7 +31,6 @@ import java.util.function.Consumer;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.regex.*;
-import java.net.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 
 import com.example.bot.spring.controllers.*;
@@ -211,87 +210,118 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
+	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	
+	public Categories categories = null;
+	
+	public Profile profile = null;
+	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
-        String text = content.getText();
-        Matcher m = Pattern.compile("(profile|confirm|carousel|menu)").matcher(text);
-        
-        log.info("Got text message from {}: {}", replyToken, text);
-        if(m.find()) {
-        	switch (m.group()) {
-	            case "profile": {
-	                String userId = event.getSource().getUserId();
-	                if (userId != null) {
-	                    lineMessagingClient
-	                            .getProfile(userId)
-	                            .whenComplete(new ProfileGetter (this, replyToken));
-	                } else {
-	                    this.replyText(replyToken, "Bot can't use profile API without user ID");
-	                }
-	                break;
-	            }
-	            case "confirm": {
-	                ConfirmTemplate confirmTemplate = new ConfirmTemplate(
-	                        "Do it?",
-	                        new MessageAction("Yes", "Yes!"),
-	                        new MessageAction("No", "No!")
-	                );
-	                TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
-	                this.reply(replyToken, templateMessage);
-	                break;
-	            }
-	            case "carousel": {
-	                String imageUrl = createUri("/static/buttons/1040.jpg");
-	                CarouselTemplate carouselTemplate = new CarouselTemplate(
-	                        Arrays.asList(
-	                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-	                                        new URIAction("Go to line.me",
-	                                                      "https://line.me"),
-	                                        new PostbackAction("Say hello1",
-	                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯")
-	                                )),
-	                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-	                                        new PostbackAction("è¨€ hello2",
-	                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯",
-	                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯"),
-	                                        new MessageAction("Say message",
-	                                                          "Rice=ç±³")
-	                                ))
-	                        ));
-	                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-	                this.reply(replyToken, templateMessage);
-	                break;
-	            }
-	            case "menu": {
-	            	String regex = "\\s*\\bmenu\\b\\s*";
-	            	text = text.replaceAll(regex, "");
-	            	String testIfURL = text;
-	            	testIfURL.replaceAll("\\s+","");
-	            	InputToFood i = new InputToFood();
-	            	try {
-	            		  URL url = new URL(testIfURL);
-	            		} catch (MalformedURLException e) {
-	            		this.replyText(replyToken, "You should choose: " + i.readFromText(text));
-	            	}
-	            	break;
-	            }
-        	}
-        }
-        else {
-            	String reply = null;
-            	try {
-            		reply = database.search(text);
-            	} catch (Exception e) {
-            		reply = text;
-            	}
-                log.info("Returns echo message {}: {}", replyToken, reply);
-                this.replyText(
-                        replyToken,
-                        itscLOGIN + " says " + reply
-                );
-        }
+		
+		String text = content.getText();
+		log.info("Got text message from {}: {}", replyToken, text);
+		if (categories == null) {
+			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
+                    + "Profile - set interests, record weight...\n"
+                    + "Food - ...\n"
+					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
+			categories = Categories.MAIN_MENU;
+		}
+		else {
+			switch (categories) {
+		    		case MAIN_MENU:
+		    			this.replyText(replyToken, handleMainMenu(text));
+		    			break;
+		    		case PROFILE:
+		    			handleProfile(text);
+		    			break;
+		    		case FOOD:
+		    			handleFood(text);
+		    			break;
+		    		case MENU:
+		    			this.replyText(replyToken, handleMenu(text));
+		    			handleTextContent(replyToken, event, content);
+		    			break;
+			}
+		}		
     }
+	
+	private String handleMainMenu (String text) {
+		String result = "";
+		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
+		
+		if (m.find()) {
+			switch (m.group().toLowerCase()) {
+		    		case "profile": {
+		    			categories = Categories.PROFILE;
+		    			result = "Under profile, these are the features that we provide:\n"
+		                     + "Set interest\n"
+		                     + "Input you weight\n"
+		                     + "Request profile";
+		    			break;
+		    		}
+		    		case "food": {
+		    			categories = Categories.FOOD;
+	    				result = "Under food, these are the features that we provide:\n";
+		    			break;
+		    		}
+		    		case "menu": {
+		    			categories = Categories.MENU;
+		    			result = "You may input the menu in the following three ways:\n"
+		    				+ "Text\n"
+		    				+ "URL\n"
+		    				+ "JPEG";
+		    			break;
+		    		}
+    		
+			}
+		}
+		else {
+			result = "I don't understand";
+		}
 
+		return result;
+	}
+	
+	private void handleProfile (String text) {
+		
+	}
+	
+	private void handleFood (String text) {
+		
+	}
+	
+	private String handleMenu (String text) {
+		String result = "";
+		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
+        InputToFood i = new InputToFood();
+		if (m.find()) {
+			switch (m.group()) {
+		    		case "text": {
+                        result =  "You should choose: " + i.readFromText(text);
+		    			categories = null;
+		    			break;
+		    		}
+		    		case "url": {
+		    			categories = null;
+		    			break;
+		    		}
+		    		case "jpeg": {
+		    			categories = null;
+		    			break;
+		    		}
+			}
+		}
+		else {
+			result = "I don't understand";
+		}
+
+		return result;
+			
+	}
+	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
 	}
