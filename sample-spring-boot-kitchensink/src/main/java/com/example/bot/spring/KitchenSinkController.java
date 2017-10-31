@@ -208,9 +208,8 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
-	
 	
 	public Categories categories = null;
 	
@@ -221,7 +220,6 @@ public class KitchenSinkController {
 		
 		String text = content.getText();
 		log.info("Got text message from {}: {}", replyToken, text);
-		String result = "";
 		if (categories == null) {
 			result =
                     "Hello! These are the features that we provide:\n"
@@ -232,7 +230,7 @@ public class KitchenSinkController {
 		else {
 			switch (categories) {
 		    		case MAIN_MENU:
-		    			result = handleMainMenu(text);
+		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
 		    			handleProfile(text);
@@ -240,88 +238,38 @@ public class KitchenSinkController {
 		    		case FOOD:
 		    			handleFood(text);
 		    			break;
+		    		case MENU:
+		    			this.replyText(replyToken, handleMenu(text));
+		    			handleTextContent(replyToken, event, content);
+		    			break;
 			}
-		}
-		
-		this.replyText(replyToken, result);
-        
-//        switch (text) {
-//            case "profile": {
-//                String userId = event.getSource().getUserId();
-//                if (userId != null) {
-//                    lineMessagingClient
-//                            .getProfile(userId)
-//                            .whenComplete(new ProfileGetter (this, replyToken));
-//                } else {
-//                    this.replyText(replyToken, "Bot can't use profile API without user ID");
-//                }
-//                break;
-//            }
-//            case "confirm": {
-//                ConfirmTemplate confirmTemplate = new ConfirmTemplate(
-//                        "Do it?",
-//                        new MessageAction("Yes", "Yes!"),
-//                        new MessageAction("No", "No!")
-//                );
-//                TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
-//                this.reply(replyToken, templateMessage);
-//                break;
-//            }
-//            case "carousel": {
-//                String imageUrl = createUri("/static/buttons/1040.jpg");
-//                CarouselTemplate carouselTemplate = new CarouselTemplate(
-//                        Arrays.asList(
-//                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-//                                        new URIAction("Go to line.me",
-//                                                      "https://line.me"),
-//                                        new PostbackAction("Say hello1",
-//                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯")
-//                                )),
-//                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-//                                        new PostbackAction("è¨€ hello2",
-//                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯",
-//                                                           "hello ã�“ã‚“ã�«ã�¡ã�¯"),
-//                                        new MessageAction("Say message",
-//                                                          "Rice=ç±³")
-//                                ))
-//                        ));
-//                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-//                this.reply(replyToken, templateMessage);
-//                break;
-//            }
-//
-//            default:
-//            	String reply = null;
-//            	try {
-//            		reply = database.search(text);
-//            	} catch (Exception e) {
-//            		reply = text;
-//            	}
-//                log.info("Returns echo message {}: {}", replyToken, reply);
-//                this.replyText(
-//                        replyToken,
-//                        itscLOGIN + " says " + reply
-//                );
-//                break;
-//        }
+		}		
     }
+	
 	private String handleMainMenu (String text) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food").matcher(text);
+		Matcher m = Pattern.compile("profile|food", Pattern.CASE_INSENSITIVE).matcher(text);
 		if (m.find()) {
 			switch (m.group()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			
-		    				result = "Under profile, these are the features that we provide:\n"
-		                        + "Set interest\n"
-		                        + "Input you weight\n"
-		                        + "Request profile";
+		    			result = "Under profile, these are the features that we provide:\n"
+		                     + "Set interest\n"
+		                     + "Input you weight\n"
+		                     + "Request profile";
 		    			break;
 		    		}
 		    		case "food": {
 		    			categories = Categories.FOOD;
 	    				result = "Under food, these are the features that we provide:\n";
+		    			break;
+		    		}
+		    		case "menu": {
+		    			categories = Categories.MENU;
+		    			result = "You may input the menu in the following three ways:\n"
+		    				+ "Text\n"
+		    				+ "URL\n"
+		    				+ "JPEG";
 		    			break;
 		    		}
     		
@@ -340,6 +288,33 @@ public class KitchenSinkController {
 	
 	private void handleFood (String text) {
 		
+	}
+	
+	private String handleMenu (String text) {
+		String result = "";
+		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
+		if (m.find()) {
+			switch (m.group()) {
+		    		case "text": {
+		    			categories = null;
+		    			break;
+		    		}
+		    		case "url": {
+		    			categories = null;
+		    			break;
+		    		}
+		    		case "jpeg": {
+		    			categories = null;
+		    			break;
+		    		}
+			}
+		}
+		else {
+			result = "I don't understand";
+		}
+
+		return result;
+			
 	}
 	
 	static String createUri(String path) {
