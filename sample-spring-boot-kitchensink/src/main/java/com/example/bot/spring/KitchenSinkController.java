@@ -214,7 +214,7 @@ public class KitchenSinkController {
         Matcher m = Pattern.compile("profile|confirm|carousel|menu").matcher(text);
         
         log.info("Got text message from {}: {}", replyToken, text);
-        switch (m.group()) {
+        switch (text) {
             case "profile": {
                 String userId = event.getSource().getUserId();
                 if (userId != null) {
