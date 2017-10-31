@@ -8,37 +8,33 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Weight {
+public class Menu{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	long id;
-	long userID;
-	private double weight;
-	private Timestamp time;
-	
-	public Weight(long id, double w) {
-		userID = id;
-		weight = w;
-		time = new Timestamp(System.currentTimeMillis());
+	private long id;
+	private long userID;
+	private long[] foodIdArray;
+
+	public Menu(long uid, int numberOfFood) {
+		userID = uid;
+		foodIdArray = new long[numberOfFood];
 	}
-	
+
 	public long getUserID() {
 		return userID;
 	}
-	
-	public double getWeight() {
-		return weight;
+
+	public long[] getFoodIdArray() {
+		return foodIdArray;
 	}
-	
-	public Timestamp getTime() {
-		return time;
-	}
-	
+
 	public void setUserID(long id) {
 		userID = id;
 	}
-	
-	public void setWeight(double w) {
-		weight = w;
+
+	public void setFoodIdArray(long[] id) {
+		for(int i=0; i<id.length; i++) {
+			foodIdArray[i] = id[i];
+		}
 	}
 }
