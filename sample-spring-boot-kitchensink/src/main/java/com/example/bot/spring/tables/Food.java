@@ -8,6 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Food {
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	long foodID;
 	String name;
 	String category;
