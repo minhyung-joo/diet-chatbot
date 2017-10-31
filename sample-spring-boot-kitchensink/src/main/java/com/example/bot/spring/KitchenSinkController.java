@@ -31,7 +31,10 @@ import java.util.function.Consumer;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.regex.*;
+import java.net.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
+
+import com.example.bot.spring.controllers.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -258,6 +261,19 @@ public class KitchenSinkController {
 	                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 	                this.reply(replyToken, templateMessage);
 	                break;
+	            }
+	            case "menu": {
+	            	String regex = "\\s*\\bmenu\\b\\s*";
+	            	text = text.replaceAll(regex, "");
+	            	String testIfURL = text;
+	            	testIfURL.replaceAll("\\s+","");
+	            	InputToFood i = new InputToFood();
+	            	try {
+	            		  URL url = new URL(testIfURL);
+	            		} catch (MalformedURLException e) {
+	            		this.replyText(replyToken, "You should choose: " + i.readFromText(text));
+	            	}
+	            	break;
 	            }
         	}
         }
