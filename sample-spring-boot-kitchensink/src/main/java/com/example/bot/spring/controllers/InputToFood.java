@@ -1,15 +1,20 @@
 package com.example.bot.spring.controllers;
 
 public class InputToFood {
-    public void readFromText(String text) {
-
+	
+	public InputToFood() {
+		
+	}
+	
+    public String readFromText(String text) {
+    	return text;
     }
 
-    public void readFromJSON(String url) {
-
+    public String readFromJSON(String url) {
+    	return "";
     }
 
-    public void readFromJPEG() {
-
+    public String readFromJPEG() {
+    	return "";
     }
 }
