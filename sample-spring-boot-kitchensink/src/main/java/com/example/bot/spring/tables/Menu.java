@@ -13,7 +13,7 @@ public class Menu{
 	private long userID;
 	private long[] foodIdArray;
 
-	public Menu(long uid, long numberOfFood) {
+	public Menu(long uid, int numberOfFood) {
 		userID = uid;
 		foodIdArray = new long[numberOfFood];
 	}
@@ -31,7 +31,7 @@ public class Menu{
 	}
 
 	public void setFoodIdArray(long[] id) {
-		for(int i; i<id.length; i++) {
+		for(int i=0; i<id.length; i++) {
 			foodIdArray[i] = id[i];
 		}
 	}
