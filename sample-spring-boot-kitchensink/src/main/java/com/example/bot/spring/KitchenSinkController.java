@@ -224,7 +224,7 @@ public class KitchenSinkController {
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
 			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
-                    + "User - set interests, record weight...\n"
+                    + "Profile - set interests, record weight...\n"
                     + "Food - ...\n"
 					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
 			categories = Categories.MAIN_MENU;
@@ -250,9 +250,10 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
+		
 		if (m.find()) {
-			switch (m.group()) {
+			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
