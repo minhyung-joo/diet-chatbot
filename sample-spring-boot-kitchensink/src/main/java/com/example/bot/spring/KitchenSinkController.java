@@ -252,8 +252,8 @@ public class KitchenSinkController {
 		String result = "";
 		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
 		
-		if (m.find().toLowerCase()) {
-			switch (m.group()) {
+		if (m.find()) {
+			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
