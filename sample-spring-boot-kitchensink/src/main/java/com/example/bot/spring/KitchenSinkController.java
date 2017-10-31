@@ -33,6 +33,8 @@ import java.util.function.BiConsumer;
 import java.util.regex.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 
+import com.example.bot.spring.controllers.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -221,10 +223,10 @@ public class KitchenSinkController {
 		String text = content.getText();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-			result =
-                    "Hello! These are the features that we provide:\n"
+			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
                     + "User - set interests, record weight...\n"
-                    + "Food - ...";
+                    + "Food - ...\n"
+					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -293,9 +295,11 @@ public class KitchenSinkController {
 	private String handleMenu (String text) {
 		String result = "";
 		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
+        InputToFood i = new InputToFood();
 		if (m.find()) {
 			switch (m.group()) {
 		    		case "text": {
+                        result =  "You should choose: " + i.readFromText(text);
 		    			categories = null;
 		    			break;
 		    		}
