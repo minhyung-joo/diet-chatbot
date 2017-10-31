@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Food{
+public class Food {
 	@Id
 	long foodID;
 	String name;
