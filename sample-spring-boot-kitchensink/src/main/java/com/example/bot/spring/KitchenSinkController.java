@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
+import java.util.regex.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,7 +211,8 @@ public class KitchenSinkController {
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
         String text = content.getText();
-
+        Matcher m = Pattern.compile("profile|confirm|carousel|menu").matcher(text);
+        
         log.info("Got text message from {}: {}", replyToken, text);
         switch (text) {
             case "profile": {
