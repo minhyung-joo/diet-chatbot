@@ -8,7 +8,6 @@ import javax.persistence.Id;
 @Entity
 public class Profile {
 	@Id
-	long id;
 	long userID;
 	private String[] interests;
 	
