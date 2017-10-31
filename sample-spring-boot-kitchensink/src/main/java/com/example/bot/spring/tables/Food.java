@@ -6,8 +6,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Food{
+public class Food {
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	long foodID;
 	String name;
 	String category;
@@ -58,6 +59,18 @@ public class Food{
 
 	public int getCarbohydrate() {
 		return carbohydrate;
+	}
+	
+	public String getDetails() {
+		String details =
+				"Here are the details for " + this.getName() + "\n" +
+				"Calories: " + getCalories() + "\n" +
+				"Sodium: " + getSodium() + "\n" +
+				"Saturated Fat: " + getSaturatedFat() + "\n" +
+				"Protein: " + getProtein() + "\n" +
+				"Carbohydrate: " + getCarbohydrate();
+		
+		return details;
 	}
 
 }
