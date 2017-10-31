@@ -224,7 +224,7 @@ public class KitchenSinkController {
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
 			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
-                    + "User - set interests, record weight...\n"
+                    + "Profile - set interests, record weight...\n"
                     + "Food - ...\n"
 					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
 			categories = Categories.MAIN_MENU;
@@ -280,7 +280,8 @@ public class KitchenSinkController {
 		else {
 			result = "I don't understand";
 		}
-
+		System.out.println(result);
+		
 		return result;
 	}
 	
