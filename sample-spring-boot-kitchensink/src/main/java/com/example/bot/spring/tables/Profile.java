@@ -11,10 +11,8 @@ public class Profile {
 	long userID;
 	private String[] interests;
 	
-	public Profile (long id, String[] interestArray) {
-		userID = id;
+	public Profile () {
 		
-		interests = interestArray;
 	}
 	
 	public long getUserID () {
