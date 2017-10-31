@@ -280,7 +280,7 @@ public class KitchenSinkController {
 		else {
 			result = "I don't understand";
 		}
-		System.out.println(result);
+		System.out.println("debugging " + result);
 		
 		return result;
 	}
