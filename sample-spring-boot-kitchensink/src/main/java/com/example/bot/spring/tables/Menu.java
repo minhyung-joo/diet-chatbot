@@ -10,6 +10,8 @@ import javax.persistence.Id;
 @Entity
 public class Menu{
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private long id;
 	private long userID;
 	private long[] foodIdArray;
 

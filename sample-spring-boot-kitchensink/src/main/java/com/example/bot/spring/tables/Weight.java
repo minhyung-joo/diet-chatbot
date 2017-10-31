@@ -10,6 +10,7 @@ import javax.persistence.Id;
 @Entity
 public class Weight {
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	long userID;
 	private double weight;
