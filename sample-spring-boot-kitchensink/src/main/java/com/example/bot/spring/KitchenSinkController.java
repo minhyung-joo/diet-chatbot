@@ -269,7 +269,6 @@ public class KitchenSinkController {
 	private String handleMainMenu (String text) {
 		String result = "";
 		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
-		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
@@ -321,6 +320,9 @@ public class KitchenSinkController {
 			    			break;
 			    		}
 				}
+			}
+			else {
+				result = "I don't understand";
 			}
 		}
 		else {
