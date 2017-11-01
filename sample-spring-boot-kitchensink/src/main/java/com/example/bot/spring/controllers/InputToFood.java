@@ -4,17 +4,13 @@ import java.util.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(path="/input")
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
-	
+
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
 		String[] menu = text.split(System.getProperty("line.separator"));
