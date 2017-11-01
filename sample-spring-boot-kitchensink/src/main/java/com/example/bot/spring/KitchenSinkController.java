@@ -292,7 +292,7 @@ public class KitchenSinkController {
 	    		}
 	    		case "food": {
 	    			categories = Categories.FOOD;
-    				result = "Under food, these are the features that we provide:\n";
+    				result = "Enter a food name and I will provide you with the details!";
 	    			break;
 	    		}
 	    		case "menu": {

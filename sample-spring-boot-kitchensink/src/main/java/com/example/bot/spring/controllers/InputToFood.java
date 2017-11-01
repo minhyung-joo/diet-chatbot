@@ -77,17 +77,15 @@ public class InputToFood {
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "You have entered " + food + "\n";
-    		foodRepository.findAll().forEach(new Consumer<Food>() {
-    		    public void accept(Food fd) {
-    		    	String fdName = fd.getName().toLowerCase();
-            		if(fdName.contains(",")) {
-            			fdName = fdName.substring(0,fdName.indexOf(","));
-            		}
-    		        if(fdName.equalsIgnoreCase(food)) { 
-    		        		resultFood.concat("Here are the details for " + fdName + "\n" + fd.getDetails());
-    		        }
+    		for(Food fd : foodRepository.findAll()) {
+    		    String fdName = fd.getName().toLowerCase();
+            	if(fdName.contains(",")) {
+            		fdName = fdName.substring(0,fdName.indexOf(","));
+            	}
+    		    if(fdName.equalsIgnoreCase(food)) { 
+    	     		resultFood.concat("Here are the details for " + fdName + "\n" + fd.getDetails());
     		    }
-    		});
+    		}
     		
     		return resultFood;
     }
