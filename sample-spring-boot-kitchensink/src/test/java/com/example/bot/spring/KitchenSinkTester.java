@@ -52,53 +52,53 @@ public class KitchenSinkTester {
 	@Autowired
 	private DatabaseEngine databaseEngine;
 	
-//	@Test
-//	public void testNotFound() throws Exception {
-//		boolean thrown = false;
-//		try {
-//			this.databaseEngine.search("no");
-//		} catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(thrown).isEqualTo(true);
-//	}
-//	
-//	@Test
-//	public void testFound() throws Exception {
-//		boolean thrown = false;
-//		String result = null;
-//		try {
-//			result = this.databaseEngine.search("abc");
-//		} catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//		assertThat(result).contains("def");
-//	}
-//	
-//	@Test
-//	public void testFound2() throws Exception {
-//		boolean thrown = false;
-//		String result = null;
-//		try {
-//			result = this.databaseEngine.search("I am fine");
-//		} catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//		assertThat(result).contains("Great!");
-//	}
-//	
-//	@Test
-//	public void testPartialFound() throws Exception {
-//		boolean thrown = false;
-//		String result = null;
-//		try {
-//			result = this.databaseEngine.search("Do you know what comes after abc?");
-//		} catch (Exception e) {
-//			thrown = true;
-//		}
-//		assertThat(!thrown).isEqualTo(true);
-//		assertThat(result).contains("def");
-//	}
+	@Test
+	public void testNotFound() throws Exception {
+		boolean thrown = false;
+		try {
+			this.databaseEngine.search("no");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(thrown).isEqualTo(true);
+	}
+	
+	@Test
+	public void testFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("abc");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("def");
+	}
+	
+	@Test
+	public void testFound2() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("I am fine");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("Great!");
+	}
+	
+	@Test
+	public void testPartialFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("Do you know what comes after abc?");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result).contains("def");
+	}
 }
