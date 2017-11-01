@@ -335,7 +335,7 @@ public class KitchenSinkController {
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
-		    			result = text;
+		    			result = user.outputWeight(""+event.getSource().getUserId());
 		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;

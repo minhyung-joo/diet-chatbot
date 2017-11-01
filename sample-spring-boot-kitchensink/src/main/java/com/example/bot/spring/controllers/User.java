@@ -1,5 +1,7 @@
 package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import com.example.bot.spring.tables.*;
 
 import java.util.function.*;
@@ -50,19 +52,24 @@ public class User {
 	}
 	
 	@GetMapping(path="/getWeights")
-	public @ResponseBody void inputWeight (@RequestParam String id) {		
+	public @ResponseBody String outputWeight (@RequestParam String id) {		
 		boolean weightFound = false;
 		String outputStr = "";
 		for(Weight wt : weightRepository.findAll()) {
 			if(wt.getUserID().equals(id)) { 
 	        		weightFound = true;
-	        		outputStr += "This is your weight" + wt.getWeight() + "\n";
+	        		
+	        		Date date = new Date();
+	        		date.setTime(wt.getTime().getTime());
+	        		String formattedDate = new SimpleDateFormat("yyyyMMdd").format(date);
+	        		outputStr += "This is your weight at" + formattedDate + " is " + wt.getWeight() + "\n";
 	        }
 		}
 		if (!weightFound) {
 			outputStr += "You did not log any weight";
 		}
 		
+		return outputStr;
 	}
 
 	
