@@ -87,12 +87,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
+import com.example.bot.spring.tables.Food;
+import com.example.bot.spring.tables.FoodRepository;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
+	@Autowired
+	private FoodRepository foodRepository;
 	
-
-
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 
@@ -245,11 +251,11 @@ public class KitchenSinkController {
 		    			handleTextContent(replyToken, event, content);
 		    			break;
 		    		case INIT:
-		    			DatabaseInitializer.initializeDatabase();
+		    			this.handleInit();
 		    			this.replyText(replyToken, "Database initialized.");
 		    			break;
 			}
-		}		
+		}
     }
 	
 	private String handleMainMenu (String text) {
@@ -299,6 +305,32 @@ public class KitchenSinkController {
 	
 	private void handleFood (String text) {
 		
+	}
+	
+	private void handleInit() {
+		try {
+            String fileName = "FOOD_DATA.txt";
+            String line = null;
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+
+                String[] foodData = line.split("^");
+                String foodName = foodData[0];
+                String category = foodData[1];
+                double calories = Double.parseDouble(foodData[2]);
+                double sodium = Double.parseDouble(foodData[3]);
+                double fat = Double.parseDouble(foodData[4]);
+                double protein = Double.parseDouble(foodData[5]);
+                double carbohydrate = Double.parseDouble(foodData[6]);
+                Food food = new Food(foodName, category, calories, sodium, fat, protein, carbohydrate);
+                foodRepository.save(food);
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 	
 	private String handleMenu (String text) {
