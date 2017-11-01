@@ -237,7 +237,6 @@ public class KitchenSinkController {
 		Message mainMenuMessage = new TextMessage(showMainMenu);
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-            user = new User();
             user.addUser(userId);
             
 			this.replyText(replyToken, showMainMenu);

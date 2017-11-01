@@ -11,9 +11,6 @@ public class Profile {
 	String userID;
 	private String[] interests;
 	
-	public Profile (String id) {
-		userID = id;
-	}
 	
 	public String getUserID () {
 		return userID;
