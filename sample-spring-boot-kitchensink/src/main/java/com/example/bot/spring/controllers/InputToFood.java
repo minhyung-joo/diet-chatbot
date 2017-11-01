@@ -50,13 +50,17 @@ public class InputToFood {
     	RestTemplate restTemplate = new RestTemplate();
     	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
     	StringBuilder builder = new StringBuilder();
+    	int counter = 1;
     	for (Menu menu : menuList) {
     		String[] ingredients = menu.getIngredients();
-    		builder.append("Ingredients: ");
+    		builder.append(counter);
+    		builder.append(". ");
     		for (String ingredient : ingredients) {
     			builder.append(ingredient);
-    			builder.append("\n");
+    			builder.append(",");
     		}
+    		counter++;
+    		builder.append("\n");
     	}
     	
     	return builder.toString();
