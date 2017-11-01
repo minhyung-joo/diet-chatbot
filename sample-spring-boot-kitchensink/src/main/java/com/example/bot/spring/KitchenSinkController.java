@@ -309,9 +309,9 @@ public class KitchenSinkController {
 	
 	private void handleInit() {
 		try {
-            String fileName = "FOOD_DATA.txt";
+            String filePath = "/app/FOOD_DATA.txt";
             String line = null;
-            FileReader fileReader = new FileReader(fileName);
+            FileReader fileReader = new FileReader(filePath);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             while ((line = bufferedReader.readLine()) != null) {
                 System.out.println(line);
