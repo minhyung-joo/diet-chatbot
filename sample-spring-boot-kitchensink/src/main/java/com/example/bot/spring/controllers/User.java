@@ -24,11 +24,11 @@ public class User {
 		        }
 		    }
 		});
-		if (profile ==null) {
-			Profile pf = new Profile(id);
-			profileRepository.save(pf);
-			profile = pf;
-		}
+//		if (profile ==null) {
+//			Profile pf = new Profile(id);
+//			profileRepository.save(pf);
+//			profile = pf;
+//		}
 	}
 	
 	public void setInterests(String[] Categories) {
