@@ -43,7 +43,7 @@ public class InputToFood {
     }
     
     public String getFoodDetails(String food) {
-    		String resultFood = "";
+    		String resultFood = "You have entered " + food + "\n";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
     		    public void accept(Food fd) {
     		        if(fd.getName().equalsIgnoreCase(food)) { 
