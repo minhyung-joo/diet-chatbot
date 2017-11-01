@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import com.google.common.collect.*;
 
 @Controller
 @RequestMapping(path="/input")
@@ -24,7 +25,7 @@ public class InputToFood {
     	String[][] result = new String[menu.length][50];
     	for(int i=0;i<menu.length;i++) {
         	int j=0;
-        	if(foodRepository.findAll()!==null) {
+        	if(Iterables.size(foodRepository.findAll())!=0) {
         		for(Food fd : foodRepository.findAll()) {
         			if(menu[i].contains(fd.getName())) { 
     		        	result[i][j] = fd.getName();
@@ -33,9 +34,13 @@ public class InputToFood {
         		}
         	}		 
     	}
-    	String result = "";
+    	String resultText = "";
     	for(int i=0;i<menu.length;i++) {
-    		
+    		resultText += i+". ";
+    		for(int j=0;j<result[i].length;j++) {
+    			
+    		}
+    		resultText += "/n";
     	}
     	return text;
     }
