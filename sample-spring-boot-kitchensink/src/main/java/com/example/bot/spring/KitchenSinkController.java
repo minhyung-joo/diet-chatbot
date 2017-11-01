@@ -246,7 +246,10 @@ public class KitchenSinkController {
 		    			handleProfile(text);
 		    			break;
 		    		case FOOD:
-		    			handleFood(text);
+		    			Message response = new TextMessage(handleFood(text));
+		    			List<Message> messages = new ArrayList<Message>();
+		    			messages.add(response);
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case MENU:
 		    			Message response = new TextMessage(handleMenu(text));
@@ -304,8 +307,8 @@ public class KitchenSinkController {
 	
 	private String handleFood (String text) {
 		categories = null;
-		String result = "re";
-		//result = i.getFoodDetails(text);
+		String result = "";
+		result = i.getFoodDetails(text);
 		return result;
 	}
 	
