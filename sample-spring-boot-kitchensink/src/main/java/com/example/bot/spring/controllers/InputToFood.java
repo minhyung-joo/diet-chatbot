@@ -32,13 +32,13 @@ public class InputToFood {
    		        }   
        		}	 
     	}
-    	String resultText = "";
+    	String resultText = "The Foods in each entree are as followed:\n";
     	for(int i=0;i<menu.length;i++) {
     		resultText += i+". ";
     		for(int j=0;j<result[i].length;j++) {
     			resultText += j + ", ";
     		}
-    		resultText += "/n";
+    		resultText += "\n";
     	}
     	return resultText;
     }
