@@ -18,7 +18,7 @@ public class User {
 	private Profile profile;
 	
 	@GetMapping(path="/createuser")
-	public @ResponseBody User (@RequestParam String id) {
+	public @ResponseBody void addUser (@RequestParam String id) {
 		profileRepository.findAll().forEach(new Consumer<Profile>() {
 		    public void accept(Profile pf) {
 		        if(pf.getUserID().equals(id)) { 
