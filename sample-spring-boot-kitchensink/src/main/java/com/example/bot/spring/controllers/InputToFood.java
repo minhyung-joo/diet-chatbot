@@ -50,12 +50,17 @@ public class InputToFood {
     	RestTemplate restTemplate = new RestTemplate();
     	MenuList menuList = restTemplate.getForObject(url, MenuList.class);
     	List<Menu> menus = menuList.getMenus();
-    	for(Menu menu : menus) {
-    		String foodName = menu.getName();
-    		System.out.println(foodName);
+    	StringBuilder builder = new StringBuilder();
+    	for (Menu menu : menus) {
+    		String[] ingredients = menu.getIngredients();
+    		builder.append("Ingredients: ");
+    		for (String ingredient : ingredients) {
+    			builder.append(ingredient);
+    			builder.append("\n");
+    		}
     	}
     	
-    	return "";
+    	return builder.toString();
     }
 
     public String readFromJPEG() {

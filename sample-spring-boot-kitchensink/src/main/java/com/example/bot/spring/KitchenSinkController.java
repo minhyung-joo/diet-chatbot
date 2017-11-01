@@ -257,14 +257,14 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleProfile(text, event));
 		    			break;
 		    		case FOOD:
-		    			this.replyText(replyToken, handleFood(text));
+		    			this.replyText(replyToken, handleFood(text));		    			
 		    			break;
 		    		case MENU:
 		    			Message response = new TextMessage(handleMenu(text));
 		    			List<Message> messages = new ArrayList<Message>();
 		    			messages.add(response);
-		    			if(categories==Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);		
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
@@ -317,7 +317,7 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-//		public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
@@ -395,6 +395,8 @@ public class KitchenSinkController {
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+        	categories = Categories.MAIN_MENU;
         }
 	}
 	
@@ -426,11 +428,12 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result =  i.readFromText(text);
+                result = i.readFromText(text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
+    			result = i.readFromJSON(text);
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;

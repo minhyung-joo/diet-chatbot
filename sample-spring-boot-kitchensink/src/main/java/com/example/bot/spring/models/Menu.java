@@ -28,7 +28,7 @@ public class Menu {
 		this.price = price;
 	}
 	
-	public String[] setIngredients() {
+	public String[] getIngredients() {
 		return ingredients;
 	}
 	
