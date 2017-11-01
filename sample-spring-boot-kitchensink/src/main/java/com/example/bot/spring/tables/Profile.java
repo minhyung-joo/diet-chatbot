@@ -8,15 +8,14 @@ import javax.persistence.Id;
 @Entity
 public class Profile {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	long userID;
+	String userID;
 	private String[] interests;
 	
-	public Profile () {
-		
+	public Profile (String id) {
+		userID = id;
 	}
 	
-	public long getUserID () {
+	public String getUserID () {
 		return userID;
 	}
 	
@@ -24,7 +23,7 @@ public class Profile {
 		return interests;
 	}
 	
-	public void setUserID(long id) {
+	public void setUserID(String id) {
 		userID = id;
 	}
 	

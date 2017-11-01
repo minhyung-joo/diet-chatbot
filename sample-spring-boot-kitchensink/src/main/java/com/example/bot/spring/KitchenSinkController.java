@@ -217,13 +217,17 @@ public class KitchenSinkController {
 	
 	public Profile profile = null;
 	
+	private User user;
+	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
 		String text = content.getText();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
+            String userId = event.getSource().getUserId();			
+            user = new User(userId);
+            this.replyText(replyToken, "Hello! These are the features that we provide:\n"
                     + "Profile - set interests, record weight...\n"
                     + "Food - ...\n"
 					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
