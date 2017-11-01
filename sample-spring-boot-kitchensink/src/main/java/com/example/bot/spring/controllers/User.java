@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller    // This means that this class is a Controller
+@RequestMapping(path="/user")
 public class User {
 	@Autowired
 	private ProfileRepository profileRepository;
 	private Profile profile;
 	
-	public User (String id) {
+	@GetMapping(path="/createuser")
+	public @ResponseBody User (@RequestParam String id) {
 		profileRepository.findAll().forEach(new Consumer<Profile>() {
 		    public void accept(Profile pf) {
 		        if(pf.getUserID().equals(id)) { 
