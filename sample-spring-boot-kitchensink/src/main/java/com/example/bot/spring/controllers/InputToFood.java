@@ -15,10 +15,6 @@ public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
 	
-	public InputToFood() {
-		
-	}
-	
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
 		String[] menu = text.split(System.getProperty("line.separator"));
