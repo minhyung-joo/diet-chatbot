@@ -303,8 +303,38 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-	private void handleProfile (String text) {
-		
+//		public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	private String handleProfile (String text) {
+		String result = "";
+		if (profile == null) {
+			Matcher m = Pattern.compile("input|profile", Pattern.CASE_INSENSITIVE).matcher(text);
+			if (m.find()) {
+				switch (m.group().toLowerCase()) {
+			    		case "input": {
+			    			profile = Profile.INPUT_WEIGHT;
+			    			result = "Please input your current weight in kgs";
+			    			break;
+			    		}
+			    		case "profile": {
+			    			profile = Profile.REQUEST_PROFILE;
+			    			result = "Which one would you like to display? Weight or meals?";
+			    			break;
+			    		}
+				}
+			}
+		}
+		else {
+			switch (profile) {
+		    		case INPUT_WEIGHT:
+		    			result = text;
+		    			break;
+		    		case REQUEST_PROFILE:
+		    			result = text;
+		    			break;
+			}
+		}
+		return result;
+
 	}
 	
 	private String handleFood (String text) {
