@@ -331,12 +331,12 @@ public class KitchenSinkController {
 		    			//need to solve bug of user inputting NaN
 		    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
 		    			result = "Input successful";
-		    			menu = null;
+		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = text;
-		    			menu = null;
+		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 			}
