@@ -99,6 +99,9 @@ public class KitchenSinkController {
 	@Autowired
 	private InputToFood i;
 	
+	@Autowired
+	private User user;
+	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -221,7 +224,6 @@ public class KitchenSinkController {
 	
 	public Profile profile = null;
 	
-	private User user;
 	public Menu menu = null;
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
