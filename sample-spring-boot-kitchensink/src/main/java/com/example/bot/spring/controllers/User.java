@@ -2,8 +2,6 @@ package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
 import com.example.bot.spring.tables.*;
 
-import sun.java2d.cmm.Profile;
-
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
