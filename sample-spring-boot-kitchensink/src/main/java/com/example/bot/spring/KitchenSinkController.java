@@ -248,7 +248,6 @@ public class KitchenSinkController {
 		    			break;
 		    		case MENU:
 		    			this.replyText(replyToken, handleMenu(text));
-		    			handleTextContent(replyToken, event, content);
 		    			break;
 			}
 		}		
