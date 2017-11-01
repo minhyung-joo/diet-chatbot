@@ -19,20 +19,23 @@ public class InputToFood {
 		
 	}
 	
-	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
-		System.out.println("HERE:" + text);
     	String[] menu = text.split(System.getProperty("line.separator"));
     	String[][] result = new String[menu.length][50];
     	for(int i=0;i<menu.length;i++) {
         	int j=0;
-    		for(Food fd : foodRepository.findAll()) {
-    			if(menu[i].contains(fd.getName())) { 
-		        	result[i][j] = fd.getName();
-    		    	j++;
-		        }   
-    		}
-    			 
+        	if(foodRepository.findAll()!==null) {
+        		for(Food fd : foodRepository.findAll()) {
+        			if(menu[i].contains(fd.getName())) { 
+    		        	result[i][j] = fd.getName();
+        		    	j++;
+    		        }   
+        		}
+        	}		 
+    	}
+    	String result = "";
+    	for(int i=0;i<menu.length;i++) {
+    		
     	}
     	return text;
     }
@@ -45,7 +48,6 @@ public class InputToFood {
     	return "";
     }
     
-    @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
