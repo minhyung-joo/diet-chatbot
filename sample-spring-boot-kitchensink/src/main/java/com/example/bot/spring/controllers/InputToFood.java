@@ -18,23 +18,23 @@ public class InputToFood {
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
 		String[] menu = text.split(System.getProperty("line.separator"));
-    	String[][] result = new String[menu.length][50];
+    	List<Set<String>> result = new ArrayList<Set<String>>();
     	for(int i=0;i<menu.length;i++) {
+    		Set<String> names = new HashSet<String>();
         	int j=0;
         	for(Food fd : foodRepository.findAll()) {
         		if(menu[i].contains(fd.getName())) { 
-    	        	result[i][j] = fd.getName();
+    	        	names.add(fd.getName());
        		    	j++;
    		        }   
-       		}	 
+       		}
+        	result.add(names);
     	}
     	String resultText = "The Foods in each entree are as followed:\n";
     	for(int i=0;i<menu.length;i++) {
     		resultText += (i+1)+". ";
-    		for(int j=0;j<result[i].length;j++) {
-    			if (result[i][j] == null)
-                    break;
-    			resultText += result[i][j] + ", ";
+    		for(String s : result.get(i)) {
+    			resultText += s + ", ";
     		}
     		resultText += "\n";
     	}
