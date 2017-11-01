@@ -256,7 +256,12 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			this.replyText(replyToken, handleProfile(text, event));
+		    			response = new TextMessage(handleProfile(text, event));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case FOOD:
 		    			response = new TextMessage(handleFood(text));
@@ -291,9 +296,9 @@ public class KitchenSinkController {
 	    		case "profile": {
 	    			categories = Categories.PROFILE;
 	    			result = "Under profile, these are the features that we provide:\n"
-	                     + "Set interest\n"
-	                     + "Input you weight\n"
-	                     + "Request profile";
+	                     + "Interests - Set your interests of Food\n"
+	                     + "Input - Record your weight\n"
+	                     + "Profile - View your profile";
 	    			break;
 	    		}
 	    		case "food": {
