@@ -305,7 +305,6 @@ public class KitchenSinkController {
 	private String handleFood (String text) {
 		categories = null;
 		String result = "";
-        InputToFood i = new InputToFood();
 		result = i.getFoodDetails(text);
 		return result;
 	}
