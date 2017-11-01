@@ -28,7 +28,7 @@ public class InputToFood {
     		Set<String> names = new HashSet<String>();
         	int j=0;
         	for(Food fd : foodRepository.findAll()) {
-        		if(menu[i].contains(fd.getName())) { 
+        		if(menu[i].toLowerCase().contains(fd.getName().toLowerCase())) { 
     	        	names.add(fd.getName());
        		    	j++;
    		        }   
