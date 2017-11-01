@@ -42,6 +42,10 @@ public class DatabaseEngine {
 				}
 				else if (text.toLowerCase().contains((parts[0].toLowerCase()))) {
 					result = parts[1];
+					break;
+				}
+				else if (text.toLowerCase().contains((parts[0].toLowerCase()))) {
+					result = parts[1];
 				}
 			}
 		} catch (IOException e) {
