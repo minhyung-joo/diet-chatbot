@@ -304,7 +304,7 @@ public class KitchenSinkController {
 	
 	private String handleFood (String text) {
 		categories = null;
-		String result = "";
+		String result = "re";
 		result = i.getFoodDetails(text);
 		return result;
 	}
