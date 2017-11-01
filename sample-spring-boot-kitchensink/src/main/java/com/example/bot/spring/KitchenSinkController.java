@@ -248,7 +248,7 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			handleProfile(text);
+		    			this.replyText(replyToken, handleProfile(text));
 		    			break;
 		    		case FOOD:
 		    			this.replyText(replyToken, handleFood(text));
