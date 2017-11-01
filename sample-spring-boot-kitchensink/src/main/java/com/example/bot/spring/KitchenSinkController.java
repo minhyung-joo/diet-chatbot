@@ -248,7 +248,7 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			this.replyText(replyToken, handleProfile(text));
+		    			this.replyText(replyToken, handleProfile(text, event));
 		    			break;
 		    		case FOOD:
 		    			this.replyText(replyToken, handleFood(text));
@@ -303,7 +303,7 @@ public class KitchenSinkController {
 	}
 	
 //		public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
-	private String handleProfile (String text) {
+	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
 			Matcher m = Pattern.compile("input|profile", Pattern.CASE_INSENSITIVE).matcher(text);
@@ -328,10 +328,16 @@ public class KitchenSinkController {
 		else {
 			switch (profile) {
 		    		case INPUT_WEIGHT:
-		    			result = text;
+		    			//need to solve bug of user inputting NaN
+		    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			result = "Input successful";
+		    			menu = null;
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = text;
+		    			menu = null;
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 			}
 		}
