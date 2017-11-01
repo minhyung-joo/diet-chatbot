@@ -14,6 +14,7 @@ import java.net.URI;
 public class SQLDatabaseEngine extends DatabaseEngine {
 	@Override
 	String search(String text) throws Exception {
+<<<<<<< HEAD
 		String result = null;
 		try {
 			Connection connection = getConnection();
@@ -33,9 +34,26 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		}
 		if (result != null)
 			return result;
+=======
+		String response = null;
+		Connection connection = this.getConnection();
+		PreparedStatement stmt = connection.prepareStatement("UPDATE KEYWORDS SET hits=hits+1 WHERE concat('%', ?, '%') LIKE '%' || keyword || '%' RETURNING response, hits");
+		stmt.setString(1, text);
+		ResultSet rs = stmt.executeQuery();
+		if (rs.next()) {
+			response = rs.getString(1) + rs.getInt(2);
+		}
+		
+		rs.close();
+		stmt.close();
+		connection.close();
+		if (response != null) {
+			return response;
+		}
+
+>>>>>>> 68301d177849672b8c31d99294d4ef28ab17ffd8
 		throw new Exception("NOT FOUND");
 	}
-	
 	
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
@@ -49,6 +67,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		log.info ("dbUrl: {}", dbUrl);
 		
 		connection = DriverManager.getConnection(dbUrl, username, password);
+		System.out.println("Connection established");
 
 		return connection;
 	}

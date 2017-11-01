@@ -38,6 +38,10 @@ public class DatabaseEngine {
 				String[] parts = sCurrentLine.split(":");
 				if (text.toLowerCase().contains(parts[0].toLowerCase())) {
 					result = parts[1];
+					break;
+				}
+				else if (text.toLowerCase().contains((parts[0].toLowerCase()))) {
+					result = parts[1];
 				}
 			}
 		} catch (IOException e) {
@@ -52,8 +56,10 @@ public class DatabaseEngine {
 				log.info("IOException while closing file: {}", ex.toString());
 			}
 		}
-		if (result != null)
+		if (result != null) {
 			return result;
+		}
+			
 		throw new Exception("NOT FOUND");
     }
 	

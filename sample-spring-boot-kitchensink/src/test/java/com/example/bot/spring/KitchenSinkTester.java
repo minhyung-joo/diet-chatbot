@@ -43,10 +43,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.DatabaseEngine;
-
+import com.example.bot.spring.SQLDatabaseEngine;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
 @SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
 public class KitchenSinkTester {
 	@Autowired
@@ -68,7 +67,49 @@ public class KitchenSinkTester {
 		boolean thrown = false;
 		String result = null;
 		try {
-			result = this.databaseEngine.search("abc");
+			result = this.databaseEngine.search("ping");			
+		} catch (Exception e) {
+			System.out.println(e);
+			thrown = true;
+		}
+		System.out.println(result);
+		assertThat(thrown).isEqualTo(false);
+		//assertThat(result).isEqualTo("pong");
+	}
+	
+	@Test
+	public void testMultipleFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("ping tapping");
+		} catch (Exception e) {
+			System.out.println(e);
+			thrown = true;
+		}
+		assertThat(thrown).isEqualTo(false);
+		//assertThat(result).isEqualTo("pong");
+	}
+	
+	@Test
+	public void testNestedFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("tapping");
+		} catch (Exception e) {
+			thrown = true;
+		}
+		assertThat(thrown).isEqualTo(false);
+		//assertThat(result).isEqualTo("tap tap");
+	}
+	
+	@Test
+	public void testPartialFound() throws Exception {
+		boolean thrown = false;
+		String result = null;
+		try {
+			result = this.databaseEngine.search("pinghey");
 		} catch (Exception e) {
 			thrown = true;
 		}
