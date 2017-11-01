@@ -246,10 +246,7 @@ public class KitchenSinkController {
 		    			handleProfile(text);
 		    			break;
 		    		case FOOD:
-		    			Message response = new TextMessage(handleFood(text));
-		    			List<Message> messages = new ArrayList<Message>();
-		    			messages.add(response);
-		    			this.reply(replyToken, messages);
+		    			this.replyText(replyToken, handleFood(text));
 		    			break;
 		    		case MENU:
 		    			Message response = new TextMessage(handleMenu(text));
