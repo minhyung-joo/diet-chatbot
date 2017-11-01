@@ -34,9 +34,11 @@ public class InputToFood {
     	}
     	String resultText = "The Foods in each entree are as followed:\n";
     	for(int i=0;i<menu.length;i++) {
-    		resultText += i+". ";
+    		resultText += (i+1)+". ";
     		for(int j=0;j<result[i].length;j++) {
-    			resultText += j + ", ";
+    			if (result[i][j] == null)
+                    break;
+    			resultText += result[i][j] + ", ";
     		}
     		resultText += "\n";
     	}
