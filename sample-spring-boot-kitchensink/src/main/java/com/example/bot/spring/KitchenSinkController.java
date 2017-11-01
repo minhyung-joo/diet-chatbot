@@ -298,7 +298,7 @@ public class KitchenSinkController {
 		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
         InputToFood i = new InputToFood();
 		if (m.find()) {
-			switch (m.group()) {
+			switch (m.group().toLowerCase()) {
 		    		case "text": {
                         result =  i.readFromText(text);
 		    			categories = null;
