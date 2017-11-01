@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -227,12 +227,13 @@ public class KitchenSinkController {
             throws Exception {
 		
 		String text = content.getText();
+		String showMainMenu = "Hello! These are the features that we provide:\n"
+                + "Profile - set interests, record weight...\n"
+                + "Food - ...\n"
+				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
-                    + "Profile - set interests, record weight...\n"
-                    + "Food - ...\n"
-					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
+			this.replyText(replyToken, showMainMenu);
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -247,9 +248,13 @@ public class KitchenSinkController {
 		    			handleFood(text);
 		    			break;
 		    		case MENU:
-		    			this.replyText(replyToken, handleMenu(text));
+		    			Message response = new TextMessage(handleMenu(text));
+		    			Message response2 = new TextMessage(showMainMenu);
 		    			if(categories==null) {
-		    				handleTextContent(replyToken,event,content);
+		    				List<Message> messages = new ArrayList<Message>();
+		    				messages.add(response);
+		    				messages.add(response2);
+		    				this.reply(replyToken, messages);
 		    			}
 		    			break;
 			}
