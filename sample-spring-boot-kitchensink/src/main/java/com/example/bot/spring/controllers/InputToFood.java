@@ -33,7 +33,7 @@ public class InputToFood {
         			fdName = fdName.substring(0,fdName.indexOf(","));
         		}
         		if(menu[i].toLowerCase().contains(fdName)) { 
-    	        	names.add(fd.getName());
+    	        	names.add(fdName);
        		    	j++;
    		        }   
        		}
@@ -84,7 +84,7 @@ public class InputToFood {
             			fdName = fdName.substring(0,fdName.indexOf(","));
             		}
     		        if(fdName.equalsIgnoreCase(food)) { 
-    		        		resultFood.concat(fd.getDetails() + "\n");
+    		        		resultFood.concat("Here are the details for " + fdName + "\n" + fd.getDetails());
     		        }
     		    }
     		});

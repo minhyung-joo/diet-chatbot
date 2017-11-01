@@ -80,7 +80,6 @@ public class Food {
 	
 	public String getDetails() {
 		String details =
-				"Here are the details for " + this.getName() + "\n" +
 				"Calories: " + getCalories() + "\n" +
 				"Sodium: " + getSodium() + "\n" +
 				"Saturated Fat: " + getSaturatedFat() + "\n" +
