@@ -15,6 +15,10 @@ public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
 	
+	public InputToFood() {
+		
+	}
+	
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
 		String[] menu = text.split(System.getProperty("line.separator"));
@@ -51,7 +55,7 @@ public class InputToFood {
     
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
-    		String resultFood = "You have entered " + food + "\n";
+    		String resultFood = "";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
     		    public void accept(Food fd) {
     		        if(fd.getName().equalsIgnoreCase(food)) { 
