@@ -16,7 +16,7 @@ public class Meal{
 	private long foodID;
 	private Timestamp time;
 
-	public long getUserID() {
+	public String getUserID() {
 		return userID;
 	}
 
@@ -28,7 +28,7 @@ public class Meal{
 		return time;
 	}
 
-	public void setUserID(long id) {
+	public void setUserID(String id) {
 		userID = id;
 	}
 
