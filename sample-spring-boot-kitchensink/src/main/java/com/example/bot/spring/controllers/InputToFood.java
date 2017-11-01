@@ -28,9 +28,11 @@ public class InputToFood {
     		Set<String> names = new HashSet<String>();
         	int j=0;
         	for(Food fd : foodRepository.findAll()) {
-        		System.out.println("THIS: "+ fd.getName().toLowerCase());
-        		System.out.println("this: "+ fd.getName().substring(0,fd.getName().indexOf(",")).toLowerCase());
-        		if(menu[i].toLowerCase().contains(fd.getName().substring(0,fd.getName().indexOf(",")).toLowerCase())) { 
+        		String fdName = fd.getName().toLowerCase();
+        		if(fdName.contains(",")) {
+        			fdName = fdName.substring(0,fdName.indexOf(","));
+        		}
+        		if(menu[i].toLowerCase().contains(fdName)) { 
     	        	names.add(fd.getName());
        		    	j++;
    		        }   
@@ -77,7 +79,11 @@ public class InputToFood {
     		String resultFood = "You have entered " + food + "\n";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
     		    public void accept(Food fd) {
-    		        if(fd.getName().substring(0,fd.getName().indexOf(",")).equalsIgnoreCase(food)) { 
+    		    	String fdName = fd.getName().toLowerCase();
+            		if(fdName.contains(",")) {
+            			fdName = fdName.substring(0,fdName.indexOf(","));
+            		}
+    		        if(fdName.equalsIgnoreCase(food)) { 
     		        		resultFood.concat(fd.getDetails() + "\n");
     		        }
     		    }
