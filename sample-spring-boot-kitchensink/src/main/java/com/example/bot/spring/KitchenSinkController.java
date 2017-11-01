@@ -316,7 +316,12 @@ public class KitchenSinkController {
             while ((line = bufferedReader.readLine()) != null) {
                 System.out.println(line);
 
-                String[] foodData = line.split("^");
+                String[] foodData = line.split("\\^");
+        		for (int i = 2; i < foodData.length; i++) {
+        			if (foodData[i].equals("")) {
+        				foodData[i] = "-1";
+        			}
+        		}
                 String foodName = foodData[0];
                 String category = foodData[1];
                 double calories = Double.parseDouble(foodData[2]);
