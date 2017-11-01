@@ -2,6 +2,8 @@ package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
 import com.example.bot.spring.tables.*;
 
+import sun.java2d.cmm.Profile;
+
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,22 +17,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class User {
 	@Autowired
 	private ProfileRepository profileRepository;
-	private Profile profile;
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
-		profileRepository.findAll().forEach(new Consumer<Profile>() {
-		    public void accept(Profile pf) {
-		        if(pf.getUserID().equals(id)) { 
-		        		profile = pf;
-		        }
-		    }
-		});
-//		if (profile ==null) {
-//			Profile pf = new Profile(id);
-//			profileRepository.save(pf);
-//			profile = pf;
-//		}
+		boolean userFound = false;
+		for(Profile pf : profileRepository.findAll()) {
+			if(pf.getUserID().equals(id)) { 
+	        		userFound = true;
+	        }
+		}
+		if (!userFound) {
+			Profile pf = new Profile();
+			pf.setUserID(id);
+			profileRepository.save(pf);
+		}
 	}
 	
 	public void setInterests(String[] Categories) {
