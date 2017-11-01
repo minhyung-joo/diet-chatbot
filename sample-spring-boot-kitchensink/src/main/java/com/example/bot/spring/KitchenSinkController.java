@@ -95,7 +95,10 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
-
+	
+	@Autowired
+	private InputToFood i;
+	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -296,7 +299,6 @@ public class KitchenSinkController {
 	private String handleMenu (String text) {
 		String result = "";
 		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
-        InputToFood i = new InputToFood();
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "text": {

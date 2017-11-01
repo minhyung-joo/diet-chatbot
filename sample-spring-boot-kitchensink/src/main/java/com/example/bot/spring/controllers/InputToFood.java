@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.google.common.collect.*;
 
 @Controller
 @RequestMapping(path="/input")
@@ -20,19 +19,18 @@ public class InputToFood {
 		
 	}
 	
+	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String text) {
-    	String[] menu = text.split(System.getProperty("line.separator"));
+		String[] menu = text.split(System.getProperty("line.separator"));
     	String[][] result = new String[menu.length][50];
     	for(int i=0;i<menu.length;i++) {
         	int j=0;
-        	if(Iterables.size(foodRepository.findAll())!=0) {
-        		for(Food fd : foodRepository.findAll()) {
-        			if(menu[i].contains(fd.getName())) { 
-    		        	result[i][j] = fd.getName();
-        		    	j++;
-    		        }   
-        		}
-        	}		 
+        	for(Food fd : foodRepository.findAll()) {
+        		if(menu[i].contains(fd.getName())) { 
+    	        	result[i][j] = fd.getName();
+       		    	j++;
+   		        }   
+       		}	 
     	}
     	String resultText = "";
     	for(int i=0;i<menu.length;i++) {
@@ -53,6 +51,7 @@ public class InputToFood {
     	return "";
     }
     
+    @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
