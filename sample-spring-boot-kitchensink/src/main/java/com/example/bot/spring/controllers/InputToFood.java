@@ -3,10 +3,6 @@ import com.example.bot.spring.tables.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller    // This means that this class is a Controller
 public class InputToFood {
@@ -16,7 +12,7 @@ public class InputToFood {
 	public InputToFood() {
 		
 	}
-	
+
     public String readFromText(String text) {
     	return text;
     }
@@ -33,7 +29,7 @@ public class InputToFood {
     		String resultFood = "";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
     		    public void accept(Food fd) {
-    		        if(fd.getName().equals(food)) { 
+    		        if (fd.getName().equals(food) && resultFood.length() == 0) {
     		        		resultFood.concat(fd.getDetails());
     		        }
     		    }

@@ -210,7 +210,7 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
 	
 	public Categories categories = null;
@@ -244,6 +244,10 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMenu(text));
 		    			handleTextContent(replyToken, event, content);
 		    			break;
+		    		case INIT:
+		    			DatabaseInitializer.initializeDatabase();
+		    			this.replyText(replyToken, "Database initialized.");
+		    			break;
 			}
 		}		
     }
@@ -275,7 +279,11 @@ public class KitchenSinkController {
 		    				+ "JPEG";
 		    			break;
 		    		}
-    		
+		    		case "initdb": {
+		    			categories = Categories.INIT;
+		    			result = "Initializing...";
+		    			break;
+		    		}
 			}
 		}
 		else {

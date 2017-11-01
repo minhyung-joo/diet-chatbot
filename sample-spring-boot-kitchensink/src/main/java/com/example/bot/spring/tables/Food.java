@@ -12,14 +12,13 @@ public class Food {
 	long foodID;
 	String name;
 	String category;
-	int calories;
-	int sodium;
-	int saturatedFat;
-	int protein;
-	int carbohydrate;
+	double calories;
+	double sodium;
+	double saturatedFat;
+	double protein;
+	double carbohydrate;
 
-	public Food(long id, String name, String cat, int cal, int sod, int fat, int protein, int carb) {
-		foodID = id;
+	public Food(String name, String cat, double cal, double sod, double fat, double protein, double carb) {
 		this.name = name;
 		this.category = cat;
 		this.calories = cal;
@@ -41,23 +40,23 @@ public class Food {
 		return category;
 	}
 
-	public int getCalories() {
+	public double getCalories() {
 		return calories;
 	}
 
-	public int getSodium() {
+	public double getSodium() {
 		return sodium;
 	}
 
-	public int getSaturatedFat() {
+	public double getSaturatedFat() {
 		return saturatedFat;
 	}
 
-	public int getProtein() {
+	public double getProtein() {
 		return protein;
 	}
 
-	public int getCarbohydrate() {
+	public double getCarbohydrate() {
 		return carbohydrate;
 	}
 	
