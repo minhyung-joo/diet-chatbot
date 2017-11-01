@@ -454,6 +454,9 @@ public class KitchenSinkController {
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
+    		default:
+    			result = "I don't understand";
+    			break;
 			}
 		}
 		return result;
