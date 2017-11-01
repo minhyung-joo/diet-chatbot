@@ -28,7 +28,7 @@ public class Weight {
 		return time;
 	}
 	
-	public void setUserID(long id) {
+	public void setUserID(String id) {
 		userID = id;
 	}
 	

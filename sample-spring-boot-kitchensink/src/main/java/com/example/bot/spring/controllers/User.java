@@ -16,6 +16,10 @@ public class User {
 	@Autowired
 	private ProfileRepository profileRepository;
 	
+	@Autowired
+	private WeightRepository weightRepository;
+
+	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
 		boolean userFound = false;
@@ -35,9 +39,32 @@ public class User {
 		
 	}
 	
-	public void inputWeight(int weight) {
+	@GetMapping(path="/inputweight")
+	public @ResponseBody void inputWeight (@RequestParam String id, @RequestParam Double weight) {		
+		Weight wt = new Weight();
+		wt.setUserID(id);
+		wt.setTime();
+		wt.setWeight(weight);
+		weightRepository.save(wt);
 		
 	}
+	
+	@GetMapping(path="/getWeights")
+	public @ResponseBody void inputWeight (@RequestParam String id) {		
+		boolean weightFound = false;
+		String outputStr = "";
+		for(Weight wt : weightRepository.findAll()) {
+			if(wt.getUserID().equals(id)) { 
+	        		weightFound = true;
+	        		outputStr += "This is your weight" + wt.getWeight() + "\n";
+	        }
+		}
+		if (!weightFound) {
+			outputStr += "You did not log any weight";
+		}
+		
+	}
+
 	
 	public void inputMeal(String food) {
 		
