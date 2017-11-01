@@ -226,7 +226,8 @@ public class KitchenSinkController {
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
             String userId = event.getSource().getUserId();			
-            user = new User(userId);
+            user = new User();
+            user.addUser(userId);
             this.replyText(replyToken, "Hello! These are the features that we provide:\n"
                     + "Profile - set interests, record weight...\n"
                     + "Food - ...\n"
