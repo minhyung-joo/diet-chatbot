@@ -58,8 +58,8 @@ public class InputToFood {
     		String resultFood = "";
     		foodRepository.findAll().forEach(new Consumer<Food>() {
     		    public void accept(Food fd) {
-    		        if(fd.getName().equals(food)) { 
-    		        		resultFood.concat(fd.getDetails());
+    		        if(fd.getName().equalsIgnoreCase(food)) { 
+    		        		resultFood.concat(fd.getDetails() + "\n");
     		        }
     		    }
     		});
