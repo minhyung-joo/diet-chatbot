@@ -36,11 +36,11 @@ public class InputToFood {
     	for(int i=0;i<menu.length;i++) {
     		resultText += i+". ";
     		for(int j=0;j<result[i].length;j++) {
-    			
+    			resultText += j + ", ";
     		}
     		resultText += "/n";
     	}
-    	return text;
+    	return resultText;
     }
 
     public String readFromJSON(String url) {

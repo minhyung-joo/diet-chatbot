@@ -215,10 +215,13 @@ public class KitchenSinkController {
 
 	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	public enum Menu {TEXT, URL, JPEG}
 	
 	public Categories categories = null;
 	
 	public Profile profile = null;
+	
+	public Menu menu = null;
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
@@ -298,28 +301,46 @@ public class KitchenSinkController {
 	
 	private String handleMenu (String text) {
 		String result = "";
-		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
-		if (m.find()) {
-			switch (m.group().toLowerCase()) {
-		    		case "text": {
-                        result =  i.readFromText(text);
-		    			categories = null;
-		    			break;
-		    		}
-		    		case "url": {
-		    			categories = null;
-		    			break;
-		    		}
-		    		case "jpeg": {
-		    			categories = null;
-		    			break;
-		    		}
+		if(menu == null) {
+			Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
+			if (m.find()) {
+				switch (m.group().toLowerCase()) {
+			    		case "text": {
+	                        menu = Menu.TEXT;
+			    			break;
+			    		}
+			    		case "url": {
+			    			menu = Menu.URL;
+			    			break;
+			    		}
+			    		case "jpeg": {
+			    			menu = Menu.JPEG;
+			    			break;
+			    		}
+				}
+				result = "OK! Show me the menu now!";
+			}
+			else {
+				result = "I don't understand";
 			}
 		}
 		else {
-			result = "I don't understand";
+			switch (menu) {
+    		case TEXT:
+                result =  i.readFromText(text);
+                menu = null;
+    			categories = null;
+    			break;
+    		case URL:
+    			menu = null;
+    			categories = null;
+    			break;
+    		case JPEG:
+    			menu = null;
+    			categories = null;
+    			break;
+			}
 		}
-
 		return result;
 			
 	}
