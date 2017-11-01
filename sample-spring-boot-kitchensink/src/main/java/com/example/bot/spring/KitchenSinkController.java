@@ -264,32 +264,32 @@ public class KitchenSinkController {
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
-		    		case "profile": {
-		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
-		                     + "Set interest\n"
-		                     + "Input you weight\n"
-		                     + "Request profile";
-		    			break;
-		    		}
-		    		case "food": {
-		    			categories = Categories.FOOD;
-	    				result = "Under food, these are the features that we provide:\n";
-		    			break;
-		    		}
-		    		case "menu": {
-		    			categories = Categories.MENU;
-		    			result = "You may input the menu in the following three ways:\n"
-		    				+ "Text\n"
-		    				+ "URL\n"
-		    				+ "JPEG";
-		    			break;
-		    		}
-		    		case "initdb": {
-		    			categories = Categories.INIT;
-		    			result = "Initializing...";
-		    			break;
-		    		}
+	    		case "profile": {
+	    			categories = Categories.PROFILE;
+	    			result = "Under profile, these are the features that we provide:\n"
+	                     + "Set interest\n"
+	                     + "Input you weight\n"
+	                     + "Request profile";
+	    			break;
+	    		}
+	    		case "food": {
+	    			categories = Categories.FOOD;
+    				result = "Under food, these are the features that we provide:\n";
+	    			break;
+	    		}
+	    		case "menu": {
+	    			categories = Categories.MENU;
+	    			result = "You may input the menu in the following three ways:\n"
+	    				+ "Text\n"
+	    				+ "URL\n"
+	    				+ "JPEG";
+	    			break;
+	    		}
+	    		case "initdb": {
+	    			categories = Categories.INIT;
+	    			result = "Initializing...";
+	    			break;
+	    		}
 			}
 		}
 		else {
