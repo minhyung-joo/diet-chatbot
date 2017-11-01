@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -95,7 +95,10 @@ public class KitchenSinkController {
 
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
-
+	
+	@Autowired
+	private InputToFood i;
+	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -212,27 +215,30 @@ public class KitchenSinkController {
 
 	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	public enum Menu {TEXT, URL, JPEG}
 	
 	public Categories categories = null;
 	
 	public Profile profile = null;
 	
 	private User user;
+	public Menu menu = null;
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
 		String text = content.getText();
+		String showMainMenu = "Hello! These are the features that we provide:\n"
+                + "Profile - set interests, record weight...\n"
+                + "Food - get food details\n"
+				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
+		Message mainMenuMessage = new TextMessage(showMainMenu);
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-            String userId = event.getSource().getUserId();			
             user = new User();
             user.addUser(userId);
-            System.out.println("debugging" + userId);
-            this.replyText(replyToken, "Hello! These are the features that we provide:\n"
-                    + "Profile - set interests, record weight...\n"
-                    + "Food - ...\n"
-					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
+            
+			this.replyText(replyToken, showMainMenu);
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -247,8 +253,13 @@ public class KitchenSinkController {
 		    			handleFood(text);
 		    			break;
 		    		case MENU:
-		    			this.replyText(replyToken, handleMenu(text));
-		    			handleTextContent(replyToken, event, content);
+		    			Message response = new TextMessage(handleMenu(text));
+		    			List<Message> messages = new ArrayList<Message>();
+		    			messages.add(response);
+		    			if(categories==Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);		
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 			}
 		}		
@@ -264,13 +275,13 @@ public class KitchenSinkController {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
 		                     + "Set interest\n"
-		                     + "Input you weight\n"
+		                     + "Input your weight\n"
 		                     + "Request profile";
 		    			break;
 		    		}
 		    		case "food": {
 		    			categories = Categories.FOOD;
-	    				result = "Under food, these are the features that we provide:\n";
+	    				result = "Type in the food name you would like to know about:\n";
 		    			break;
 		    		}
 		    		case "menu": {
@@ -295,35 +306,56 @@ public class KitchenSinkController {
 		
 	}
 	
-	private void handleFood (String text) {
-		
+	private String handleFood (String text) {
+		categories = null;
+		String result = "";
+        InputToFood i = new InputToFood();
+		result = i.getFoodDetails(text);
+		return result;
 	}
 	
 	private String handleMenu (String text) {
 		String result = "";
-		Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
-        InputToFood i = new InputToFood();
-		if (m.find()) {
-			switch (m.group()) {
-		    		case "text": {
-                        result =  "You should choose: " + i.readFromText(text);
-		    			categories = null;
-		    			break;
-		    		}
-		    		case "url": {
-		    			categories = null;
-		    			break;
-		    		}
-		    		case "jpeg": {
-		    			categories = null;
-		    			break;
-		    		}
+		if(menu == null) {
+			Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
+			if (m.find()) {
+				switch (m.group().toLowerCase()) {
+			    		case "text": {
+	                        menu = Menu.TEXT;
+			    			break;
+			    		}
+			    		case "url": {
+			    			menu = Menu.URL;
+			    			break;
+			    		}
+			    		case "jpeg": {
+			    			menu = Menu.JPEG;
+			    			break;
+			    		}
+				}
+				result = "OK! Show me the menu now!";
+			}
+			else {
+				result = "I don't understand";
 			}
 		}
 		else {
-			result = "I don't understand";
+			switch (menu) {
+    		case TEXT:
+                result =  i.readFromText(text);
+                menu = null;
+    			categories = Categories.MAIN_MENU;
+    			break;
+    		case URL:
+    			menu = null;
+    			categories = Categories.MAIN_MENU;
+    			break;
+    		case JPEG:
+    			menu = null;
+    			categories = Categories.MAIN_MENU;
+    			break;
+			}
 		}
-
 		return result;
 			
 	}
