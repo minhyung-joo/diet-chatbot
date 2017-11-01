@@ -12,17 +12,11 @@ public class Weight {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
-	long userID;
+	String userID;
 	private double weight;
 	private Timestamp time;
 	
-	public Weight(long id, double w) {
-		userID = id;
-		weight = w;
-		time = new Timestamp(System.currentTimeMillis());
-	}
-	
-	public long getUserID() {
+	public String getUserID() {
 		return userID;
 	}
 	
@@ -34,11 +28,15 @@ public class Weight {
 		return time;
 	}
 	
-	public void setUserID(long id) {
+	public void setUserID(String id) {
 		userID = id;
 	}
 	
 	public void setWeight(double w) {
 		weight = w;
 	}
+	public void setTime() {
+		time = new Timestamp(System.currentTimeMillis());
+	}
+	
 }
