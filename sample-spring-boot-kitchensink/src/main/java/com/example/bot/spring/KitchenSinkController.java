@@ -228,6 +228,7 @@ public class KitchenSinkController {
             String userId = event.getSource().getUserId();			
             user = new User();
             user.addUser(userId);
+            System.out.println("debugging" + userId);
             this.replyText(replyToken, "Hello! These are the features that we provide:\n"
                     + "Profile - set interests, record weight...\n"
                     + "Food - ...\n"
