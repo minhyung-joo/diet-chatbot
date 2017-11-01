@@ -82,8 +82,11 @@ public class InputToFood {
             	if(fdName.contains(",")) {
             		fdName = fdName.substring(0,fdName.indexOf(","));
             	}
+            	System.out.println("THIS:" + fdName);
     		    if(fdName.equalsIgnoreCase(food)) { 
-    	     		resultFood.concat("Here are the details for " + fdName + "\n" + fd.getDetails());
+    		    	System.out.println("I'm HERE");
+    		    	resultFood += "Here are the details for " + food + "\n" + fd.getDetails();
+    		    	break;
     		    }
     		}
     		
