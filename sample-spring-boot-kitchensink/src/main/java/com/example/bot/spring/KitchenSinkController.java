@@ -237,10 +237,12 @@ public class KitchenSinkController {
 		
 		String text = content.getText();
 		String showMainMenu = "Hello! These are the features that we provide:\n"
-                + "Profile - set interests, record weight...\n"
-                + "Food - get food details\n"
+                + "Profile - Set your interests on food, Record your weight...\n"
+                + "Food - Get the details of a food\n"
 				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
+		Message response;
+		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
@@ -254,14 +256,23 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			this.replyText(replyToken, handleProfile(text, event));
+		    			response = new TextMessage(handleProfile(text, event));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case FOOD:
-		    			this.replyText(replyToken, handleFood(text));		    			
+		    			response = new TextMessage(handleFood(text));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);	    			
 		    			break;
 		    		case MENU:
-		    			Message response = new TextMessage(handleMenu(text));
-		    			List<Message> messages = new ArrayList<Message>();
+		    			response = new TextMessage(handleMenu(text));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
@@ -285,14 +296,14 @@ public class KitchenSinkController {
 	    		case "profile": {
 	    			categories = Categories.PROFILE;
 	    			result = "Under profile, these are the features that we provide:\n"
-	                     + "Set interest\n"
-	                     + "Input you weight\n"
-	                     + "Request profile";
+	                     + "Interests - Set your interests of Food\n"
+	                     + "Input - Record your weight\n"
+	                     + "Profile - View your profile";
 	    			break;
 	    		}
 	    		case "food": {
 	    			categories = Categories.FOOD;
-    				result = "Under food, these are the features that we provide:\n";
+    				result = "Enter a food name and I will provide you with the details!";
 	    			break;
 	    		}
 	    		case "menu": {
@@ -361,7 +372,7 @@ public class KitchenSinkController {
 	}
 	
 	private String handleFood (String text) {
-		categories = null;
+		categories = Categories.MAIN_MENU;
 		String result = "";
 		result = i.getFoodDetails(text);
 		return result;
@@ -389,7 +400,14 @@ public class KitchenSinkController {
                 double fat = Double.parseDouble(foodData[4]);
                 double protein = Double.parseDouble(foodData[5]);
                 double carbohydrate = Double.parseDouble(foodData[6]);
-                Food food = new Food(foodName, category, calories, sodium, fat, protein, carbohydrate);
+                Food food = new Food();
+                food.setName(foodName);
+                food.setCategory(category);
+                food.setCalories(calories);
+                food.setSodium(sodium);
+                food.setSaturatedFat(fat);
+                food.setProtein(protein);
+                food.setCarbohydrate(carbohydrate);
                 foodRepository.save(food);
             }
             bufferedReader.close();
@@ -440,6 +458,9 @@ public class KitchenSinkController {
     		case JPEG:
     			menu = null;
     			categories = Categories.MAIN_MENU;
+    			break;
+    		default:
+    			result = "I don't understand";
     			break;
 			}
 		}

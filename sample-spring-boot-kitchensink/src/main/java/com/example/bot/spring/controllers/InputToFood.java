@@ -28,8 +28,12 @@ public class InputToFood {
     		Set<String> names = new HashSet<String>();
         	int j=0;
         	for(Food fd : foodRepository.findAll()) {
-        		if(menu[i].contains(fd.getName())) { 
-    	        	names.add(fd.getName());
+        		String fdName = fd.getName().toLowerCase();
+        		if(fdName.contains(",")) {
+        			fdName = fdName.substring(0,fdName.indexOf(","));
+        		}
+        		if(menu[i].toLowerCase().contains(fdName)) { 
+    	        	names.add(fdName);
        		    	j++;
    		        }   
        		}
@@ -73,13 +77,18 @@ public class InputToFood {
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "You have entered " + food + "\n";
-    		foodRepository.findAll().forEach(new Consumer<Food>() {
-    		    public void accept(Food fd) {
-    		        if(fd.getName().equalsIgnoreCase(food)) { 
-    		        		resultFood.concat(fd.getDetails() + "\n");
-    		        }
+    		for(Food fd : foodRepository.findAll()) {
+    		    String fdName = fd.getName().toLowerCase();
+            	if(fdName.contains(",")) {
+            		fdName = fdName.substring(0,fdName.indexOf(","));
+            	}
+            	System.out.println("THIS:" + fdName);
+    		    if(fdName.equalsIgnoreCase(food)) { 
+    		    	System.out.println("I'm HERE");
+    		    	resultFood += "Here are the details for " + food + "\n" + fd.getDetails();
+    		    	break;
     		    }
-    		});
+    		}
     		
     		return resultFood;
     }

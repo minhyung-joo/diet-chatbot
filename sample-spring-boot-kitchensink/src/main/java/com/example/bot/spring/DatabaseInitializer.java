@@ -28,7 +28,14 @@ public class DatabaseInitializer {
                 double fat = Double.parseDouble(foodData[4]);
                 double protein = Double.parseDouble(foodData[5]);
                 double carbohydrate = Double.parseDouble(foodData[6]);
-                Food food = new Food(foodName, category, calories, sodium, fat, protein, carbohydrate);
+                Food food = new Food();
+                food.setName(foodName);
+                food.setCategory(category);
+                food.setCalories(calories);
+                food.setSodium(sodium);
+                food.setSaturatedFat(fat);
+                food.setProtein(protein);
+                food.setCarbohydrate(carbohydrate);
                 foodRepository.save(food);
             }
             bufferedReader.close();
