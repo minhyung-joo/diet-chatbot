@@ -18,16 +18,6 @@ public class Food {
 	double protein;
 	double carbohydrate;
 
-	public Food(String name, String cat, double cal, double sod, double fat, double protein, double carb) {
-		this.name = name;
-		this.category = cat;
-		this.calories = cal;
-		this.sodium = sod;
-		this.saturatedFat = fat;
-		this.protein = protein;
-		this.carbohydrate = carb;
-	}
-
 	public long foodID() {
 		return foodID;
 	}
