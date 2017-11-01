@@ -51,14 +51,14 @@ public class InputToFood {
     
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
-    		String resultFood = "You have entered" + food + "\n";
-//    		foodRepository.findAll().forEach(new Consumer<Food>() {
-//    		    public void accept(Food fd) {
-//    		        if(fd.getName().equalsIgnoreCase(food)) { 
-//    		        		resultFood.concat(fd.getDetails() + "\n");
-//    		        }
-//    		    }
-//    		});
+    		String resultFood = "You have entered " + food + "\n";
+    		foodRepository.findAll().forEach(new Consumer<Food>() {
+    		    public void accept(Food fd) {
+    		        if(fd.getName().equalsIgnoreCase(food)) { 
+    		        		resultFood.concat(fd.getDetails() + "\n");
+    		        }
+    		    }
+    		});
     		
     		return resultFood;
     }
