@@ -63,61 +63,6 @@ public class KitchenSinkTester {
 	}
 	
 	@Test
-	public void testFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("ping");			
-		} catch (Exception e) {
-			System.out.println(e);
-			thrown = true;
-		}
-		System.out.println(result);
-		assertThat(thrown).isEqualTo(false);
-		//assertThat(result).isEqualTo("pong");
-	}
-	
-	@Test
-	public void testMultipleFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("ping tapping");
-		} catch (Exception e) {
-			System.out.println(e);
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		//assertThat(result).isEqualTo("pong");
-	}
-	
-	@Test
-	public void testNestedFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("tapping");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(thrown).isEqualTo(false);
-		//assertThat(result).isEqualTo("tap tap");
-	}
-	
-	@Test
-	public void testPartialFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("pinghey");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("def");
-	}
-	
-	@Test
 	public void testFound2() throws Exception {
 		boolean thrown = false;
 		String result = null;
@@ -128,18 +73,5 @@ public class KitchenSinkTester {
 		}
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Great!");
-	}
-	
-	@Test
-	public void testPartialFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("Do you know what comes after abc?");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("def");
 	}
 }

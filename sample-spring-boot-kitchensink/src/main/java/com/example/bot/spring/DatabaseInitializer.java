@@ -1,21 +1,22 @@
 package com.example.bot.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import com.example.bot.spring.tables.Food;
-import org.hibernate.Session;
+import com.example.bot.spring.tables.FoodRepository;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class DatabaseInitializer {
+	@Autowired
+	private static FoodRepository foodRepository;
+	
     public static void initializeDatabase() {
         try {
             String fileName = "FOOD_DATA.txt";
             String line = null;
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            Session session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-
             while ((line = bufferedReader.readLine()) != null) {
                 System.out.println(line);
 
@@ -28,9 +29,8 @@ public class DatabaseInitializer {
                 double protein = Double.parseDouble(foodData[5]);
                 double carbohydrate = Double.parseDouble(foodData[6]);
                 Food food = new Food(foodName, category, calories, sodium, fat, protein, carbohydrate);
-                session.save(food);
+                foodRepository.save(food);
             }
-            session.getTransaction().commit();
             bufferedReader.close();
         } catch (Exception e) {
             e.printStackTrace();
