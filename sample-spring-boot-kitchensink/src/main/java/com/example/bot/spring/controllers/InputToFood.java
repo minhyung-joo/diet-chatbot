@@ -1,9 +1,18 @@
 package com.example.bot.spring.controllers;
 import com.example.bot.spring.tables.*;
+
 import java.util.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
+import com.example.bot.spring.models.MenuList;
+import com.example.bot.spring.models.Menu;
+
 
 @Controller
 @RequestMapping(path="/input")
@@ -38,6 +47,14 @@ public class InputToFood {
     }
 
     public String readFromJSON(String url) {
+    	RestTemplate restTemplate = new RestTemplate();
+    	MenuList menuList = restTemplate.getForObject(url, MenuList.class);
+    	List<Menu> menus = menuList.getMenus();
+    	for(Menu menu : menus) {
+    		String foodName = menu.getName();
+    		System.out.println(foodName);
+    	}
+    	
     	return "";
     }
 
