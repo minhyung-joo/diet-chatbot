@@ -1,5 +1,6 @@
 package com.example.bot.spring.controllers;
 import com.example.bot.spring.tables.*;
+import java.util.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,18 @@ public class InputToFood {
 	}
 	
     public String readFromText(String text) {
+    	String[] menu = text.split(System.getProperty("line.separator"));
+    	String[][] result = new String[menu.length][50];
+    	for(int i=0;i<menu.length;i++) {
+        	int j=0;
+    		for(Food fd : foodRepository.findAll()) {
+    			if(menu[i].contains(fd.getName())) { 
+		        	result[i][j] = fd.getName();
+    		    	j++;
+		        }   
+    		}
+    			 
+    	}
     	return text;
     }
 
@@ -40,5 +53,6 @@ public class InputToFood {
     		});
     		
     		return resultFood;
-    	}
+    }
+    
 }

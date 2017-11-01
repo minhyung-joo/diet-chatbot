@@ -299,7 +299,7 @@ public class KitchenSinkController {
 		if (m.find()) {
 			switch (m.group()) {
 		    		case "text": {
-                        result =  "You should choose: " + i.readFromText(text);
+                        result =  i.readFromText(text);
 		    			categories = null;
 		    			break;
 		    		}
