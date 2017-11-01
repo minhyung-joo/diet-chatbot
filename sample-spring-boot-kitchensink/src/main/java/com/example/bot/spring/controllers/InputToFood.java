@@ -28,8 +28,9 @@ public class InputToFood {
     		Set<String> names = new HashSet<String>();
         	int j=0;
         	for(Food fd : foodRepository.findAll()) {
-        		String fdName = fd.getName().toLowerCase();
-        		if(menu[i].toLowerCase().contains(fdName.substring(0,fdName.indexOf(",")))) { 
+        		System.out.println("THIS: "+ fd.getName().toLowerCase());
+        		System.out.println("this: "+ fd.getName().substring(0,fd.getName().indexOf(",")).toLowerCase()));
+        		if(menu[i].toLowerCase().contains(fd.getName().substring(0,fd.getName().indexOf(",")).toLowerCase())) { 
     	        	names.add(fd.getName());
        		    	j++;
    		        }   
