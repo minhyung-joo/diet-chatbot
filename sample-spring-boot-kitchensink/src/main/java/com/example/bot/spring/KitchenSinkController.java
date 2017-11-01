@@ -248,7 +248,7 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			handleProfile(text);
+		    			this.replyText(replyToken, handleProfile(text, event));
 		    			break;
 		    		case FOOD:
 		    			this.replyText(replyToken, handleFood(text));
@@ -269,7 +269,6 @@ public class KitchenSinkController {
 	private String handleMainMenu (String text) {
 		String result = "";
 		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
-		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
@@ -303,8 +302,47 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-	private void handleProfile (String text) {
-		
+//		public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	private String handleProfile (String text, Event event) {
+		String result = "";
+		if (profile == null) {
+			Matcher m = Pattern.compile("input|profile", Pattern.CASE_INSENSITIVE).matcher(text);
+			if (m.find()) {
+				switch (m.group().toLowerCase()) {
+			    		case "input": {
+			    			profile = Profile.INPUT_WEIGHT;
+			    			result = "Please input your current weight in kgs";
+			    			break;
+			    		}
+			    		case "profile": {
+			    			profile = Profile.REQUEST_PROFILE;
+			    			result = "Which one would you like to display? Weight or meals?";
+			    			break;
+			    		}
+				}
+			}
+			else {
+				result = "I don't understand";
+			}
+		}
+		else {
+			switch (profile) {
+		    		case INPUT_WEIGHT:
+		    			//need to solve bug of user inputting NaN
+		    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			result = "Input successful";
+		    			profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+		    		case REQUEST_PROFILE:
+		    			result = user.outputWeight(""+event.getSource().getUserId());
+		    			profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+			}
+		}
+		return result;
+
 	}
 	
 	private String handleFood (String text) {
