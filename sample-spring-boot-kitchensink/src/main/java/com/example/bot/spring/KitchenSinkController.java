@@ -231,6 +231,7 @@ public class KitchenSinkController {
                 + "Profile - set interests, record weight...\n"
                 + "Food - ...\n"
 				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
+		Message mainMenuMessage = new TextMessage(showMainMenu);
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
 			this.replyText(replyToken, showMainMenu);
@@ -249,13 +250,12 @@ public class KitchenSinkController {
 		    			break;
 		    		case MENU:
 		    			Message response = new TextMessage(handleMenu(text));
-		    			Message response2 = new TextMessage(showMainMenu);
-		    			if(categories==null) {
-		    				List<Message> messages = new ArrayList<Message>();
-		    				messages.add(response);
-		    				messages.add(response2);
-		    				this.reply(replyToken, messages);
+		    			List<Message> messages = new ArrayList<Message>();
+		    			messages.add(response);
+		    			if(categories==Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);		
 		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 			}
 		}		
@@ -336,15 +336,15 @@ public class KitchenSinkController {
     		case TEXT:
                 result =  i.readFromText(text);
                 menu = null;
-    			categories = null;
+    			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
     			menu = null;
-    			categories = null;
+    			categories = Categories.MAIN_MENU;
     			break;
     		case JPEG:
     			menu = null;
-    			categories = null;
+    			categories = Categories.MAIN_MENU;
     			break;
 			}
 		}
