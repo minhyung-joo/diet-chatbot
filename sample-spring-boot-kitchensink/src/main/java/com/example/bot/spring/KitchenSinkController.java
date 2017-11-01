@@ -99,6 +99,9 @@ public class KitchenSinkController {
 	@Autowired
 	private InputToFood i;
 	
+	@Autowired
+	private User user;
+	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -234,6 +237,8 @@ public class KitchenSinkController {
 		Message mainMenuMessage = new TextMessage(showMainMenu);
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
+            user.addUser(""+ event.getSource().getUserId());
+            
 			this.replyText(replyToken, showMainMenu);
 			categories = Categories.MAIN_MENU;
 		}
