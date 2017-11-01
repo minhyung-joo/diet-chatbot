@@ -225,7 +225,7 @@ public class KitchenSinkController {
 		if (categories == null) {
 			this.replyText(replyToken, "Hello! These are the features that we provide:\n"
                     + "Profile - set interests, record weight...\n"
-                    + "Food - ...\n"
+                    + "Food - get food details\n"
 					+ "Menu - Input menu and let me pick a food for you to eat this meal!");
 			categories = Categories.MAIN_MENU;
 		}
@@ -258,13 +258,13 @@ public class KitchenSinkController {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
 		                     + "Set interest\n"
-		                     + "Input you weight\n"
+		                     + "Input your weight\n"
 		                     + "Request profile";
 		    			break;
 		    		}
 		    		case "food": {
 		    			categories = Categories.FOOD;
-	    				result = "Under food, these are the features that we provide:\n";
+	    				result = "Type in the food name you would like to know about:\n";
 		    			break;
 		    		}
 		    		case "menu": {
@@ -289,8 +289,11 @@ public class KitchenSinkController {
 		
 	}
 	
-	private void handleFood (String text) {
-		
+	private String handleFood (String text) {
+		String result = "";
+        InputToFood i = new InputToFood();
+		result = i.getFoodDetails(text);
+		return result;
 	}
 	
 	private String handleMenu (String text) {
