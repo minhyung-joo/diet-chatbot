@@ -48,10 +48,9 @@ public class InputToFood {
 
     public String readFromJSON(String url) {
     	RestTemplate restTemplate = new RestTemplate();
-    	MenuList menuList = restTemplate.getForObject(url, MenuList.class);
-    	List<Menu> menus = menuList.getMenus();
+    	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
     	StringBuilder builder = new StringBuilder();
-    	for (Menu menu : menus) {
+    	for (Menu menu : menuList) {
     		String[] ingredients = menu.getIngredients();
     		builder.append("Ingredients: ");
     		for (String ingredient : ingredients) {
