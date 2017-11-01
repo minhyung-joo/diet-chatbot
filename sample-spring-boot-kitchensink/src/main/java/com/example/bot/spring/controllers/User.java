@@ -61,8 +61,8 @@ public class User {
 	        		
 	        		Date date = new Date();
 	        		date.setTime(wt.getTime().getTime());
-	        		String formattedDate = new SimpleDateFormat("yyyyMMdd").format(date);
-	        		outputStr += "This is your weight at" + formattedDate + " is " + wt.getWeight() + "\n";
+	        		String formattedDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(date);
+	        		outputStr += "This is your weight at " + formattedDate + " is " + wt.getWeight() + "\n";
 	        }
 		}
 		if (!weightFound) {
