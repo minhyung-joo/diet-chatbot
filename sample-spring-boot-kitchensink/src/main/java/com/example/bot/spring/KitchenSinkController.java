@@ -237,10 +237,12 @@ public class KitchenSinkController {
 		
 		String text = content.getText();
 		String showMainMenu = "Hello! These are the features that we provide:\n"
-                + "Profile - set interests, record weight...\n"
-                + "Food - get food details\n"
+                + "Profile - Set your interests on food, Record your weight...\n"
+                + "Food - Get the details of a food\n"
 				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
+		Message response;
+		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
@@ -257,11 +259,15 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleProfile(text, event));
 		    			break;
 		    		case FOOD:
-		    			this.replyText(replyToken, handleFood(text));		    			
+		    			response = new TextMessage(handleFood(text));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);	    			
 		    			break;
 		    		case MENU:
-		    			Message response = new TextMessage(handleMenu(text));
-		    			List<Message> messages = new ArrayList<Message>();
+		    			response = new TextMessage(handleMenu(text));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
@@ -361,7 +367,7 @@ public class KitchenSinkController {
 	}
 	
 	private String handleFood (String text) {
-		categories = null;
+		categories = Categories.MAIN_MENU;
 		String result = "";
 		result = i.getFoodDetails(text);
 		return result;
