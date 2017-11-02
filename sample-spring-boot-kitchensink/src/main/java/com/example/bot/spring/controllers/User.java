@@ -1,6 +1,7 @@
 package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
 import java.util.Date;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 import com.example.bot.spring.tables.*;
 
@@ -64,7 +65,10 @@ public class User {
 	        		
 	        		Date date = new Date();
 	        		date.setTime(wt.getTime().getTime());
-	        		String formattedDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(date);
+	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hong_Kong"));
+	        		String formattedDate = simpleDateFormat.format(date);
+	        		
 	        		outputStr += "Your weight at " + formattedDate + " was " + wt.getWeight() + "\n";
 	        }
 		}
@@ -94,7 +98,9 @@ public class User {
 	        		
 	        		Date date = new Date();
 	        		date.setTime(ml.getTime().getTime());
-	        		String formattedDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(date);
+	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hong_Kong"));
+	        		String formattedDate = simpleDateFormat.format(date);
 	        		outputStr += "Your meal at " + formattedDate + " is " + ml.getFood() + "\n";
 	        }
 		}
