@@ -62,11 +62,12 @@ public class InputToFood {
         		builder.append(". ");
         		for (String ingredient : ingredients) {
         			builder.append(ingredient);
-        			builder.append(",");
+        			builder.append(", ");
         		}
         		counter++;
         		builder.append("\n");
         	}
+        	builder.deleteCharAt(builder.length() - 1);
         	
         	return builder.toString();
     	} catch (Exception e) {
