@@ -13,6 +13,7 @@ public class Meal{
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	String userID;
+	String food;
 	private long foodID;
 	private Timestamp time;
 
@@ -22,6 +23,9 @@ public class Meal{
 
 	public long getFoodID() {
 		return foodID;
+	}
+	public String getFood() {
+		return food;
 	}
 
 	public Timestamp getTime() {
@@ -34,6 +38,9 @@ public class Meal{
 
 	public void setFoodID(long id) {
 		foodID = id;
+	}
+	public void setFood(String fd) {
+		food = fd;
 	}
 	public void setTime() {
 		time = new Timestamp(System.currentTimeMillis());
