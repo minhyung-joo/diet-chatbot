@@ -18,16 +18,6 @@ public class Food {
 	double protein;
 	double carbohydrate;
 
-	public Food(String name, String cat, double cal, double sod, double fat, double protein, double carb) {
-		this.name = name;
-		this.category = cat;
-		this.calories = cal;
-		this.sodium = sod;
-		this.saturatedFat = fat;
-		this.protein = protein;
-		this.carbohydrate = carb;
-	}
-
 	public long foodID() {
 		return foodID;
 	}
@@ -35,34 +25,61 @@ public class Food {
 	public String getName() {
 		return name;
 	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getCategory() {
 		return category;
+	}
+	
+	public void setCategory(String cat) {
+		this.category = cat;
 	}
 
 	public double getCalories() {
 		return calories;
 	}
+	
+	public void setCalories(double cal) {
+		this.calories = cal;
+	}
 
 	public double getSodium() {
 		return sodium;
+	}
+	
+	public void setSodium(double sod) {
+		this.sodium = sod;
 	}
 
 	public double getSaturatedFat() {
 		return saturatedFat;
 	}
+	
+	public void setSaturatedFat(double fat) {
+		this.saturatedFat = fat;
+	}
 
 	public double getProtein() {
 		return protein;
+	}
+	
+	public void setProtein(double protein) {
+		this.protein = protein;
 	}
 
 	public double getCarbohydrate() {
 		return carbohydrate;
 	}
 	
+	public void setCarbohydrate(double carb) {
+		this.carbohydrate = carb;
+	}
+	
 	public String getDetails() {
 		String details =
-				"Here are the details for " + this.getName() + "\n" +
 				"Calories: " + getCalories() + "\n" +
 				"Sodium: " + getSodium() + "\n" +
 				"Saturated Fat: " + getSaturatedFat() + "\n" +
