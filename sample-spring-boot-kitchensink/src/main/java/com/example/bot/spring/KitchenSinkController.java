@@ -236,9 +236,9 @@ public class KitchenSinkController {
             throws Exception {
 		
 		String text = content.getText();
-		String showMainMenu = "Hello! These are the features that we provide:\n"
-                + "Profile - record weight, record meal,...\n"
-                + "Food - Get the details of a food\n"
+		String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
+                + "Profile - Record and view your weights and meals\n"
+                + "Food - Get nutritional details of a food\n"
                 + "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
 		Message response;
@@ -298,7 +298,7 @@ public class KitchenSinkController {
 		    			result = "Under profile, these are the features that we provide:\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
-		                     + "Profile - View your profile";
+		                     + "View - View your recorded profiles";
 		    			break;
 		    		}
 		    		case "food": {
@@ -337,7 +337,7 @@ public class KitchenSinkController {
 				switch (m.group().toLowerCase()) {
 			    		case "weight": {
 			    			profile = Profile.INPUT_WEIGHT;
-			    			result = "Please input your current weight in kgs";
+			    			result = "Tell me your current weight(kg)";
 			    			break;
 			    		}
 			    		case "meal": {
@@ -346,7 +346,7 @@ public class KitchenSinkController {
 			    			break;
 			    		}
 			    		
-			    		case "profile": {
+			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
 			    			result = "Would you like to display profile of your weight or meal?";
 			    			break;
@@ -369,14 +369,14 @@ public class KitchenSinkController {
 		    				return "Not a number. Please enter again";
 		    			}		    			
 		    			if (!nan) {
-			    			result = "Input successful";
+			    			result = "I successfully recorded your weight";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
 		    			}
 				    	break;
 		    		case INPUT_MEAL:
 		    			user.inputMeal(""+ event.getSource().getUserId(),text);
-		    			result = "Input successful";
+		    			result = "I successfully recorded your meal";
 		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;
