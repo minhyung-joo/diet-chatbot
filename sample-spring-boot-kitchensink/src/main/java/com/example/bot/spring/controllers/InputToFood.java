@@ -89,11 +89,13 @@ public class InputToFood {
 	            	if(fdName.contains(",")) {
 	            		fdName = fdName.substring(0,fdName.indexOf(","));
 	            	}
-	            	System.out.println("THIS:" + splitFood[i]);
-	    		    if(fdName.equalsIgnoreCase(splitFood[i])) { 
-	    		    	System.out.println("I'm HERE");
-	    		    	resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
-	    		    	break;
+	            	if(fdName.endsWith("s")) {
+	            		fdName = fdName.substring(0, fdName.length()-1);
+	            	}
+	            	
+	    		    if(splitFood[i].toLowerCase().contains(fdName)) { 
+	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
+	    		    		break;
 	    		    }
 	    		}
 	    	}
