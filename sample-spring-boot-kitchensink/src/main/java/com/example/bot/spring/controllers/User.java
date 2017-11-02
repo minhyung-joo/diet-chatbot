@@ -84,7 +84,7 @@ public class User {
 		mealRepository.save(ml);	
 	}
 	
-	@GetMapping(path="/getWeights")
+	@GetMapping(path="/getMeals")
 	public @ResponseBody String outputMeal (@RequestParam String id) {		
 		boolean mealFound = false;
 		String outputStr = "";
