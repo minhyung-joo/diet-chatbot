@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
-import com.example.bot.spring.models.MenuList;
 import com.example.bot.spring.models.Menu;
-
 
 @Controller
 @RequestMapping(path="/input")
