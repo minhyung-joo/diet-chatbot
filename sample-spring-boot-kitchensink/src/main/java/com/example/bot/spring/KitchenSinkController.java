@@ -334,16 +334,16 @@ public class KitchenSinkController {
 		else {
 			switch (profile) {
 		    		case INPUT_WEIGHT:
-		    			try {
+//		    			try {
 			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
-		    			} catch (NumberFormatException e) {
+//		    			} catch (NumberFormatException e) {
 		    			    //error
-		    				return "Not a number. Please enter again";
-		    			} finally {
+//		    				return "Not a number. Please enter again";
+//		    			} finally {
 			    			result = "Input successful";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
-		    			}
+//		    			}
 				    	break;
 		    		case INPUT_MEAL:
 		    			user.inputMeal(""+ event.getSource().getUserId(),text);
