@@ -65,8 +65,9 @@ public class User {
 	        		
 	        		Date date = new Date();
 	        		date.setTime(wt.getTime().getTime());
-	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hong_Kong"));
+	        		
+	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
+	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
 	        		String formattedDate = simpleDateFormat.format(date);
 	        		
 	        		outputStr += "Your weight at " + formattedDate + " was " + wt.getWeight() + "\n";
