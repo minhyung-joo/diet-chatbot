@@ -43,10 +43,9 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.DatabaseEngine;
-
+import com.example.bot.spring.SQLDatabaseEngine;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
 @SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
 public class KitchenSinkTester {
 	@Autowired
@@ -64,19 +63,6 @@ public class KitchenSinkTester {
 	}
 	
 	@Test
-	public void testFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("abc");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("def");
-	}
-	
-	@Test
 	public void testFound2() throws Exception {
 		boolean thrown = false;
 		String result = null;
@@ -87,18 +73,5 @@ public class KitchenSinkTester {
 		}
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result).contains("Great!");
-	}
-	
-	@Test
-	public void testPartialFound() throws Exception {
-		boolean thrown = false;
-		String result = null;
-		try {
-			result = this.databaseEngine.search("Do you know what comes after abc?");
-		} catch (Exception e) {
-			thrown = true;
-		}
-		assertThat(!thrown).isEqualTo(true);
-		assertThat(result).contains("def");
 	}
 }

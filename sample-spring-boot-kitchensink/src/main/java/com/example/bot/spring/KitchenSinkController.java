@@ -87,12 +87,18 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 
+import com.example.bot.spring.tables.Food;
+import com.example.bot.spring.tables.FoodRepository;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
+	@Autowired
+	private FoodRepository foodRepository;
 	
-
-
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 	
@@ -216,7 +222,7 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 	
@@ -232,9 +238,11 @@ public class KitchenSinkController {
 		String text = content.getText();
 		String showMainMenu = "Hello! These are the features that we provide:\n"
                 + "Profile - record weight, record meal,...\n"
-                + "Food - get food details\n"
-				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
+                + "Food - Get the details of a food\n"
+                + "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
+		Message response;
+		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
@@ -248,40 +256,54 @@ public class KitchenSinkController {
 		    			this.replyText(replyToken, handleMainMenu(text));
 		    			break;
 		    		case PROFILE:
-		    			this.replyText(replyToken, handleProfile(text, event));
-		    			break;
-		    		case FOOD:
-		    			this.replyText(replyToken, handleFood(text));
-		    			break;
-		    		case MENU:
-		    			Message response = new TextMessage(handleMenu(text));
-		    			List<Message> messages = new ArrayList<Message>();
+		    			response = new TextMessage(handleProfile(text, event));
 		    			messages.add(response);
-		    			if(categories==Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);		
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
+		    		case FOOD:
+		    			response = new TextMessage(handleFood(text));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);	    			
+		    			break;
+		    		case MENU:
+		    			response = new TextMessage(handleMenu(text));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
+		    			break;
+		    		case INIT:
+		    			this.handleInit();
+		    			this.replyText(replyToken, "Database initialized.");
+		    			break;
 			}
-		}		
+		}
     }
 	
 	private String handleMainMenu (String text) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb", Pattern.CASE_INSENSITIVE).matcher(text);
+		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Type these keywords to acces the features:\n"
-		                     + "Input weight: weight\n"
-		                     + "Input meal: meal\n"
-		                     + "Request profile: profile";
+		    			result = "Under profile, these are the features that we provide:\n"
+		                     + "Weight - Record your weight\n"
+		                     + "Meal - Record your meal\n"
+		                     + "Profile - View your profile";
 		    			break;
 		    		}
 		    		case "food": {
 		    			categories = Categories.FOOD;
-	    				result = "Type in the food name you would like to know about:\n";
+	    				result = "Enter a food name and I will provide you with the details!";
 		    			break;
 		    		}
 		    		case "menu": {
@@ -292,7 +314,11 @@ public class KitchenSinkController {
 		    				+ "JPEG";
 		    			break;
 		    		}
-    		
+		    		case "initdb": {
+		    			categories = Categories.INIT;
+		    			result = "Initializing...";
+		    			break;
+		    		}
 			}
 		}
 		else {
@@ -302,7 +328,7 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-//		public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
@@ -389,10 +415,50 @@ public class KitchenSinkController {
 	}
 	
 	private String handleFood (String text) {
-		categories = null;
+		categories = Categories.MAIN_MENU;
 		String result = "";
 		result = i.getFoodDetails(text);
 		return result;
+	}
+	
+	private void handleInit() {
+		try {
+            String filePath = "/app/FOOD_DATA.txt";
+            String line = null;
+            FileReader fileReader = new FileReader(filePath);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+
+                String[] foodData = line.split("\\^");
+        		for (int i = 2; i < foodData.length; i++) {
+        			if (foodData[i].equals("")) {
+        				foodData[i] = "-1";
+        			}
+        		}
+                String foodName = foodData[0];
+                String category = foodData[1];
+                double calories = Double.parseDouble(foodData[2]);
+                double sodium = Double.parseDouble(foodData[3]);
+                double fat = Double.parseDouble(foodData[4]);
+                double protein = Double.parseDouble(foodData[5]);
+                double carbohydrate = Double.parseDouble(foodData[6]);
+                Food food = new Food();
+                food.setName(foodName);
+                food.setCategory(category);
+                food.setCalories(calories);
+                food.setSodium(sodium);
+                food.setSaturatedFat(fat);
+                food.setProtein(protein);
+                food.setCarbohydrate(carbohydrate);
+                foodRepository.save(food);
+            }
+            bufferedReader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+        	categories = Categories.MAIN_MENU;
+        }
 	}
 	
 	private String handleMenu (String text) {
@@ -423,17 +489,21 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result =  i.readFromText(text);
+                result = i.readFromText(text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
+    			result = i.readFromJSON(text);
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case JPEG:
     			menu = null;
     			categories = Categories.MAIN_MENU;
+    			break;
+    		default:
+    			result = "I don't understand";
     			break;
 			}
 		}
@@ -478,10 +548,6 @@ public class KitchenSinkController {
 		tempFile.toFile().deleteOnExit();
 		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
 	}
-
-
-	
-
 
 	public KitchenSinkController() {
 		database = new SQLDatabaseEngine();

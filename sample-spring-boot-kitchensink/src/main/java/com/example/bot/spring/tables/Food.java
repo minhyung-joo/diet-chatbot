@@ -12,22 +12,11 @@ public class Food {
 	long foodID;
 	String name;
 	String category;
-	int calories;
-	int sodium;
-	int saturatedFat;
-	int protein;
-	int carbohydrate;
-
-	public Food(long id, String name, String cat, int cal, int sod, int fat, int protein, int carb) {
-		foodID = id;
-		this.name = name;
-		this.category = cat;
-		this.calories = cal;
-		this.sodium = sod;
-		this.saturatedFat = fat;
-		this.protein = protein;
-		this.carbohydrate = carb;
-	}
+	double calories;
+	double sodium;
+	double saturatedFat;
+	double protein;
+	double carbohydrate;
 
 	public long foodID() {
 		return foodID;
@@ -36,34 +25,61 @@ public class Food {
 	public String getName() {
 		return name;
 	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getCategory() {
 		return category;
 	}
+	
+	public void setCategory(String cat) {
+		this.category = cat;
+	}
 
-	public int getCalories() {
+	public double getCalories() {
 		return calories;
 	}
+	
+	public void setCalories(double cal) {
+		this.calories = cal;
+	}
 
-	public int getSodium() {
+	public double getSodium() {
 		return sodium;
 	}
+	
+	public void setSodium(double sod) {
+		this.sodium = sod;
+	}
 
-	public int getSaturatedFat() {
+	public double getSaturatedFat() {
 		return saturatedFat;
 	}
-
-	public int getProtein() {
-		return protein;
+	
+	public void setSaturatedFat(double fat) {
+		this.saturatedFat = fat;
 	}
 
-	public int getCarbohydrate() {
+	public double getProtein() {
+		return protein;
+	}
+	
+	public void setProtein(double protein) {
+		this.protein = protein;
+	}
+
+	public double getCarbohydrate() {
 		return carbohydrate;
+	}
+	
+	public void setCarbohydrate(double carb) {
+		this.carbohydrate = carb;
 	}
 	
 	public String getDetails() {
 		String details =
-				"Here are the details for " + this.getName() + "\n" +
 				"Calories: " + getCalories() + "\n" +
 				"Sodium: " + getSodium() + "\n" +
 				"Saturated Fat: " + getSaturatedFat() + "\n" +

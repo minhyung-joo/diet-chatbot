@@ -36,7 +36,6 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		throw new Exception("NOT FOUND");
 	}
 	
-	
 	private Connection getConnection() throws URISyntaxException, SQLException {
 		Connection connection;
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
@@ -49,6 +48,7 @@ public class SQLDatabaseEngine extends DatabaseEngine {
 		log.info ("dbUrl: {}", dbUrl);
 		
 		connection = DriverManager.getConnection(dbUrl, username, password);
+		System.out.println("Connection established");
 
 		return connection;
 	}
