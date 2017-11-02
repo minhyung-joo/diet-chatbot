@@ -94,7 +94,7 @@ public class InputToFood {
 	            	}
 	            	
 	    		    if(fdName.containsIgnoreCase(splitFood[i])) { 
-	    		    		resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
+	    		    		resultFood += "Here are the details forr " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    }
 	    		}
