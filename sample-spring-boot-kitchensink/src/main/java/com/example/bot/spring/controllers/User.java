@@ -107,7 +107,7 @@ public class User {
 	        		if (!outputStr.equals("")) {
 	        			outputStr += "\n";
 	        		}
-	        		outputStr += formattedDate + ":" + "\n" + ml.getFood() + "kg";
+	        		outputStr += formattedDate + ":" + "\n" + ml.getFood();
 	        }
 		}
 		if (!mealFound) {
