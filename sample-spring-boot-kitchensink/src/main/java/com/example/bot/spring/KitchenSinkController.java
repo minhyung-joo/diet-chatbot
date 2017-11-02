@@ -223,7 +223,7 @@ public class KitchenSinkController {
 	}
 
 	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
-	public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 	
 	public Categories categories = null;
@@ -237,9 +237,9 @@ public class KitchenSinkController {
 		
 		String text = content.getText();
 		String showMainMenu = "Hello! These are the features that we provide:\n"
-                + "Profile - Set your interests on food, Record your weight...\n"
+                + "Profile - record weight, record meal,...\n"
                 + "Food - Get the details of a food\n"
-				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
+                + "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
@@ -293,32 +293,32 @@ public class KitchenSinkController {
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
-	    		case "profile": {
-	    			categories = Categories.PROFILE;
-	    			result = "Under profile, these are the features that we provide:\n"
-	                     + "Interests - Set your interests of Food\n"
-	                     + "Input - Record your weight\n"
-	                     + "Profile - View your profile";
-	    			break;
-	    		}
-	    		case "food": {
-	    			categories = Categories.FOOD;
-    				result = "Enter a food name and I will provide you with the details!";
-	    			break;
-	    		}
-	    		case "menu": {
-	    			categories = Categories.MENU;
-	    			result = "You may input the menu in the following three ways:\n"
-	    				+ "Text\n"
-	    				+ "URL\n"
-	    				+ "JPEG";
-	    			break;
-	    		}
-	    		case "initdb": {
-	    			categories = Categories.INIT;
-	    			result = "Initializing...";
-	    			break;
-	    		}
+		    		case "profile": {
+		    			categories = Categories.PROFILE;
+		    			result = "Under profile, these are the features that we provide:\n"
+		                     + "Weight - Record your weight\n"
+		                     + "Meal - Record your meal\n"
+		                     + "Profile - View your profile";
+		    			break;
+		    		}
+		    		case "food": {
+		    			categories = Categories.FOOD;
+	    				result = "Enter a food name and I will provide you with the details!";
+		    			break;
+		    		}
+		    		case "menu": {
+		    			categories = Categories.MENU;
+		    			result = "You may input the menu in the following three ways:\n"
+		    				+ "Text\n"
+		    				+ "URL\n"
+		    				+ "JPEG";
+		    			break;
+		    		}
+		    		case "initdb": {
+		    			categories = Categories.INIT;
+		    			result = "Initializing...";
+		    			break;
+		    		}
 			}
 		}
 		else {
@@ -332,14 +332,20 @@ public class KitchenSinkController {
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("input|profile", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("weight|meal|profile", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
-			    		case "input": {
+			    		case "weight": {
 			    			profile = Profile.INPUT_WEIGHT;
 			    			result = "Please input your current weight in kgs";
 			    			break;
 			    		}
+			    		case "meal": {
+			    			profile = Profile.INPUT_MEAL;
+			    			result = "What did you just eat?";
+			    			break;
+			    		}
+			    		
 			    		case "profile": {
 			    			profile = Profile.REQUEST_PROFILE;
 			    			result = "Which one would you like to display? Weight or meals?";
@@ -354,21 +360,58 @@ public class KitchenSinkController {
 		else {
 			switch (profile) {
 		    		case INPUT_WEIGHT:
-		    			//need to solve bug of user inputting NaN
-		    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			boolean nan = false;
+		    			try {
+			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "Input successful";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+				    	break;
+		    		case INPUT_MEAL:
+		    			user.inputMeal(""+ event.getSource().getUserId(),text);
 		    			result = "Input successful";
 		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
-		    			result = user.outputWeight(""+event.getSource().getUserId());
-		    			profile = null;
-		    			categories = Categories.MAIN_MENU;
+		    			result = handRequestProfile(text, event);
+		    			
 		    			break;
 			}
 		}
 		return result;
 
+	}
+	
+	private String handRequestProfile (String text, Event event) {
+		String result = "";
+		
+		Matcher m = Pattern.compile("weight|meal", Pattern.CASE_INSENSITIVE).matcher(text);
+		if (m.find()) {
+			switch (m.group().toLowerCase()) {
+				case "weight": {
+					result = user.outputWeight(""+event.getSource().getUserId());
+					break;
+				}
+				case "meal": {
+					result = user.outputMeal(""+event.getSource().getUserId());
+					break;
+				}
+			}
+			profile = null;
+			categories = Categories.MAIN_MENU;
+		}
+		else {
+			result = "Did not understand";
+		}
+		return result;
 	}
 	
 	private String handleFood (String text) {

@@ -21,6 +21,9 @@ public class User {
 	@Autowired
 	private WeightRepository weightRepository;
 
+	@Autowired
+	private MealRepository mealRepository;
+
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -62,7 +65,7 @@ public class User {
 	        		Date date = new Date();
 	        		date.setTime(wt.getTime().getTime());
 	        		String formattedDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(date);
-	        		outputStr += "This is your weight at " + formattedDate + " is " + wt.getWeight() + "\n";
+	        		outputStr += "Your weight at " + formattedDate + " was " + wt.getWeight() + "\n";
 	        }
 		}
 		if (!weightFound) {
@@ -71,10 +74,35 @@ public class User {
 		
 		return outputStr;
 	}
-
 	
-	public void inputMeal(String food) {
+	@GetMapping(path="/inputmeal")
+	public @ResponseBody void inputMeal (@RequestParam String id, @RequestParam String food) {		
+		Meal ml = new Meal();
+		ml.setUserID(id);
+		ml.setTime();
+		ml.setFood(food);
+		mealRepository.save(ml);	
+	}
+	
+	@GetMapping(path="/getMeals")
+	public @ResponseBody String outputMeal (@RequestParam String id) {		
+		boolean mealFound = false;
+		String outputStr = "";
+		for(Meal ml : mealRepository.findAll()) {
+			if(ml.getUserID().equals(id)) { 
+	        		mealFound = true;
+	        		
+	        		Date date = new Date();
+	        		date.setTime(ml.getTime().getTime());
+	        		String formattedDate = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy").format(date);
+	        		outputStr += "Your meal at " + formattedDate + " is " + ml.getFood() + "\n";
+	        }
+		}
+		if (!mealFound) {
+			outputStr += "You did not log any meal";
+		}
 		
+		return outputStr;
 	}
 	
 	public void createProfile() {
