@@ -93,7 +93,7 @@ public class InputToFood {
 	            		fdName = fdName.substring(0, fdName.length()-1);
 	            	}
 	            	
-	    		    if(fdName.equalsIgnoreCase(splitFood[i])) { 
+	    		    if(fdName.containsIgnoreCase(splitFood[i])) { 
 	    		    		resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    }
