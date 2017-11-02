@@ -72,7 +72,7 @@ public class User {
 	        		if (!outputStr.equals("")) {
 	        			outputStr += "\n";
 	        		}
-	        		outputStr += "formattedDate + ":" + "\n" + wt.getWeight() + "kg";
+	        		outputStr += formattedDate + ":" + "\n" + wt.getWeight() + "kg";
 	        }
 		}
 		if (!weightFound) {
@@ -107,7 +107,7 @@ public class User {
 	        		if (!outputStr.equals("")) {
 	        			outputStr += "\n";
 	        		}
-	        		outputStr += "formattedDate + ":" + "\n" + ml.getWeight() + "kg";
+	        		outputStr += formattedDate + ":" + "\n" + ml.getFood() + "kg";
 	        }
 		}
 		if (!mealFound) {
