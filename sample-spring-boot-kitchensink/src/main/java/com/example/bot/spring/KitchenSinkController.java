@@ -348,7 +348,7 @@ public class KitchenSinkController {
 			    		
 			    		case "profile": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Which one would you like to display? Weight or meals?";
+			    			result = "Would you like to display profile of your weight or meal?";
 			    			break;
 			    		}
 				}
