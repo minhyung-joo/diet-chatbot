@@ -332,7 +332,7 @@ public class KitchenSinkController {
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("weight|meal|profile", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("weight|meal|view", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
 			    		case "weight": {
