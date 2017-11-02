@@ -77,18 +77,22 @@ public class InputToFood {
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "You have entered " + food + "\n";
-    		for(Food fd : foodRepository.findAll()) {
-    		    String fdName = fd.getName().toLowerCase();
-            	if(fdName.contains(",")) {
-            		fdName = fdName.substring(0,fdName.indexOf(","));
-            	}
-            	System.out.println("THIS:" + fdName);
-    		    if(fdName.equalsIgnoreCase(food)) { 
-    		    	System.out.println("I'm HERE");
-    		    	resultFood += "Here are the details for " + food + "\n" + fd.getDetails();
-    		    	break;
-    		    }
-    		}
+    		String[] splitFood = food.split("\\s+");
+    		
+	    	for(int i=0; i<splitFood.length; i++) {	
+	    		for(Food fd : foodRepository.findAll()) {
+	    		    String fdName = fd.getName().toLowerCase();
+	            	if(fdName.contains(",")) {
+	            		fdName = fdName.substring(0,fdName.indexOf(","));
+	            	}
+	            	System.out.println("THIS:" + splitFood[i]);
+	    		    if(fdName.equalsIgnoreCase(splitFood[i])) { 
+	    		    	System.out.println("I'm HERE");
+	    		    	resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
+	    		    	break;
+	    		    }
+	    		}
+	    	}
     		
     		return resultFood;
     }
