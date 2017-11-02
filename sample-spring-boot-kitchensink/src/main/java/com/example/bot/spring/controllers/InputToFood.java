@@ -51,23 +51,28 @@ public class InputToFood {
     }
 
     public String readFromJSON(String url) {
-    	RestTemplate restTemplate = new RestTemplate();
-    	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
-    	StringBuilder builder = new StringBuilder();
-    	int counter = 1;
-    	for (Menu menu : menuList) {
-    		String[] ingredients = menu.getIngredients();
-    		builder.append(counter);
-    		builder.append(". ");
-    		for (String ingredient : ingredients) {
-    			builder.append(ingredient);
-    			builder.append(",");
-    		}
-    		counter++;
-    		builder.append("\n");
+    	try {
+    		RestTemplate restTemplate = new RestTemplate();
+        	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
+        	StringBuilder builder = new StringBuilder();
+        	int counter = 1;
+        	for (Menu menu : menuList) {
+        		String[] ingredients = menu.getIngredients();
+        		builder.append(counter);
+        		builder.append(". ");
+        		for (String ingredient : ingredients) {
+        			builder.append(ingredient);
+        			builder.append(",");
+        		}
+        		counter++;
+        		builder.append("\n");
+        	}
+        	
+        	return builder.toString();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return "Failed to load URL.";
     	}
-    	
-    	return builder.toString();
     }
 
     public String readFromJPEG() {
