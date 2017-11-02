@@ -69,8 +69,10 @@ public class User {
 	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy");
 	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
 	        		String formattedDate = simpleDateFormat.format(date);
-	        		
-	        		outputStr += "Your weight at " + formattedDate + " was " + wt.getWeight() + "\n";
+	        		if (!outputStr.equals("")) {
+	        			outputStr += "\n";
+	        		}
+	        		outputStr += "formattedDate + ":" + "\n" + wt.getWeight() + "kg";
 	        }
 		}
 		if (!weightFound) {
@@ -100,9 +102,12 @@ public class User {
 	        		Date date = new Date();
 	        		date.setTime(ml.getTime().getTime());
 	        		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Hong_Kong"));
+	        		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
 	        		String formattedDate = simpleDateFormat.format(date);
-	        		outputStr += "Your meal at " + formattedDate + " is " + ml.getFood() + "\n";
+	        		if (!outputStr.equals("")) {
+	        			outputStr += "\n";
+	        		}
+	        		outputStr += "formattedDate + ":" + "\n" + ml.getWeight() + "kg";
 	        }
 		}
 		if (!mealFound) {
