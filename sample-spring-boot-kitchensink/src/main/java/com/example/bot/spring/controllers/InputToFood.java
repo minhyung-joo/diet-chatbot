@@ -88,7 +88,7 @@ public class InputToFood {
 	            	System.out.println("THIS:" + splitFood[i]);
 	    		    if(fdName.equalsIgnoreCase(splitFood[i])) { 
 	    		    	System.out.println("I'm HERE");
-	    		    	resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n";
+	    		    	resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    	break;
 	    		    }
 	    		}
