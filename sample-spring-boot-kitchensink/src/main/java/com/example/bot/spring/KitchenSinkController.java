@@ -334,12 +334,15 @@ public class KitchenSinkController {
 		else {
 			switch (profile) {
 		    		case INPUT_WEIGHT:
+		    			boolean nan = false;
 		    			try {
 			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
 		    			} catch (NumberFormatException e) {
 		    			    //error
+		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			} finally {
+		    			}		    			
+		    			if (!nan) {
 			    			result = "Input successful";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
