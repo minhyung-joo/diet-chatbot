@@ -231,7 +231,7 @@ public class KitchenSinkController {
 		
 		String text = content.getText();
 		String showMainMenu = "Hello! These are the features that we provide:\n"
-                + "Profile - set interests, record weight...\n"
+                + "Profile - record weight, record meal,...\n"
                 + "Food - get food details\n"
 				+ "Menu - Input menu and let me pick a food for you to eat this meal!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
@@ -273,10 +273,10 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
-		                     + "Set interest\n"
-		                     + "Input your weight\n"
-		                     + "Request profile";
+		    			result = "Type these keywords to acces the features:\n"
+		                     + "Input weight: weight\n"
+		                     + "Input meal: meal\n"
+		                     + "Request profile: profile";
 		    			break;
 		    		}
 		    		case "food": {
