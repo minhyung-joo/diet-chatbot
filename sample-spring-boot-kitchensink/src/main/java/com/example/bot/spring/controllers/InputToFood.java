@@ -92,7 +92,7 @@ public class InputToFood {
 	            	System.out.println("THIS:" + splitFood[i]);
 	    		    if (checkEquality(fdName, splitFood[i])) { 
 	    		    	System.out.println("I'm HERE");
-	    		    	resultFood += "Here are the details for " + splitFood[i] + "\n" + fd.getDetails() + "\n" + "\n";
+	    		    	resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    	break;
 	    		    }
 	    		}
