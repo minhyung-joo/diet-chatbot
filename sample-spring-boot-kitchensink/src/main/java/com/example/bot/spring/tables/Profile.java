@@ -8,6 +8,7 @@ import javax.persistence.Id;
 @Entity
 public class Profile {
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	String userID;
 	private String[] interests;
