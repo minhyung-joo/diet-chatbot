@@ -30,6 +30,9 @@ public class InputToFood {
         		if(fdName.contains(",")) {
         			fdName = fdName.substring(0,fdName.indexOf(","));
         		}
+        		if(fdName.endsWith("s")) {
+            		fdName = fdName.substring(0, fdName.length()-1);
+            	}
         		if(menu[i].toLowerCase().contains(fdName)) { 
     	        	names.add(fdName);
        		    	j++;
@@ -54,6 +57,7 @@ public class InputToFood {
         	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
         	StringBuilder builder = new StringBuilder();
         	int counter = 1;
+        	builder.append("The Foods in each entree are as followed:\n");
         	for (Menu menu : menuList) {
         		String[] ingredients = menu.getIngredients();
         		builder.append(counter);
@@ -89,11 +93,14 @@ public class InputToFood {
 	            	if (fdName.contains(",")) {
 	            		fdName = fdName.substring(0,fdName.indexOf(","));
 	            	}
-	            	System.out.println("THIS:" + splitFood[i]);
-	    		    if (checkEquality(fdName, splitFood[i])) { 
-	    		    	System.out.println("I'm HERE");
-	    		    	resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
-	    		    	break;
+	            	
+	            	if (fdName.endsWith("s")) {
+	            		fdName = fdName.substring(0, fdName.length()-1);
+	            	}
+	            	
+	    		    if (checkEquality(fdName, splitFood[i]) || splitFood[i].toLowerCase().contains(fdName)) { 
+	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
+	    		    		break;
 	    		    }
 	    		}
 	    	}
