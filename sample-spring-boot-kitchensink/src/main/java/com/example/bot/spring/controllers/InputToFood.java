@@ -87,17 +87,18 @@ public class InputToFood {
     		String resultFood = "You have entered " + food + "\n";
     		String[] splitFood = food.split("\\s+");
     		
-	    	for(int i=0; i<splitFood.length; i++) {	
-	    		for(Food fd : foodRepository.findAll()) {
+	    	for (int i = 0; i < splitFood.length; i++) {	
+	    		for (Food fd : foodRepository.findAll()) {
 	    		    String fdName = fd.getName().toLowerCase();
-	            	if(fdName.contains(",")) {
+	            	if (fdName.contains(",")) {
 	            		fdName = fdName.substring(0,fdName.indexOf(","));
 	            	}
-	            	if(fdName.endsWith("s")) {
+	            	
+	            	if (fdName.endsWith("s")) {
 	            		fdName = fdName.substring(0, fdName.length()-1);
 	            	}
 	            	
-	    		    if(splitFood[i].toLowerCase().contains(fdName)) { 
+	    		    if (checkEquality(fdName, splitFood[i]) || splitFood[i].toLowerCase().contains(fdName)) { 
 	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    }
@@ -107,4 +108,37 @@ public class InputToFood {
     		return resultFood;
     }
     
+    private boolean checkEquality(String s1, String s2) {
+    	return getDistance(s1, s2) <= 2;
+    }
+    
+    private int min(int a, int b, int c) {
+        return Math.min(a, Math.min(b, c));
+    }
+
+    /**
+     * Using Dynamic Programming, the Wagner-Fischer algorithm is able to 
+     * calculate the edit distance between two strings.
+     * @return edit distance between s1 and s2
+     */
+    private int getDistance(String str1, String str2) {
+    	char[] s1 = str1.toCharArray();
+    	char[] s2 = str2.toCharArray();
+    	
+        int[][] dp = new int[s1.length + 1][s2.length + 1];
+        for (int i = 0; i <= s1.length; dp[i][0] = i++);
+        for (int j = 0; j <= s2.length; dp[0][j] = j++);
+
+        for (int i = 1; i <= s1.length; i++) {
+            for (int j = 1; j <= s2.length; j++) {
+                if (s1[i - 1] == s2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, 
+                    		dp[i - 1][j - 1] + 1);
+                }
+            }
+        }
+        return dp[s1.length][s2.length];
+    }
 }
