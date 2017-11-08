@@ -74,6 +74,7 @@ public class MenuController{
 		
     	//Check if eaten
 		if(!pastFoodIDs.isEmpty()) {
+			System.out.println("NOT EMPTY");
 			for(int i=0;i<choices.length;i++) {
 	    		for(long id : result.get(i)) {
 	    			if(pastFoodIDs.contains(id)) {
@@ -157,6 +158,7 @@ public class MenuController{
 	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
+	        			System.out.println("HERE");
 	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
 	        		}
 	        }
