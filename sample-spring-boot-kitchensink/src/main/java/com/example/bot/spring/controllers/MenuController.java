@@ -58,7 +58,6 @@ public class MenuController{
 		List<Set<Long>> result = new ArrayList<Set<Long>>();
     	for(int i=0;i<choices.length;i++) {
     		Set<Long> foodIDs = generateFoodIDs(choices[i]);
-    		System.out.println("HERE");
     		result.add(foodIDs);
     	}
     	
@@ -72,7 +71,7 @@ public class MenuController{
     	
 		//Get FoodIDs from past few days
 		Set<Long> pastFoodIDs = getFoodIDsFromPastMeals();
-		
+		System.out.println("HERE");
     	//Check if eaten
 		for(int i=0;i<choices.length;i++) {
     		for(long id : result.get(i)) {
