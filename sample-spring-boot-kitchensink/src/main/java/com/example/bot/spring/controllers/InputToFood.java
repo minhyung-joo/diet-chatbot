@@ -18,13 +18,15 @@ import com.example.bot.spring.models.Menu;
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
+	
+	@Autowired
+	private MenuController menuController;
 
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
-		MenuController menu = new MenuController();
-		menu.setUserID(userId);
-		menu.setMenu(text);
-    	return menu.pickFood();
+		menuController.setUserID(userId);
+		menuController.setMenu(text);
+    	return menuController.pickFood();
     }
 
     public String readFromJSON(String url) {
