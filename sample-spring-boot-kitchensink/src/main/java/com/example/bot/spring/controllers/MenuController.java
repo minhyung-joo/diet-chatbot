@@ -96,7 +96,7 @@ public class MenuController{
 		
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
-    		if(scores[i][0]!="") {
+    		if(!scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
     		}
