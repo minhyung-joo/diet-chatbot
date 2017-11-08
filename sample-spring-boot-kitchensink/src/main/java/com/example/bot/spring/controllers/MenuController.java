@@ -57,8 +57,8 @@ public class MenuController{
 		//Get Food IDs from Menu
 		List<Set<Long>> result = new ArrayList<Set<Long>>();
     	for(int i=0;i<choices.length;i++) {
-    		System.out.println("HERE");
     		Set<Long> foodIDs = generateFoodIDs(choices[i]);
+    		System.out.println("HERE");
     		result.add(foodIDs);
     	}
     	
