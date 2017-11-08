@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.example.bot.spring.tables.Food;
 
 public interface FoodRepository extends CrudRepository<Food, Long> {
-	public Food findById(long id);
+	public Food findById(long foodID);
 }
