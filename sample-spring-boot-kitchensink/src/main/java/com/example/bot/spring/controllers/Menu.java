@@ -76,7 +76,7 @@ public class Menu{
 		for(int i=0;i<choices.length;i++) {
     		for(long id : result.get(i)) {
     			if(pastFoodIDs.contains(id)) {
-    				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
+    				//scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
     			}
     		}
     	}
