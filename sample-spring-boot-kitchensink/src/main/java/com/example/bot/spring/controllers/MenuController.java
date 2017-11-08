@@ -73,15 +73,16 @@ public class MenuController{
 		Set<Long> pastFoodIDs = getFoodIDsFromPastMeals();
 		
     	//Check if eaten
-		for(int i=0;i<choices.length;i++) {
-    		for(long id : result.get(i)) {
-    			if(pastFoodIDs.contains(id)) {
-    				System.out.println("HERE");
-    				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
-    			}
-    		}
-    	}
-    	
+		if(!pastFoodIDs.isEmpty()) {
+			for(int i=0;i<choices.length;i++) {
+	    		for(long id : result.get(i)) {
+	    			if(pastFoodIDs.contains(id)) {
+	    				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
+	    			}
+	    		}
+	    	}
+		}
+		
     	//Get Interests
     	
     	//Check if interests align
