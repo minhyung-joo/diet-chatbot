@@ -13,6 +13,9 @@ public class Profile {
 	String userID;
 	private String[] interests;
 	
+	public long getID() {
+		return id;
+	}
 	
 	public String getUserID () {
 		return userID;

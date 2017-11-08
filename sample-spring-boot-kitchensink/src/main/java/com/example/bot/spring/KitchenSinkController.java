@@ -272,7 +272,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);	    			
 		    			break;
 		    		case MENU:
-		    			response = new TextMessage(handleMenu(text));
+		    			response = new TextMessage(handleMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
@@ -461,7 +461,7 @@ public class KitchenSinkController {
         }
 	}
 	
-	private String handleMenu (String text) {
+	private String handleMenu (String text, Event event) {
 		String result = "";
 		if(menu == null) {
 			Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
@@ -489,7 +489,7 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result = i.readFromText(text);
+                result = i.readFromText(""+event.getSource().getUserId(),text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;

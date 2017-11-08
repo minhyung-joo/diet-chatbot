@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(path="/menu")
-public class Menu{
+public class MenuController{
 	
 	@Autowired
 	private ProfileRepository profileRepository;
@@ -29,13 +29,13 @@ public class Menu{
 	
 	private long userID;
 	private String menu;
-
+	
 	public long getUserID() {
 		return userID;
 	}
 
-	public void setUserID(long id) {
-		userID = id;
+	public void setUserID(String id) {
+		userID = profileRepository.findByUserID(id).getID();
 	}
 	
 	public String getMenu() {
