@@ -30,7 +30,7 @@ public class MenuController{
 	private String userID;
 	private String menu;
 	
-	public long getUserID() {
+	public String getUserID() {
 		return userID;
 	}
 
