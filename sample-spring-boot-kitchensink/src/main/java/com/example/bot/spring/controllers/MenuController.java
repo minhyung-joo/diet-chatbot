@@ -93,7 +93,7 @@ public class MenuController{
     			
     		}
     	}
-    	
+		
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
     		if(scores[i][0]!="") {
@@ -101,6 +101,7 @@ public class MenuController{
             	finalScore[i] -= items.length;
     		}
     	}
+		System.out.println("HERE");
     	int max = finalScore[0];
     	int finalChoice = 0;
     	for(int i=0;i<choices.length;i++) {
@@ -109,7 +110,7 @@ public class MenuController{
     			finalChoice = i;
     		}
     	}
-		System.out.println("HERE");
+
     	//Generate reply
     	String reply = new String();
     	if(scores[finalChoice][0]!="") {
