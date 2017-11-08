@@ -131,7 +131,6 @@ public class MenuController{
 	@GetMapping(path="/generatefoodids")
 	public @ResponseBody Set<Long> generateFoodIDs(@RequestParam String meal) {
     	Set<Long> foodIds = new HashSet<Long>();
-        int j=0;
         for(Food fd : foodRepository.findAll()) {
         	String fdName = fd.getName().toLowerCase();
         	if(fdName.contains(",")) {
@@ -142,8 +141,6 @@ public class MenuController{
             }
         	if(meal.toLowerCase().contains(fdName)) { 
     	        foodIds.add(fd.getFoodID());
-    			System.out.println("Added");
-      		    j++;
    	        }   
        	}
         	
@@ -159,7 +156,8 @@ public class MenuController{
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
 	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
-	        			System.out.println("TRY: " + foodIds);
+	        			System.out.println("TRY: ");
+	        			System.out.println(foodIds.size());
 	        		}
 	        }
 		}
