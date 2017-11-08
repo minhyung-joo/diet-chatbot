@@ -27,7 +27,7 @@ public class MenuController{
 	@Autowired
 	private FoodRepository foodRepository;
 	
-	private long userID;
+	private String userID;
 	private String menu;
 	
 	public long getUserID() {
@@ -35,7 +35,7 @@ public class MenuController{
 	}
 
 	public void setUserID(String id) {
-		userID = profileRepository.findByUserID(id).getID();
+		userID = id;
 	}
 	
 	public String getMenu() {
