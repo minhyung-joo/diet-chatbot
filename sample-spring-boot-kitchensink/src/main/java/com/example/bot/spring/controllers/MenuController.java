@@ -82,7 +82,7 @@ public class MenuController{
 	    		}
 	    	}
 		}
-		
+		System.out.println("HERE");
     	//Get Interests
     	
     	//Check if interests align
@@ -96,8 +96,10 @@ public class MenuController{
     	
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
-        	String[] items = scores[i][0].split(",", -1);
-        	finalScore[i] -= items.length;
+    		if(!scores[i][0].isEmpty()) {
+            	String[] items = scores[i][0].split(",", -1);
+            	finalScore[i] -= items.length;
+    		}
     	}
     	int max = finalScore[0];
     	int finalChoice = 0;
