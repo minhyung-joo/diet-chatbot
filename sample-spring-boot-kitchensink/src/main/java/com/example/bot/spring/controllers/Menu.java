@@ -30,11 +30,6 @@ public class Menu{
 	private long userID;
 	private String menu;
 
-	public Menu(long uid, String menuList) {
-		userID = uid;
-		menu = menuList;
-	}
-
 	public long getUserID() {
 		return userID;
 	}
