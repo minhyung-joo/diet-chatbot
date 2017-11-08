@@ -97,7 +97,6 @@ public class MenuController{
 		
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
-    		System.out.println("HERE");
     		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
@@ -143,6 +142,7 @@ public class MenuController{
             }
         	if(meal.toLowerCase().contains(fdName)) { 
     	        foodIds.add(fd.getFoodID());
+    			System.out.println("Added");
       		    j++;
    	        }   
        	}
@@ -158,8 +158,8 @@ public class MenuController{
 	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
-	        			System.out.println("HERE");
 	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
+	        			System.out.println("TRY: " + foodIds);
 	        		}
 	        }
 		}
