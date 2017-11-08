@@ -97,11 +97,10 @@ public class MenuController{
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
     		System.out.println("HERE");
-    		if(!scores[i][0].isEmpty()) {
+    		if(scores[i][0]!==null) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
     		}
-    		System.out.println("THIS");
     	}
 		
     	int max = finalScore[0];
@@ -115,7 +114,7 @@ public class MenuController{
 
     	//Generate reply
     	String reply = new String();
-    	if(scores[finalChoice][0]!="") {
+    	if(scores[finalChoice][0]!==null) {
     		reply += "I know that you have eaten "+scores[finalChoice][0].substring(2)+" in the past few days.";
     	}
     	if(reply!="") {
