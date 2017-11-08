@@ -12,18 +12,14 @@ public class Meal{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
-	String userID;
-	String food;
-	private long foodID;
+	private String userID;
+	private String food;
 	private Timestamp time;
 
 	public String getUserID() {
 		return userID;
 	}
 
-	public long getFoodID() {
-		return foodID;
-	}
 	public String getFood() {
 		return food;
 	}
@@ -35,10 +31,7 @@ public class Meal{
 	public void setUserID(String id) {
 		userID = id;
 	}
-
-	public void setFoodID(long id) {
-		foodID = id;
-	}
+	
 	public void setFood(String fd) {
 		food = fd;
 	}
