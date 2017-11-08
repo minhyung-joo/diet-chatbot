@@ -155,7 +155,12 @@ public class MenuController{
 	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
-	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
+	        			System.out.println("HERE");
+	        			Set<Long> mealIds = new HashSet<Long>();
+	        			mealIds = generateFoodIDs(ml.getFood());
+	        			System.out.println("Copy");
+	        			System.out.println(mealIds.size());
+	        			foodIds.addAll(mealIds);
 	        			System.out.println("TRY: ");
 	        			System.out.println(foodIds.size());
 	        		}
