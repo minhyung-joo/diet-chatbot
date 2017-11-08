@@ -71,11 +71,12 @@ public class MenuController{
     	
 		//Get FoodIDs from past few days
 		Set<Long> pastFoodIDs = getFoodIDsFromPastMeals();
-		System.out.println("HERE");
+		
     	//Check if eaten
 		for(int i=0;i<choices.length;i++) {
     		for(long id : result.get(i)) {
     			if(pastFoodIDs.contains(id)) {
+    				System.out.println("HERE");
     				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
     			}
     		}
