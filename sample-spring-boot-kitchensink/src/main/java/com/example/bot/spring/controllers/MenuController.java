@@ -117,7 +117,7 @@ public class MenuController{
     	if(scores[finalChoice][0]!=null) {
     		reply += "I know that you have eaten "+scores[finalChoice][0].substring(2)+" in the past few days.";
     	}
-    	if(reply!="") {
+    	if(reply!=null) {
     		reply += "But I still ";
     	}
     	else {
