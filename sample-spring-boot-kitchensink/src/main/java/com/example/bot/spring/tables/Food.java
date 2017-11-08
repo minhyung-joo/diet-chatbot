@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class Food {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	Long foodID;
+	long foodID;
 	String name;
 	String category;
 	double calories;
