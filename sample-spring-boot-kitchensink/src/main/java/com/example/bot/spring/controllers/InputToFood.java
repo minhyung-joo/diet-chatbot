@@ -26,6 +26,7 @@ public class InputToFood {
     public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
+		System.out.println("HERE");
     	return menuController.pickFood();
     }
 
