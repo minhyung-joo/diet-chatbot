@@ -96,12 +96,14 @@ public class MenuController{
 		
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
+    		System.out.println("HERE");
     		if(!scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
     		}
+    		System.out.println("THIS");
     	}
-		System.out.println("HERE");
+		
     	int max = finalScore[0];
     	int finalChoice = 0;
     	for(int i=0;i<choices.length;i++) {
