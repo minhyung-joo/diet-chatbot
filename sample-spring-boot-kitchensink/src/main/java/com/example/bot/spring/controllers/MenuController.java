@@ -97,7 +97,7 @@ public class MenuController{
     	//Calculate Score
     	for(int i=0;i<choices.length;i++) {
     		System.out.println("HERE");
-    		if(scores[i][0]!=null) {
+    		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
     		}
@@ -114,10 +114,10 @@ public class MenuController{
 
     	//Generate reply
     	String reply = new String();
-    	if(scores[finalChoice][0]!=null) {
+    	if(scores[finalChoice][0]!=null && !scores[finalChoice][0].isEmpty()) {
     		reply += "I know that you have eaten "+scores[finalChoice][0].substring(2)+" in the past few days.";
     	}
-    	if(reply!=null) {
+    	if(reply!=null && !reply.isEmpty()) {
     		reply += "But I still ";
     	}
     	else {
