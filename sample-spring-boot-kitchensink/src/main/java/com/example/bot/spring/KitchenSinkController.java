@@ -298,7 +298,8 @@ public class KitchenSinkController {
 		    			result = "Under profile, these are the features that we provide:\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles";
+		                     + "View - View your recorded profiles\n"
+		                     + "Interest - Record your interests";
 		    			break;
 		    		}
 		    		case "food": {

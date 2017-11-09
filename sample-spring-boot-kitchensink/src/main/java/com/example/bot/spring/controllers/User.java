@@ -91,6 +91,9 @@ public class User {
 			if(pf.getUserID().equals(id)) { 
 				pf.setInterest(splitInterest);
 				profileRepository.save(pf);
+				for(int j=0; j<pf.getInterests().length; j++) {
+					System.out.println("we have" + pf.getInterests()[j]);
+				}
 	        }
 		}
 	}
