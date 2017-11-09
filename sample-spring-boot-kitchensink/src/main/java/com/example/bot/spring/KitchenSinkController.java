@@ -355,7 +355,7 @@ public class KitchenSinkController {
 			    		
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
-			    			result = "Tell me all your interests out of the following (use comma in between): \n"
+			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
 			    					+ "American \n"
 			    					+ "Indian \n"
 			    					+ "Alaska \n"

@@ -85,15 +85,12 @@ public class User {
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		
-		String[] splitInterest = interest.split(",");
+		String[] splitInterest = interest.split(", ");
 		
 		for(Profile pf : profileRepository.findAll()) {
 			if(pf.getUserID().equals(id)) { 
 				pf.setInterest(splitInterest);
 				profileRepository.save(pf);
-				for(int j=0; j<pf.getInterests().length; j++) {
-					System.out.println("we have" + pf.getInterests()[j]);
-				}
 	        }
 		}
 	}
