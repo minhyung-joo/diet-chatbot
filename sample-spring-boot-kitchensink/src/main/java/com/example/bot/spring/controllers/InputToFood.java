@@ -1,8 +1,10 @@
 package com.example.bot.spring.controllers;
+
 import com.example.bot.spring.tables.*;
 
 import java.util.*;
 import java.util.function.*;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
 import com.example.bot.spring.models.Menu;
+import com.asprise.ocr.Ocr;
+import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 
 @Controller
 @RequestMapping(path="/input")
@@ -78,8 +82,18 @@ public class InputToFood {
     	}
     }
 
-    public String readFromJPEG() {
-    	return "";
+    public String readFromJPEG(DownloadedContent jpeg) {
+    	Ocr.setUp(); // one time setup
+    	Ocr ocr = new Ocr(); // create a new OCR engine
+    	ocr.startEngine("eng", Ocr.SPEED_FASTEST); // English
+    	String menu = ocr.recognize(
+			new File[] { new File(jpeg.getUri()) }, 
+			Ocr.RECOGNIZE_TYPE_ALL, 
+			Ocr.OUTPUT_FORMAT_PLAINTEXT
+    	);
+    	ocr.stopEngine();
+    	
+    	return menu;
     }
     
     @GetMapping(path="/getfooddetails")

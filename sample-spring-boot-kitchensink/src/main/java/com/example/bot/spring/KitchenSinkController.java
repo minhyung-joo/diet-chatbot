@@ -103,7 +103,7 @@ public class KitchenSinkController {
 	private LineMessagingClient lineMessagingClient;
 	
 	@Autowired
-	private InputToFood i;
+	private InputToFood inputToFood;
 	
 	@Autowired
 	private User user;
@@ -141,7 +141,8 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		DownloadedContent jpg = saveContent("jpg", response);
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+		String message = inputToFood.readFromJPEG(jpg);
+		reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
 
 	}
 
@@ -417,7 +418,7 @@ public class KitchenSinkController {
 	private String handleFood (String text) {
 		categories = Categories.MAIN_MENU;
 		String result = "";
-		result = i.getFoodDetails(text);
+		result = inputToFood.getFoodDetails(text);
 		return result;
 	}
 	
@@ -489,12 +490,12 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result = i.readFromText(text);
+                result = inputToFood.readFromText(text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
-    			result = i.readFromJSON(text);
+    			result = inputToFood.readFromJSON(text);
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
