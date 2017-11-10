@@ -326,6 +326,7 @@ public class KitchenSinkController {
 		    		}
 		    		case "code": {
 		    			boolean accepted = user.acceptRecommendation("123456",event.getSource().getUserId());
+		    			
 		    			break;
 		    		}
 			}
