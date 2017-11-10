@@ -85,8 +85,9 @@ public class InputToFood {
     	String menu = "";
     	ITesseract tess = new Tesseract();
     	try {
-            menu = tess.doOCR(new File(jpeg.getUri()));
+            menu = tess.doOCR(jpeg.getPath().toFile());
         } catch (TesseractException e) {
+        	e.printStackTrace();
             menu = "Could not process image";
         }
     	
