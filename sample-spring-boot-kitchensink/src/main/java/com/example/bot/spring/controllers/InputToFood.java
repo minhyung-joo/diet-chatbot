@@ -83,16 +83,17 @@ public class InputToFood {
     }
 
     public String readFromJPEG(DownloadedContent jpeg) {
-    	Ocr.setUp(); // one time setup
-    	Ocr ocr = new Ocr(); // create a new OCR engine
-    	ocr.startEngine("eng", Ocr.SPEED_FAST); // English
-    	String menu = ocr.recognize(
-			new File[] { new File(jpeg.getUri()) }, 
-			Ocr.RECOGNIZE_TYPE_TEXT, 
-			Ocr.OUTPUT_FORMAT_PLAINTEXT
-    	);
-    	ocr.stopEngine();
+//    	Ocr.setUp(); // one time setup
+//    	Ocr ocr = new Ocr(); // create a new OCR engine
+//    	ocr.startEngine("eng", Ocr.SPEED_FAST); // English
+//    	String menu = ocr.recognize(
+//			new File[] { new File(jpeg.getUri()) }, 
+//			Ocr.RECOGNIZE_TYPE_TEXT, 
+//			Ocr.OUTPUT_FORMAT_PLAINTEXT
+//    	);
+//    	ocr.stopEngine();
     	
+    	String menu = "menu";
     	return menu;
     }
     
