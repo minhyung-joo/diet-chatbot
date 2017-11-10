@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
 import com.example.bot.spring.models.Menu;
+import net.sourceforge.tess4j.*;
 
 @Controller
 @RequestMapping(path="/input")
@@ -79,6 +80,8 @@ public class InputToFood {
     }
 
     public String readFromJPEG() {
+    	ITesseract tess = new Tesseract();
+    	
     	return "";
     }
     
