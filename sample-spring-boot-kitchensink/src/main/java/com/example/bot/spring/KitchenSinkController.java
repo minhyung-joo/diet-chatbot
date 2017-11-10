@@ -290,7 +290,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
