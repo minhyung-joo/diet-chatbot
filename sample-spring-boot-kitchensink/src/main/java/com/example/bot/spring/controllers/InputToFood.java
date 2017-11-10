@@ -3,6 +3,7 @@ import com.example.bot.spring.tables.*;
 
 import java.util.*;
 import java.util.function.*;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Controller;
 import com.example.bot.spring.models.Menu;
 import net.sourceforge.tess4j.*;
+import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 
 @Controller
 @RequestMapping(path="/input")
@@ -79,10 +81,16 @@ public class InputToFood {
     	}
     }
 
-    public String readFromJPEG() {
+    public String readFromJPEG(DownloadedContent jpeg) {
+    	String menu = "";
     	ITesseract tess = new Tesseract();
+    	try {
+            menu = tess.doOCR(new File(jpeg.getUri()));
+        } catch (TesseractException e) {
+            menu = "Could not process image";
+        }
     	
-    	return "";
+    	return menu;
     }
     
     @GetMapping(path="/getfooddetails")

@@ -141,7 +141,8 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		DownloadedContent jpg = saveContent("jpg", response);
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+		String message = i.readFromJPEG(jpg);
+		reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
 
 	}
 
