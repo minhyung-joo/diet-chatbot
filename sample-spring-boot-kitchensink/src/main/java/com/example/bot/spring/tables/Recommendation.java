@@ -15,7 +15,7 @@ public class Recommendation {
 	@Column(name = "id")
 	@Min(100000)
 	@Max(999999)
-	private Integer id;
+	private long id;
 	private String uniqueCode;
 	private String userID;
 	private boolean claimed;
