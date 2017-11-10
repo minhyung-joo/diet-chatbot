@@ -122,12 +122,13 @@ public class User {
 	}
 	
 	@GetMapping(path="/makeRecommendation")
-	public @ResponseBody void makeRecommendation (@RequestParam String id) {		
+	public @ResponseBody String makeRecommendation (@RequestParam String id) {		
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setUniqueCode(makeUniqueCode("123456"));
 		rd.setClaimed(false);
 		recommendationRepository.save(rd);	
+		return rd.getUniqueCode();
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
