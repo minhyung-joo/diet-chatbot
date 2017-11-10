@@ -140,9 +140,9 @@ public class User {
 				recommendationRepository.save(rd);
 				return true;
 //			}
-			else {
+//			else {
 				
-			}
+//			}
 		}
 		else {
 			
