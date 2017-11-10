@@ -25,6 +25,9 @@ public class User {
 	@Autowired
 	private MealRepository mealRepository;
 
+	@Autowired
+	private RecommendationRepository recommendationRepository;
+
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -118,12 +121,27 @@ public class User {
 		return outputStr;
 	}
 	
-	public void createProfile() {
+	@GetMapping(path="/makeRecommendation")
+	public @ResponseBody void makeRecommendation (@RequestParam String id) {		
+		Recommendation rd = new Recommendation();
+		rd.setUserID(id);
+		rd.setUniqueCode(makeUniqueCode("123456"));
+		rd.setClaimed(false);
+		recommendationRepository.save(rd);	
 	}
 	
-	public void showProfile() {
-		
+	@GetMapping(path="/acceptRecommendation")
+	public @ResponseBody void acceptRecommendation (@RequestParam String uniqueCode) {		
+		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
+		rd.setClaimed(true);
+		recommendationRepository.save(rd);	
 	}
+	
+	public String makeUniqueCode(String code) {
+		return code;
+	}
+	
+	
 	
 	
 	
