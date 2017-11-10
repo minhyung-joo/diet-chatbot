@@ -1,5 +1,7 @@
 package com.example.bot.spring.tables;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,9 @@ public class Profile {
 	long id;
 	String userID;
 	private String[] interests;
+	private Timestamp registeredTime;
+	private boolean claimedNewUserCoupon = false;
+	private int couponCodeCount = 0;
 	
 	
 	public String getUserID () {
@@ -28,6 +33,12 @@ public class Profile {
 	
 	public void setInterest (String[] interestArray) {
 		interests = interestArray;
+	}
+	public void setTime() {
+		registeredTime = new Timestamp(System.currentTimeMillis());
+	}
+	public void addCoupon() {
+		couponCodeCount +=1;
 	}
 	
 }

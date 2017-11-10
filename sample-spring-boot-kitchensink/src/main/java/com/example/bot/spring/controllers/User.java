@@ -37,6 +37,7 @@ public class User {
 		if (!userFound) {
 			Profile pf = new Profile();
 			pf.setUserID(id);
+			pf.setTime();
 			profileRepository.save(pf);
 		}
 	}
