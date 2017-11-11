@@ -210,13 +210,14 @@ public class MenuController{
     			interests.add(items[i]);
     		}
     		reply += "I know that you like foods that are "+scores[1].substring(2)+ ".";
-    		for(int i=0;i<interests.size();i++) {
-    			reply += interests[i];
-    			if(i!=interests.size()-1) {
-    				reply += ", ";
-    			}
+    		StringBuilder builder = new StringBuilder();
+    		for(String s : interests) {
+    			 if (builder.length() != 0) {
+    			        builder.append(",");
+    			    }
+    			 builder.append(s);
     		}
-    		reply += ".";
+    		reply += builder + ".";
     	}
     	return reply;
 	}
