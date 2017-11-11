@@ -13,8 +13,6 @@ public class Recommendation {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id")
-	@Min(100000)
-	@Max(999999)
 	private long id;
 	private String uniqueCode;
 	private String userID;
