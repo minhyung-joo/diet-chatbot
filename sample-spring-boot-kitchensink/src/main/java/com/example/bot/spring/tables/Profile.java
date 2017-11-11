@@ -18,6 +18,9 @@ public class Profile {
 	private boolean claimedNewUserCoupon = false;
 	private int couponCodeCount = 0;
 	
+	public long getID() {
+		return id;
+	}
 	
 	public String getUserID () {
 		return userID;
