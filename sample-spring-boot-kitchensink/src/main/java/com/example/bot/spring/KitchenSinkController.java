@@ -78,6 +78,8 @@ import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.model.PushMessage;
+
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
@@ -206,6 +208,15 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	private void sendPushMessage(@NonNull Message message,@NonNull String id) {
+		try {
+			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, message)).get();
+			log.info("Sent messages: {}", apiResponse);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
@@ -326,8 +337,8 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			boolean accepted = user.acceptRecommendation("123456",event.getSource().getUserId());
-		    			
+		    			String id = user.acceptRecommendation("123456",event.getSource().getUserId());
+		    			sendPushMessage(new TextMessage("here is an ice cream"),id);
 		    			break;
 		    		}
 			}

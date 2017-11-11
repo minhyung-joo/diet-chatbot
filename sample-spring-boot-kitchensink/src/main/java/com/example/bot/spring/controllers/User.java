@@ -146,13 +146,13 @@ public class User {
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
-	public @ResponseBody boolean acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
+	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
 		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
 		if (!rd.getClaimed()) {
 			if (!rd.getUserID().equals(userID)) {
 				rd.setClaimed(true);
 				recommendationRepository.save(rd);
-				return true;
+				return rd.getUserID();
 			}
 			else {
 				
@@ -161,7 +161,7 @@ public class User {
 		else {
 			
 		}
-		return false;
+		return "";
 	}
 	
 	public String makeUniqueCode(String code) {
