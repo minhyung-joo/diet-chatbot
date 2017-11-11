@@ -76,12 +76,17 @@ public class MenuController{
 		if(!pastFoods.isEmpty()) {
 			for(int i=0;i<choices.length;i++) {
 	    		for(Food fd : result.get(i)) {
+	    			StringBuilder builder = new StringBuilder();
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
+		    				if (builder.length() != 0) {
+		    			        builder.append(", ");
+		    				}
 		    				String fdName = processFoodName(fd.getName().toLowerCase());
-		    				scores[i][0] += ", " + fdName;
+		    				builder.append(fdName);
 		    			}
 	    			}
+	    			scores[i][0] += builder;
 	    		}
 	    	}
 		}
@@ -93,11 +98,16 @@ public class MenuController{
 		if(interests != null) {
 	    	for(int i=0;i<choices.length;i++) {
 	    		for(Food fd : result.get(i)) {
+	    			StringBuilder builder = new StringBuilder();
 	    	    	for(int j=0;j<interests.length;j++) {
 	    	    		if(interests[j].equals(fd.getCategory())) {
-	    	    			scores[i][1] += ", " + interests[j];
+	    	    			if (builder.length() != 0) {
+		    			        builder.append(",");
+		    				}
+	    	    			builder.append(interests[j]);
 	    	    		}
 	    	    	}
+	    	    	scores[i][1] += builder;
 	    		}
 	    	}
 		}
@@ -209,12 +219,12 @@ public class MenuController{
     		for(int i=0;i<items.length;i++) {
     			interests.add(items[i]);
     		}
-    		reply += "I know that you like foods that are "+scores[1].substring(2)+ ".";
+    		reply += "I know that you like foods that are ";
     		StringBuilder builder = new StringBuilder();
     		for(String s : interests) {
     			 if (builder.length() != 0) {
-    			        builder.append(",");
-    			    }
+    			        builder.append(", ");
+    			 }
     			 builder.append(s);
     		}
     		reply += builder + ".";
