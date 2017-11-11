@@ -85,15 +85,17 @@ public class MenuController{
 	    	}
 		}
 		
-		System.out.println("FINE");
     	//Get Interests
     	String[] interests = profileRepository.findByUserID(userID).getInterests();
-		System.out.println("HERE");
+    	
     	//Check if interests align
 		if(interests != null) {
+			System.out.println("NOT NULL");
 	    	for(int i=0;i<choices.length;i++) {
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
+	    	    		System.out.println("INTERESTS: " + interests[j]);
+	    	    		System.out.println("CATEGORY: " + fd.getCategory());
 	    	    		if(interests[j] == fd.getCategory()) {
 	    	    			scores[i][1] += ", " + interests[j];
 	    	    		}
