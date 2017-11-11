@@ -78,7 +78,7 @@ public class MenuController{
 	    		for(Food fd : result.get(i)) {
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
-		    				fdName = processFoodName(fd.getName().toLowerCase());
+		    				String fdName = processFoodName(fd.getName().toLowerCase());
 		    				scores[i][0] += ", " + fdName;
 		    			}
 	    			}
@@ -118,13 +118,14 @@ public class MenuController{
     	return generateReply(scores[finalChoice], choices[finalChoice]);
 	}
 	
-	private processFoodName(String fdName) {
+	private String processFoodName(String fdName) {
 		if(fdName.contains(",")) {
     		fdName = fdName.substring(0,fdName.indexOf(","));
     	}
     	if(fdName.endsWith("s")) {
         	fdName = fdName.substring(0, fdName.length()-1);
         }
+    	return fdName;
 	}
 	
 	@GetMapping(path="/generatefoods")
@@ -133,7 +134,7 @@ public class MenuController{
 		Set<String> foodNames = new HashSet<String>();
     	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
-        	fdName = processFoodName(fd.getName().toLowerCase());
+        	String fdName = processFoodName(fd.getName().toLowerCase());
         	if(meal.toLowerCase().contains(fdName)) { 
         		foodNames.add(fdName);
         		if(size<foodNames.size()) {
