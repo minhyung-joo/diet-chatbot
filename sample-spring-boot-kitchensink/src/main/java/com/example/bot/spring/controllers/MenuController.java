@@ -122,9 +122,6 @@ public class MenuController{
 		if(fdName.contains(",")) {
     		fdName = fdName.substring(0,fdName.indexOf(","));
     	}
-    	if(fdName.endsWith("s")) {
-        	fdName = fdName.substring(0, fdName.length()-1);
-        }
     	return fdName;
 	}
 	
@@ -135,6 +132,9 @@ public class MenuController{
     	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
         	String fdName = processFoodName(fd.getName().toLowerCase());
+        	if(fdName.endsWith("s")) {
+            	fdName = fdName.substring(0, fdName.length()-1);
+            }
         	if(meal.toLowerCase().contains(fdName)) { 
         		foodNames.add(fdName);
         		if(size<foodNames.size()) {
@@ -194,7 +194,7 @@ public class MenuController{
 	private String generateReply(String[] scores, String finalChoice) {
 		String reply = new String();
     	if(scores[0]!=null && !scores[0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[0].substring(2)+" in the past few days.";
+    		reply += "I know that you have eaten "+scores[0]+" in the past few days.";
     	}
     	if(reply!=null && !reply.isEmpty()) {
     		reply += " But I still ";
@@ -204,7 +204,19 @@ public class MenuController{
     	}
     	reply += "recommend you to choose "+finalChoice+" because ";
     	if(scores[1]!=null && !scores[1].isEmpty()) {
+    		Set<String> interests = new HashSet<String>();
+    		String[] items = scores[1].substring(2).split(",", -1);
+    		for(int i=0;i<items.length;i++) {
+    			interests.add(items[i]);
+    		}
     		reply += "I know that you like foods that are "+scores[1].substring(2)+ ".";
+    		for(int i=0;i<interests.size();i++) {
+    			reply += interests[i];
+    			if(i!=interests.size()-1) {
+    				reply += ", ";
+    			}
+    		}
+    		reply += ".";
     	}
     	return reply;
 	}
