@@ -200,7 +200,7 @@ public class MenuController{
 	private String generateReply(String[] scores, String finalChoice) {
 		String reply = new String();
     	if(scores[0]!=null && !scores[0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[0].substring(7)+" in the past few days.";
+    		reply += "I know that you have eaten "+scores[0].substring(6)+" in the past few days.";
     	}
     	if(reply!=null && !reply.isEmpty()) {
     		reply += " But I still ";
