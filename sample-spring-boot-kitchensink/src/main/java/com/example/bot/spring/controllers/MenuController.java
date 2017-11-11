@@ -174,12 +174,10 @@ public class MenuController{
     		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
-            	System.out.println(i+ " meals:" + items.length);
     		}
     		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
             	String[] items = scores[i][1].split(",", -1);
             	finalScore[i] += items.length;
-            	System.out.println(i + " interests:" + items.length);
     		}
     	}
 		return finalScore;
