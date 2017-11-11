@@ -226,6 +226,7 @@ public class MenuController{
     			        builder.append(", ");
     			 }
     			 builder.append(s);
+    			 System.out.println(s);
     		}
     		reply += builder + ".";
     	}
