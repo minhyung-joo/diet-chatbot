@@ -75,8 +75,8 @@ public class MenuController{
     	//Check if eaten
 		if(!pastFoods.isEmpty()) {
 			for(int i=0;i<choices.length;i++) {
+				StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
-	    			StringBuilder builder = new StringBuilder();
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
 		    				if (builder.length() != 0) {
@@ -86,8 +86,8 @@ public class MenuController{
 		    				builder.append(fdName);
 		    			}
 	    			}
-	    			scores[i][0] += builder;
 	    		}
+	    		scores[i][0] += builder;
 	    	}
 		}
 		
@@ -97,8 +97,8 @@ public class MenuController{
     	//Check if interests align
 		if(interests != null) {
 	    	for(int i=0;i<choices.length;i++) {
+    			StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
-	    			StringBuilder builder = new StringBuilder();
 	    	    	for(int j=0;j<interests.length;j++) {
 	    	    		if(interests[j].equals(fd.getCategory())) {
 	    	    			if (builder.length() != 0) {
@@ -107,9 +107,8 @@ public class MenuController{
 	    	    			builder.append(interests[j]);
 	    	    		}
 	    	    	}
-	    	    	scores[i][1] += builder;
-	    			System.out.println(scores[i][1]);
 	    		}
+    	    	scores[i][1] += builder;
 	    	}
 		}
 
