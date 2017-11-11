@@ -131,7 +131,7 @@ public class MenuController{
             	fdName = fdName.substring(0, fdName.length()-1);
             }
         	if(meal.toLowerCase().contains(fdName)) { 
-        		foodNames.add(fd.getName());
+        		foodNames.add(fdName);
         		if(size<foodNames.size()) {
         	        foods.add(fd);
         	        size++;
