@@ -79,6 +79,7 @@ public class MenuController{
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
 		    				scores[i][0] += ", " + fd.getName();
+		    				break;
 		    			}
 	    			}
 	    		}
@@ -95,6 +96,7 @@ public class MenuController{
 	    	    	for(int j=0;j<interests.length;j++) {
 	    	    		if(interests[j].equals(fd.getCategory())) {
 	    	    			scores[i][1] += ", " + interests[j];
+	    	    			break;
 	    	    		}
 	    	    	}
 	    		}
@@ -157,12 +159,12 @@ public class MenuController{
     		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
-            	System.out.println("meals:" + items.length);
+            	System.out.println(i+ " meals:" + items.length);
     		}
     		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
             	String[] items = scores[i][1].split(",", -1);
             	finalScore[i] += items.length;
-            	System.out.println("interests:" + items.length);
+            	System.out.println(i + " interests:" + items.length);
     		}
     	}
 		return finalScore;
