@@ -105,6 +105,7 @@ public class MenuController{
 		    			        builder.append(",");
 		    				}
 	    	    			builder.append(interests[j]);
+	    	    			System.out.println(builder);
 	    	    		}
 	    	    	}
 	    	    	scores[i][1] += builder;
@@ -226,7 +227,6 @@ public class MenuController{
     			        builder.append(", ");
     			 }
     			 builder.append(s);
-    			 System.out.println(s);
     		}
     		reply += builder + ".";
     	}
