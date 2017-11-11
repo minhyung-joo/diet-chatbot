@@ -55,10 +55,10 @@ public class MenuController{
 		int[] finalScore = new int[choices.length];
 		
 		//Get Food IDs from Menu
-		List<Set<Long>> result = new ArrayList<Set<Long>>();
+		List<Set<Food>> result = new ArrayList<Set<Food>>();
     	for(int i=0;i<choices.length;i++) {
-    		Set<Long> foodIDs = generateFoodIDs(choices[i]);
-    		result.add(foodIDs);
+    		Set<Food> foods = generateFoods(choices[i]);
+    		result.add(foods);
     	}
     	
     	//Get Meals Eaten Food IDs from today (Daily progress?)
@@ -70,27 +70,38 @@ public class MenuController{
     	//Check each nutrient
     	
 		//Get FoodIDs from past few days
-		Set<Long> pastFoodIDs = getFoodIDsFromPastMeals();
+		Set<Food> pastFoods = getFoodIDsFromPastMeals();
 		
     	//Check if eaten
-		if(!pastFoodIDs.isEmpty()) {
-			System.out.println("NOT EMPTY");
+		if(!pastFoods.isEmpty()) {
 			for(int i=0;i<choices.length;i++) {
-	    		for(long id : result.get(i)) {
-	    			if(pastFoodIDs.contains(id)) {
-	    				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
+	    		for(Food fd : result.get(i)) {
+	    			for(Food pastFd : pastFoods) {
+		    			if(pastFd.getFoodID() == fd.getFoodID()) {
+		    				scores[i][0] += ", " + fd.getName();
+		    			}
 	    			}
 	    		}
 	    	}
 		}
 
     	//Get Interests
-    	
+    	String[] interests = profileRepository.findByUserID(userID).getInterests();
+		
     	//Check if interests align
+    	for(int i=0;i<choices.length;i++) {
+    		for(Food fd : result.get(i)) {
+    	    	for(int j=0;j<interests.length;j++) {
+    	    		if(interests[j] == fd.getCategory()) {
+    	    			scores[i][1] += ", " + interests[j];
+    	    		}
+    	    	}
+    		}
+    	}
     	
     	//Loop through each food
     	for(int i=0;i<choices.length;i++) {
-    		for(long s : result.get(i)) {
+    		for(Food f : result.get(i)) {
     			
     		}
     	}
@@ -100,6 +111,10 @@ public class MenuController{
     		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
             	String[] items = scores[i][0].split(",", -1);
             	finalScore[i] -= items.length;
+    		}
+    		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
+            	String[] items = scores[i][1].split(",", -1);
+            	finalScore[i] += items.length;
     		}
     	}
 		
@@ -124,13 +139,16 @@ public class MenuController{
     		reply += "I ";
     	}
     	reply += "recommend you to choose "+choices[finalChoice]+" because ";
+    	if(scores[finalChoice][1]!=null && !scores[finalChoice][1].isEmpty()) {
+    		reply += "I know that you like foods that are "+scores[finalChoice][0].substring(2)+ ".";
+    	}
     	
     	return reply;
 	}
 	
-	@GetMapping(path="/generatefoodids")
-	public @ResponseBody Set<Long> generateFoodIDs(@RequestParam String meal) {
-    	Set<Long> foodIds = new HashSet<Long>();
+	@GetMapping(path="/generatefoods")
+	public @ResponseBody Set<Food> generateFoods(@RequestParam String meal) {
+    	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
         	String fdName = fd.getName().toLowerCase();
         	if(fdName.contains(",")) {
@@ -140,25 +158,25 @@ public class MenuController{
             	fdName = fdName.substring(0, fdName.length()-1);
             }
         	if(meal.toLowerCase().contains(fdName)) { 
-    	        foodIds.add(fd.getFoodID());
+    	        foods.add(fd);
    	        }   
        	}
         	
-    	return foodIds;
+    	return foods;
 	}
 	
 	@GetMapping(path="/getpastmeals")
-	public @ResponseBody Set<Long> getFoodIDsFromPastMeals(){
-		Set<Long> foodIds = new HashSet<Long>();
+	public @ResponseBody Set<Food> getFoodIDsFromPastMeals(){
+		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
 			if(ml.getUserID().equals(userID)) { 
 	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
-	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
+	        			foods.addAll(generateFoods(ml.getFood()));
 	        		}
 	        }
 		}
-		return foodIds;
+		return foods;
 	}
 }
