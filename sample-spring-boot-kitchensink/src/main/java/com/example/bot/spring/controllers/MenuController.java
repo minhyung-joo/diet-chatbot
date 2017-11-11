@@ -84,21 +84,24 @@ public class MenuController{
 	    		}
 	    	}
 		}
-
+		
+		System.out.println("FINE");
     	//Get Interests
     	String[] interests = profileRepository.findByUserID(userID).getInterests();
-		
+		System.out.println("HERE");
     	//Check if interests align
-    	for(int i=0;i<choices.length;i++) {
-    		for(Food fd : result.get(i)) {
-    	    	for(int j=0;j<interests.length;j++) {
-    	    		if(interests[j] == fd.getCategory()) {
-    	    			scores[i][1] += ", " + interests[j];
-    	    		}
-    	    	}
-    		}
-    	}
-    	
+		if(interests != null) {
+	    	for(int i=0;i<choices.length;i++) {
+	    		for(Food fd : result.get(i)) {
+	    	    	for(int j=0;j<interests.length;j++) {
+	    	    		if(interests[j] == fd.getCategory()) {
+	    	    			scores[i][1] += ", " + interests[j];
+	    	    		}
+	    	    	}
+	    		}
+	    	}
+		}
+
     	//Loop through each food
     	for(int i=0;i<choices.length;i++) {
     		for(Food f : result.get(i)) {
