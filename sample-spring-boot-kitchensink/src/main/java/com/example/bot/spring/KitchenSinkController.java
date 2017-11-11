@@ -298,7 +298,8 @@ public class KitchenSinkController {
 		    			result = "Under profile, these are the features that we provide:\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles";
+		                     + "View - View your recorded profiles\n"
+		                     + "Interest - Record your interests";
 		    			break;
 		    		}
 		    		case "food": {
@@ -332,7 +333,7 @@ public class KitchenSinkController {
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("weight|meal|view", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
 			    		case "weight": {
@@ -349,6 +350,21 @@ public class KitchenSinkController {
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
 			    			result = "Would you like to display profile of your weight or meal?";
+			    			break;
+			    		}
+			    		
+			    		case "interest": {
+			    			profile = Profile.SET_INTEREST;
+			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
+			    					+ "American \n"
+			    					+ "Indian \n"
+			    					+ "Alaska \n"
+			    					+ "Vegetable \n"
+			    					+ "Sweets \n"
+			    					+ "Soups \n"
+			    					+ "Sauces \n"
+			    					+ "Gravies \n"
+			    					+ "Fast Foods";
 			    			break;
 			    		}
 				}
@@ -377,6 +393,12 @@ public class KitchenSinkController {
 		    		case INPUT_MEAL:
 		    			user.inputMeal(""+ event.getSource().getUserId(),text);
 		    			result = "I successfully recorded your meal";
+		    			profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+		    		case SET_INTEREST:
+		    			user.inputInterest(""+ event.getSource().getUserId(),text);
+		    			result = "I successfully recorded your interests";
 		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;

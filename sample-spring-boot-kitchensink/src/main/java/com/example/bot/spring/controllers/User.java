@@ -83,6 +83,20 @@ public class User {
 		return outputStr;
 	}
 	
+	@GetMapping(path="/inputinterest")
+	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
+		
+		String[] splitInterest = interest.split(", ");
+		
+		for(Profile pf : profileRepository.findAll()) {
+			if(pf.getUserID().equals(id)) { 
+				pf.setInterest(splitInterest);
+				profileRepository.save(pf);
+	        }
+		}
+	}
+	
+	
 	@GetMapping(path="/inputmeal")
 	public @ResponseBody void inputMeal (@RequestParam String id, @RequestParam String food) {		
 		Meal ml = new Meal();
