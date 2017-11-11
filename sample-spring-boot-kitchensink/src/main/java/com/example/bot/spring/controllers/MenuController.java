@@ -108,6 +108,7 @@ public class MenuController{
 	    	    		}
 	    	    	}
 	    	    	scores[i][1] += builder;
+	    			System.out.println(scores[i][1]);
 	    		}
 	    	}
 		}
@@ -216,7 +217,6 @@ public class MenuController{
     	if(scores[1]!=null && !scores[1].isEmpty()) {
     		Set<String> interests = new HashSet<String>();
     		String[] items = scores[1].substring(4).split(",", -1);
-			System.out.println(scores[1]);
     		for(int i=0;i<items.length;i++) {
     			interests.add(items[i]);
     		}
