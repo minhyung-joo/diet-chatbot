@@ -90,13 +90,10 @@ public class MenuController{
     	
     	//Check if interests align
 		if(interests != null) {
-			System.out.println("NOT NULL");
 	    	for(int i=0;i<choices.length;i++) {
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
-	    	    		System.out.println("INTERESTS: " + interests[j]);
-	    	    		System.out.println("CATEGORY: " + fd.getCategory());
-	    	    		if(interests[j] == fd.getCategory()) {
+	    	    		if(interests[j].equals(fd.getCategory())) {
 	    	    			scores[i][1] += ", " + interests[j];
 	    	    		}
 	    	    	}
