@@ -239,7 +239,8 @@ public class KitchenSinkController {
 		String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
                 + "Profile - Record and view your weights and meals\n"
                 + "Food - Get nutritional details of a food\n"
-                + "Menu - Input menu and let me pick a food for you to eat this meal!";
+                + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+                + "Friend - Make recommendations to a friend to get an ice cream coupon!";
 		Message mainMenuMessage = new TextMessage(showMainMenu);
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
@@ -253,7 +254,7 @@ public class KitchenSinkController {
 		else {
 			switch (categories) {
 		    		case MAIN_MENU:
-		    			this.replyText(replyToken, handleMainMenu(text));
+		    			this.replyText(replyToken, handleMainMenu(text, event));
 		    			break;
 		    		case PROFILE:
 		    			response = new TextMessage(handleProfile(text, event));
@@ -287,9 +288,9 @@ public class KitchenSinkController {
 		}
     }
 	
-	private String handleMainMenu (String text) {
+	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -318,6 +319,15 @@ public class KitchenSinkController {
 		    		case "initdb": {
 		    			categories = Categories.INIT;
 		    			result = "Initializing...";
+		    			break;
+		    		}
+		    		case "friend": {
+		    			result = "Your unique code is " + user.makeRecommendation(event.getSource().getUserId());
+		    			break;
+		    		}
+		    		case "code": {
+		    			boolean accepted = user.acceptRecommendation("123456",event.getSource().getUserId());
+		    			
 		    			break;
 		    		}
 			}
