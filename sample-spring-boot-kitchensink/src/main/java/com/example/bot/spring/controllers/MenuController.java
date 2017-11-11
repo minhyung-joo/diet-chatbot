@@ -119,6 +119,8 @@ public class MenuController{
 	
 	@GetMapping(path="/generatefoods")
 	public @ResponseBody Set<Food> generateFoods(@RequestParam String meal) {
+		int size = 0;
+		Set<String> foodNames = new HashSet<String>();
     	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
         	String fdName = fd.getName().toLowerCase();
@@ -129,8 +131,11 @@ public class MenuController{
             	fdName = fdName.substring(0, fdName.length()-1);
             }
         	if(meal.toLowerCase().contains(fdName)) { 
-    	        foods.add(fd);
-    	        break;
+        		foodNames.add(fd.getName());
+        		if(size<foodNames.size()) {
+        	        foods.add(fd);
+        	        size++;
+        		}
    	        }   
        	}
         
