@@ -204,7 +204,7 @@ public class MenuController{
 	private String generateReply(String[] scores, String finalChoice) {
 		String reply = new String();
     	if(scores[0]!=null && !scores[0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[0].substring(5)+" in the past few days.";
+    		reply += "I know that you have eaten "+scores[0].substring(4)+" in the past few days.";
     	}
     	if(reply!=null && !reply.isEmpty()) {
     		reply += " But I still ";
@@ -215,7 +215,7 @@ public class MenuController{
     	reply += "recommend you to choose "+finalChoice+" because ";
     	if(scores[1]!=null && !scores[1].isEmpty()) {
     		Set<String> interests = new HashSet<String>();
-    		String[] items = scores[1].substring(5).split(",", -1);
+    		String[] items = scores[1].substring(4).split(",", -1);
     		for(int i=0;i<items.length;i++) {
     			interests.add(items[i]);
     		}
