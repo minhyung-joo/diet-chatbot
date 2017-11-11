@@ -70,7 +70,7 @@ public class MenuController{
     	//Check each nutrient
     	
 		//Get FoodIDs from past few days
-		Set<Food> pastFoods = getFoodIDsFromPastMeals();
+		Set<Food> pastFoods = getFoodsFromPastMeals();
 		
     	//Check if eaten
 		if(!pastFoods.isEmpty()) {
@@ -79,7 +79,6 @@ public class MenuController{
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
 		    				scores[i][0] += ", " + fd.getName();
-		    				break;
 		    			}
 	    			}
 	    		}
@@ -96,7 +95,6 @@ public class MenuController{
 	    	    	for(int j=0;j<interests.length;j++) {
 	    	    		if(interests[j].equals(fd.getCategory())) {
 	    	    			scores[i][1] += ", " + interests[j];
-	    	    			break;
 	    	    		}
 	    	    	}
 	    		}
@@ -132,14 +130,15 @@ public class MenuController{
             }
         	if(meal.toLowerCase().contains(fdName)) { 
     	        foods.add(fd);
+    	        break;
    	        }   
        	}
-        	
+        
     	return foods;
 	}
 	
 	@GetMapping(path="/getpastmeals")
-	public @ResponseBody Set<Food> getFoodIDsFromPastMeals(){
+	public @ResponseBody Set<Food> getFoodsFromPastMeals(){
 		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
 			if(ml.getUserID().equals(userID)) { 
