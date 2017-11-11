@@ -78,7 +78,8 @@ public class MenuController{
 	    		for(Food fd : result.get(i)) {
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
-		    				scores[i][0] += ", " + fd.getName();
+		    				fdName = processFoodName(fd.getName().toLowerCase());
+		    				scores[i][0] += ", " + fdName;
 		    			}
 	    			}
 	    		}
@@ -117,19 +118,22 @@ public class MenuController{
     	return generateReply(scores[finalChoice], choices[finalChoice]);
 	}
 	
+	private processFoodName(String fdName) {
+		if(fdName.contains(",")) {
+    		fdName = fdName.substring(0,fdName.indexOf(","));
+    	}
+    	if(fdName.endsWith("s")) {
+        	fdName = fdName.substring(0, fdName.length()-1);
+        }
+	}
+	
 	@GetMapping(path="/generatefoods")
 	public @ResponseBody Set<Food> generateFoods(@RequestParam String meal) {
 		int size = 0;
 		Set<String> foodNames = new HashSet<String>();
     	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
-        	String fdName = fd.getName().toLowerCase();
-        	if(fdName.contains(",")) {
-        		fdName = fdName.substring(0,fdName.indexOf(","));
-        	}
-        	if(fdName.endsWith("s")) {
-            	fdName = fdName.substring(0, fdName.length()-1);
-            }
+        	fdName = processFoodName(fd.getName().toLowerCase());
         	if(meal.toLowerCase().contains(fdName)) { 
         		foodNames.add(fdName);
         		if(size<foodNames.size()) {
@@ -192,14 +196,14 @@ public class MenuController{
     		reply += "I know that you have eaten "+scores[0].substring(2)+" in the past few days.";
     	}
     	if(reply!=null && !reply.isEmpty()) {
-    		reply += "But I still ";
+    		reply += " But I still ";
     	}
     	else {
     		reply += "I ";
     	}
     	reply += "recommend you to choose "+finalChoice+" because ";
     	if(scores[1]!=null && !scores[1].isEmpty()) {
-    		reply += "I know that you like foods that are "+scores[0].substring(2)+ ".";
+    		reply += "I know that you like foods that are "+scores[1].substring(2)+ ".";
     	}
     	return reply;
 	}
