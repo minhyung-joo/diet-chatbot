@@ -107,43 +107,12 @@ public class MenuController{
     	}
 		
     	//Calculate Score
-    	for(int i=0;i<choices.length;i++) {
-    		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
-            	String[] items = scores[i][0].split(",", -1);
-            	finalScore[i] -= items.length;
-    		}
-    		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
-            	String[] items = scores[i][1].split(",", -1);
-            	finalScore[i] += items.length;
-    		}
-    	}
+    	finalScore = calculateScores(scores);
 		
-    	int max = finalScore[0];
-    	int finalChoice = 0;
-    	for(int i=0;i<choices.length;i++) {
-    		if(max < finalScore[i]) {
-    			max = finalScore[i];
-    			finalChoice = i;
-    		}
-    	}
-
-    	//Generate reply
-    	String reply = new String();
-    	if(scores[finalChoice][0]!=null && !scores[finalChoice][0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[finalChoice][0].substring(2)+" in the past few days.";
-    	}
-    	if(reply!=null && !reply.isEmpty()) {
-    		reply += "But I still ";
-    	}
-    	else {
-    		reply += "I ";
-    	}
-    	reply += "recommend you to choose "+choices[finalChoice]+" because ";
-    	if(scores[finalChoice][1]!=null && !scores[finalChoice][1].isEmpty()) {
-    		reply += "I know that you like foods that are "+scores[finalChoice][0].substring(2)+ ".";
-    	}
+    	//Find Max
+    	int finalChoice = findMax(finalScore);
     	
-    	return reply;
+    	return generateReply(scores[finalChoice], choices[finalChoice]);
 	}
 	
 	@GetMapping(path="/generatefoods")
@@ -178,5 +147,50 @@ public class MenuController{
 	        }
 		}
 		return foods;
+	}
+	
+	private int[] calculateScores(String[][] scores) {
+		int[] finalScore = new int[scores.length];
+		for(int i=0;i<scores.length;i++) {
+    		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
+            	String[] items = scores[i][0].split(",", -1);
+            	finalScore[i] -= items.length;
+    		}
+    		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
+            	String[] items = scores[i][1].split(",", -1);
+            	finalScore[i] += items.length;
+    		}
+    	}
+		return finalScore;
+	}
+	
+	private int findMax(int[] finalScore) {
+		int max = finalScore[0];
+    	int finalChoice = 0;
+    	for(int i=0;i<finalScore.length;i++) {
+    		if(max < finalScore[i]) {
+    			max = finalScore[i];
+    			finalChoice = i;
+    		}
+    	}
+    	return finalChoice;
+	}
+	
+	private String generateReply(String[] scores, String finalChoice) {
+		String reply = new String();
+    	if(scores[0]!=null && !scores[0].isEmpty()) {
+    		reply += "I know that you have eaten "+scores[0].substring(2)+" in the past few days.";
+    	}
+    	if(reply!=null && !reply.isEmpty()) {
+    		reply += "But I still ";
+    	}
+    	else {
+    		reply += "I ";
+    	}
+    	reply += "recommend you to choose "+finalChoice+" because ";
+    	if(scores[1]!=null && !scores[1].isEmpty()) {
+    		reply += "I know that you like foods that are "+scores[0].substring(2)+ ".";
+    	}
+    	return reply;
 	}
 }
