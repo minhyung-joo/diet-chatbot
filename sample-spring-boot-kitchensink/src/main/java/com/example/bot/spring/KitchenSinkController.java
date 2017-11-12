@@ -18,6 +18,7 @@ package com.example.bot.spring;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -142,9 +143,14 @@ public class KitchenSinkController {
 			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
 			throw new RuntimeException(e);
 		}
+		
+		InputStream initialStream = response.getStream();
+		byte[] targetArray = new byte[initialStream.available()];
+		user.makeCampaign(targetArray);
+		
 		DownloadedContent jpg = saveContent("jpg", response);
 		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
-
+		
 	}
 
 	@EventMapping

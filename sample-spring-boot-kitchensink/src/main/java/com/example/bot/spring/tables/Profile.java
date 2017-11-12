@@ -17,7 +17,6 @@ public class Profile {
 	private Timestamp registeredTime;
 	private boolean claimedNewUserCoupon;
 	private int couponCodeCount;
-	
 	public long getID() {
 		return id;
 	}

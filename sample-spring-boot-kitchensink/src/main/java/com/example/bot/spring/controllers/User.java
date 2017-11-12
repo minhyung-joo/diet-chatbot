@@ -28,6 +28,8 @@ public class User {
 	@Autowired
 	private RecommendationRepository recommendationRepository;
 
+	@Autowired
+	private CampaignRepository campaignRepository;
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -166,6 +168,14 @@ public class User {
 	
 	public String makeUniqueCode(String code) {
 		return code;
+	}
+	
+	@GetMapping(path="/makeCampaign")
+	public @ResponseBody void makeCampaign (@RequestParam byte [] image) {		
+		Campaign cp = new Campaign();
+		cp.setTime();
+		cp.setCouponImage(image);
+		campaignRepository.save(cp);	
 	}
 	
 	

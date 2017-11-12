@@ -13,13 +13,26 @@ public class Campaign {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	private Timestamp time;
+	private byte [] couponImage;
+	private int count;
 	
 	public Timestamp getTime() {
 		return time;
 	}
-	
-	public void setTime() {
-		time = new Timestamp(System.currentTimeMillis());
+	public byte [] getCouponImage () {
+		return couponImage;
+	}
+	public int getCount() {
+		return count;
 	}
 	
+	public void setTime() {
+		time = new Timestamp (System.currentTimeMillis());
+	}
+	public void setCouponImage(byte [] couponImg) {
+		couponImage = couponImg;
+	}
+	public void incrementCount() {
+		count +=1;
+	}
 }
