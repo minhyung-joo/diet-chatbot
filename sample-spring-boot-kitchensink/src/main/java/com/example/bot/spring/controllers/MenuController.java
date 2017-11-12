@@ -98,7 +98,7 @@ public class MenuController{
     			StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
-	    	    		if(interests[j].equals(fd.getCategory()) && interests[j] != null !interests[j].isEmpty()) {
+	    	    		if(interests[j].equals(fd.getCategory()) && interests[j] != null && !interests[j].isEmpty()) {
 		    			    builder.append(", ");
 	    	    			builder.append(interests[j]);
 	    	    		}
