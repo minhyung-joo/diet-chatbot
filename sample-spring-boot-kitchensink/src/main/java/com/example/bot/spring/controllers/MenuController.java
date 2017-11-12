@@ -78,7 +78,7 @@ public class MenuController{
 				StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
 	    			for(Food pastFd : pastFoods) {
-		    			if(pastFd.getFoodID() == fd.getFoodID()) {
+		    			if(pastFd.getFoodID() == fd.getFoodID() && pastFd != null) {
 		    				builder.append(", ");
 		    				String fdName = processFoodName(fd.getName().toLowerCase());
 		    				builder.append(fdName);
@@ -98,8 +98,8 @@ public class MenuController{
     			StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
-	    	    		if(interests[j].equals(fd.getCategory())) {
-		    			    builder.append(",");
+	    	    		if(interests[j].equals(fd.getCategory()) && interests[j] != null !interests[j].isEmpty()) {
+		    			    builder.append(", ");
 	    	    			builder.append(interests[j]);
 	    	    		}
 	    	    	}
@@ -198,7 +198,7 @@ public class MenuController{
 	private String generateReply(String[] scores, String finalChoice) {
 		String reply = new String();
     	if(scores[0]!=null && !scores[0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[0].substring(6)+" in the past few days.";
+    		reply += "I know that you have eaten "+scores[0]+" in the past few days.";
     	}
     	if(reply!=null && !reply.isEmpty()) {
     		reply += " But I still ";
@@ -209,7 +209,7 @@ public class MenuController{
     	reply += "recommend you to choose "+finalChoice+" because ";
     	if(scores[1]!=null && !scores[1].isEmpty()) {
     		Set<String> interests = new HashSet<String>();
-    		String[] items = scores[1].substring(4).split(",", -1);
+    		String[] items = scores[1].split(", ", -1);
     		for(int i=0;i<items.length;i++) {
     			interests.add(items[i]);
     		}
