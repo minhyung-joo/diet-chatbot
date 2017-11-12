@@ -78,13 +78,14 @@ public class MenuController{
 				StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
 	    			for(Food pastFd : pastFoods) {
-		    			if(pastFd.getFoodID() == fd.getFoodID() && pastFd != null) {
+		    			if(pastFd.getFoodID() == fd.getFoodID()) {
 		    				builder.append(", ");
 		    				String fdName = processFoodName(fd.getName().toLowerCase());
 		    				builder.append(fdName);
 		    			}
 	    			}
 	    		}
+	    		scores[i][0] = "";
 	    		scores[i][0] += builder;
 	    	}
 		}
@@ -98,12 +99,13 @@ public class MenuController{
     			StringBuilder builder = new StringBuilder();
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
-	    	    		if(interests[j].equals(fd.getCategory()) && interests[j] != null && !interests[j].isEmpty()) {
+	    	    		if(interests[j].equals(fd.getCategory())) {
 		    			    builder.append(", ");
 	    	    			builder.append(interests[j]);
 	    	    		}
 	    	    	}
 	    		}
+	    		scores[i][1] = "";
     	    	scores[i][1] += builder;
 	    	}
 		}
