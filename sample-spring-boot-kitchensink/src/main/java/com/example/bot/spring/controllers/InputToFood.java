@@ -4,16 +4,22 @@ import com.example.bot.spring.tables.*;
 import java.util.*;
 import java.util.function.*;
 import java.io.File;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import com.example.bot.spring.models.Menu;
 import net.sourceforge.tess4j.*;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.MediaType;
 
 @Controller
 @RequestMapping(path="/input")
@@ -83,15 +89,40 @@ public class InputToFood {
 
     public String readFromJPEG(DownloadedContent jpeg) {
     	String menu = "";
-    	ITesseract tess = new Tesseract();
-    	try {
-            menu = tess.doOCR(jpeg.getPath().toFile());
-        } catch (TesseractException e) {
-        	e.printStackTrace();
-            menu = "Could not process image";
-        }
+    	RestTemplate restTemplate = new RestTemplate();
+    	String apiKey = "AIzaSyCrPOUDlYLaAQLAXbFSiRgb16OSikBooP8";
+    	String url = "https://vision.googleapis.com/v1/images:annotate?key=" + apiKey;
+    	String json = buildJson(jpeg);
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_JSON);
+
+    	HttpEntity<String> entity = new HttpEntity<String>(json, headers);
+    	String answer = restTemplate.postForObject(url, entity, String.class);
+    	System.out.println(answer);
     	
     	return menu;
+    }
+    
+    private String buildJson(DownloadedContent jpeg) {
+    	try {
+    		StringBuilder jsonBuilder = new StringBuilder();
+        	File file = jpeg.getPath().toFile();
+        	String imageCode = Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(file));
+        	jsonBuilder.append("{\"requests\":[");
+        	jsonBuilder.append("{\"image\":{");
+        	jsonBuilder.append("\"content\":\"");
+        	jsonBuilder.append(imageCode);
+        	jsonBuilder.append("\"},");
+        	jsonBuilder.append("\"features\":[{");
+        	jsonBuilder.append("\"type\":\"TEXT_DETECTION\"");
+        	jsonBuilder.append("}]");
+        	jsonBuilder.append("}");
+        	jsonBuilder.append("]}");
+        	return jsonBuilder.toString();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		return "";
+    	}
     }
     
     @GetMapping(path="/getfooddetails")
