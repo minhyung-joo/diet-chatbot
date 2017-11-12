@@ -241,7 +241,7 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 	
@@ -299,6 +299,13 @@ public class KitchenSinkController {
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
+		    		case CODE:
+		    			handleCode(replyToken, text, event);
+		    			if (categories == Categories.MAIN_MENU) {
+			    			this.reply(replyToken, mainMenuMessage);
+
+		    			}
+		    			break; 
 		    		case INIT:
 		    			this.handleInit();
 		    			this.replyText(replyToken, "Database initialized.");
@@ -345,10 +352,8 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			String id = user.acceptRecommendation("123456",event.getSource().getUserId());
-		    			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-		    			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
-		    			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+		    			categories = Categories.CODE;
+		    			result = "Insert the 6 digit code";
 		    			break;
 		    		}
 		    		
@@ -563,6 +568,41 @@ public class KitchenSinkController {
 		}
 		return result;
 			
+	}
+	
+	private String handleCode (String replyToken, String text, Event event) {
+		String result = "";
+		//check if there code is 6 digits
+		
+		String id = user.acceptRecommendation(text ,event.getSource().getUserId());
+		
+		if (id.length()>11) {
+			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+		}
+		
+		else {
+			switch (id) {
+				case "recommender": {
+					result = "You made this recommendation";
+					break;
+				}
+				case "claimed": {
+					result = "Coupon has already been claimed";
+					break;
+				}
+				case "none": {
+					result = "No such code";
+					break;
+				}
+			}
+			replyText(((MessageEvent) event).getReplyToken(), result);
+
+		}
+		categories = Categories.MAIN_MENU;
+		
+		return result;
 	}
 	
 	static String createUri(String path) {

@@ -156,20 +156,29 @@ public class User {
 	@GetMapping(path="/acceptRecommendation")
 	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
 		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
-		if (!rd.getClaimed()) {
-			if (!rd.getUserID().equals(userID)) {
-				rd.setClaimed(true);
-				recommendationRepository.save(rd);
-				return rd.getUserID();
+		if (rd!=null) {
+			if (!rd.getClaimed()) {
+				if (!rd.getUserID().equals(userID)) {
+					rd.setClaimed(true);
+					recommendationRepository.save(rd);
+					return rd.getUserID();
+				}
+				
+				else {
+					//the recommender entered the code
+					return "recommender";
+				}
 			}
 			else {
-				
+				//already claimed
+				return "claimed";
 			}
 		}
 		else {
-			
+			//no such code
+			return "none";
+
 		}
-		return "";
 	}
 	
 	public String makeUniqueCode(String code) {
