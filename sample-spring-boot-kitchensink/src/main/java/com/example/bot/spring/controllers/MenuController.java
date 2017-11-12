@@ -79,7 +79,9 @@ public class MenuController{
 	    		for(Food fd : result.get(i)) {
 	    			for(Food pastFd : pastFoods) {
 		    			if(pastFd.getFoodID() == fd.getFoodID()) {
-		    				builder.append(", ");
+		    				if (builder.length() != 0) {
+		    			        builder.append(", ");
+		    				}
 		    				String fdName = processFoodName(fd.getName().toLowerCase());
 		    				builder.append(fdName);
 		    			}
@@ -100,7 +102,9 @@ public class MenuController{
 	    		for(Food fd : result.get(i)) {
 	    	    	for(int j=0;j<interests.length;j++) {
 	    	    		if(interests[j].equals(fd.getCategory())) {
-		    			    builder.append(", ");
+	    	    			if (builder.length() != 0) {
+	        			        builder.append(", ");
+	    	    			}
 	    	    			builder.append(interests[j]);
 	    	    		}
 	    	    	}
