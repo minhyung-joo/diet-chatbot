@@ -187,6 +187,15 @@ public class User {
 		campaignRepository.save(cp);	
 	}
 	
+	@GetMapping(path="/getCoupon")
+	public @ResponseBody byte [] getCoupon () {	
+		Campaign campaign;
+		for(Campaign cp : campaignRepository.findAll()) {
+			return cp.getCouponImage();
+		}
+		return null;
+	}
+	
 	
 	public byte[] readImageOldWay(InputStream is) throws IOException
 	{

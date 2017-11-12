@@ -16,6 +16,7 @@
 
 package com.example.bot.spring;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.InputStream;
@@ -33,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.regex.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
+
 
 import com.example.bot.spring.controllers.*;
 
@@ -148,6 +150,7 @@ public class KitchenSinkController {
 		user.makeCampaign(initialStream);
 		
 		DownloadedContent jpg = saveContent("jpg", response);
+		
 		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
 		
 	}
@@ -306,7 +309,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|coupon", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -344,6 +347,13 @@ public class KitchenSinkController {
 		    		case "code": {
 		    			String id = user.acceptRecommendation("123456",event.getSource().getUserId());
 		    			sendPushMessage(new TextMessage("here is an ice cream"),id);
+		    			break;
+		    		}
+		    		case "coupon": {
+		    			
+		    			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+		    			
+		    			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
 		    			break;
 		    		}
 			}
@@ -584,6 +594,17 @@ public class KitchenSinkController {
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 			log.info("Saved {}: {}", ext, tempFile);
+			return tempFile;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+	private static DownloadedContent saveContentFromDB(String ext, byte[] bytes) {
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		DownloadedContent tempFile = createTempFile(ext);
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
+			ByteStreams.copy(bis, outputStream);
 			return tempFile;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
