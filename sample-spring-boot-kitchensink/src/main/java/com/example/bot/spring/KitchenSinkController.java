@@ -359,13 +359,13 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "You can display the profile of your weight, meal and interest. What would you like to see?";
+			    			result = "Would you like to display profile of your weight or meal?";
 			    			break;
 			    		}
 			    		
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
-			    			result = "Tell me all your interests out of the following (use comma+space in between): \n"
+			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
 			    					+ "American \n"
 			    					+ "Indian \n"
 			    					+ "Alaska \n"
@@ -425,7 +425,7 @@ public class KitchenSinkController {
 	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
-		Matcher m = Pattern.compile("weight|meal|interest", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("weight|meal", Pattern.CASE_INSENSITIVE).matcher(text);
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 				case "weight": {
@@ -434,10 +434,6 @@ public class KitchenSinkController {
 				}
 				case "meal": {
 					result = user.outputMeal(""+event.getSource().getUserId());
-					break;
-				}
-				case "interest": {
-					result = user.outputInterest(""+event.getSource().getUserId());
 					break;
 				}
 			}
