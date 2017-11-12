@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.function.*;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
 import com.example.bot.spring.models.Menu;
+import com.example.bot.spring.models.OCRResponse;
+import com.example.bot.spring.models.Response;
+import com.example.bot.spring.models.TextAnnotation;
 import net.sourceforge.tess4j.*;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
@@ -97,8 +101,10 @@ public class InputToFood {
     	headers.setContentType(MediaType.APPLICATION_JSON);
 
     	HttpEntity<String> entity = new HttpEntity<String>(json, headers);
-    	String answer = restTemplate.postForObject(url, entity, String.class);
-    	System.out.println(answer);
+    	OCRResponse ocrResponse = restTemplate.postForObject(url, entity, OCRResponse.class);
+    	Response response = ocrResponse.getResponses()[0];
+    	TextAnnotation textAnnotation = response.getTextAnnotations()[0];
+    	menu = textAnnotation.getDescription();
     	
     	return menu;
     }
