@@ -309,7 +309,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|coupon", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -346,16 +346,12 @@ public class KitchenSinkController {
 		    		}
 		    		case "code": {
 		    			String id = user.acceptRecommendation("123456",event.getSource().getUserId());
-		    			sendPushMessage(new TextMessage("here is an ice cream"),id);
-		    			break;
-		    		}
-		    		case "coupon": {
-		    			
 		    			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-		    			
 		    			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+		    			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
 		    			break;
 		    		}
+		    		
 			}
 		}
 		else {
