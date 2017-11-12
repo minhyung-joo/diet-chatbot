@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Basic;
 
 @Entity
 public class Campaign {
@@ -13,6 +15,8 @@ public class Campaign {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	private Timestamp time;
+	
+	@Lob
 	private byte [] couponImage;
 	private int count;
 	

@@ -145,8 +145,7 @@ public class KitchenSinkController {
 		}
 		
 		InputStream initialStream = response.getStream();
-		byte[] targetArray = new byte[initialStream.available()];
-		user.makeCampaign(targetArray);
+		user.makeCampaign(initialStream);
 		
 		DownloadedContent jpg = saveContent("jpg", response);
 		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
