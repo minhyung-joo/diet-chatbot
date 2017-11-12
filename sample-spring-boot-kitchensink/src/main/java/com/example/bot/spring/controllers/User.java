@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -199,24 +200,15 @@ public class User {
 	
 	public byte[] readImageOldWay(InputStream is) throws IOException
 	{
-	  long length = is.available();
-	  // Create the byte array to hold the data
-	  byte[] bytes = new byte[(int) length];
-	  // Read in the bytes
-	  int offset = 0;
-	  int numRead = 0;
-	  while (offset < bytes.length && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0)
-	  {
-	    offset += numRead;
-	  }
-	  // Ensure all the bytes have been read in
-	  if (offset < bytes.length)
-	  {
-	    throw new IOException("Could not completely read file ");
-	  }
-	  // Close the input stream and return bytes
-	  is.close();
-	  return bytes;
+	    byte[] buffer = new byte[8192];
+	    int bytesRead;
+	    ByteArrayOutputStream output = new ByteArrayOutputStream();
+	    while ((bytesRead = is.read(buffer)) != -1)
+	    {
+	        output.write(buffer, 0, bytesRead);
+	    }
+	    return output.toByteArray();
+
 	}
 	
 }
