@@ -287,6 +287,10 @@ public class KitchenSinkController {
 			switch (categories) {
 		    		case MAIN_MENU:
 		    			this.replyText(replyToken, handleMainMenu(text, event));
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
 		    			response = new TextMessage(handleProfile(text, event));
