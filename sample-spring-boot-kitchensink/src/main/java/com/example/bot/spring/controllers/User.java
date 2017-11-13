@@ -39,14 +39,9 @@ public class User {
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
-		boolean userFound = false;
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-	        		userFound = true;
-	        }
-		}
-		if (!userFound) {
-			Profile pf = new Profile();
+		Profile pf = profileRepository.findByUserID(id);
+		if (pf == null) {
+			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
 			profileRepository.save(pf);
