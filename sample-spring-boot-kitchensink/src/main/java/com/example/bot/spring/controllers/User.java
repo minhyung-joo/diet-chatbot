@@ -161,6 +161,10 @@ public class User {
 				if (!rd.getUserID().equals(userID)) {
 					rd.setClaimed(true);
 					recommendationRepository.save(rd);
+					
+					Profile pf = profileRepository.findByUserID(userID);
+					pf.setClaimedNewUserCoupon(true);
+					profileRepository.save(pf);
 					return rd.getUserID();
 				}
 				
@@ -185,29 +189,80 @@ public class User {
 		return code;
 	}
 	
-	@GetMapping(path="/makeCampaign")
-	public @ResponseBody void makeCampaign (@RequestParam InputStream is) {		
-		Campaign cp = new Campaign();
-		cp.setTime();
+	@GetMapping(path="/uploadCouponCampaign")
+	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
+		
+		Campaign campaign = null;
+		for(Campaign cp : campaignRepository.findAll()) {
+			campaign = cp;
+		}
+		
+		if (campaign == null) {
+			campaign = new Campaign();
+			campaign.setTime();
+		}
+		
 		try {
-			cp.setCouponImage(readImageOldWay(is));
+			campaign.setCouponImage(readImage(is));
 		} catch (IOException e) {
 			
 		}
-		campaignRepository.save(cp);	
+		campaignRepository.save(campaign);	
 	}
 	
 	@GetMapping(path="/getCoupon")
 	public @ResponseBody byte [] getCoupon () {	
 		Campaign campaign;
 		for(Campaign cp : campaignRepository.findAll()) {
+			cp.incrementCount();
+			campaignRepository.save(cp);
 			return cp.getCouponImage();
 		}
 		return null;
 	}
 	
+	@GetMapping(path="/checkValidity")
+	public @ResponseBody boolean checkValidityOfUser (String id) {	
+		Profile pf = profileRepository.findByUserID(id);
+		if (pf.getClaimedNewUserCoupon()) {
+			//already claimed new user coupon
+			return false;
+		}
+		
+		Campaign campaign=null;
+		for(Campaign cp : campaignRepository.findAll()) {
+			campaign = cp;
+		}
+		
+		if (campaign != null) {
+			if (campaign.getCount()>=5000) {
+				//5000 coupons already taken
+				return false;
+			}
+			if (campaign.getTime().getTime()>pf.getRegisteredTime().getTime()) {
+				//user registered before campaign began
+				return false;
+			}
+			else {
+				return true;
+			}	
+		}
+		else {
+			//no campaign
+			return false;
+		}
+		
+		
+	}
 	
-	public byte[] readImageOldWay(InputStream is) throws IOException
+	@GetMapping(path="/isAdmin")
+	public @ResponseBody boolean isAdmin (String userID) {	
+		return true;
+	}
+	
+	
+	
+	public byte[] readImage(InputStream is) throws IOException
 	{
 	    byte[] buffer = new byte[8192];
 	    int bytesRead;

@@ -37,6 +37,6 @@ public class Campaign {
 		couponImage = couponImg;
 	}
 	public void incrementCount() {
-		count +=1;
+		count +=2;
 	}
 }

@@ -146,12 +146,20 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		
-		InputStream initialStream = response.getStream();
-		user.makeCampaign(initialStream);
+		if (categories == Categories.CAMPAIGN) {
+			InputStream initialStream = response.getStream();
+			user.uploadCouponCampaign(initialStream);
+			categories = Categories.MAIN_MENU;
+			List<Message> messages = new ArrayList<Message>();
+			TextMessage reply = new TextMessage("Uploaded successful");
+			messages.add(reply);
+			messages.add(mainMenuMessage);
+			this.reply(replyToken, messages);
+
+		}
 		
-		DownloadedContent jpg = saveContent("jpg", response);
-		
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+//		DownloadedContent jpg = saveContent("jpg", response);
+//		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
 		
 	}
 
@@ -241,26 +249,31 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
-	
+	public enum Image {CAMPAIGN, MENU}
+
 	public Categories categories = null;
+
 	
 	public Profile profile = null;
 	
 	public Menu menu = null;
 	
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
+            + "Profile - Record and view your weights and meals\n"
+            + "Food - Get nutritional details of a food\n"
+            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!";
+	
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
+	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
 		String text = content.getText();
-		String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-                + "Profile - Record and view your weights and meals\n"
-                + "Food - Get nutritional details of a food\n"
-                + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-                + "Friend - Make recommendations to a friend to get an ice cream coupon!";
-		Message mainMenuMessage = new TextMessage(showMainMenu);
+
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
@@ -300,12 +313,14 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case CODE:
-		    			handleCode(replyToken, text, event);
+		    			handleCode(text, event);
 		    			if (categories == Categories.MAIN_MENU) {
 			    			this.reply(replyToken, mainMenuMessage);
-
 		    			}
 		    			break; 
+		    		case CAMPAIGN:
+		    			this.replyText(replyToken, "Please upload the coupon image.");
+		    			break;
 		    		case INIT:
 		    			this.handleInit();
 		    			this.replyText(replyToken, "Database initialized.");
@@ -316,7 +331,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -352,9 +367,24 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			categories = Categories.CODE;
-		    			result = "Insert the 6 digit code";
+		    			if (user.checkValidityOfUser(event.getSource().getUserId())) {
+		    				categories = Categories.CODE;
+			    			result = "Insert the 6 digit code";
+		    			}
+		    			else {
+		    				result = "Not valid";
+		    			}
+		    			
 		    			break;
+		    		}
+		    		case "admin": {
+		    			if (user.isAdmin(event.getSource().getUserId())) {
+		    				result = "Please upload the photo of the coupon";
+		    				categories = Categories.CAMPAIGN;
+		    			}
+		    			else {
+		    				result = "You are not an admin";
+		    			}
 		    		}
 		    		
 			}
@@ -570,36 +600,41 @@ public class KitchenSinkController {
 			
 	}
 	
-	private String handleCode (String replyToken, String text, Event event) {
+	private String handleCode (String text, Event event) {
 		String result = "";
 		//check if there code is 6 digits
-		
-		String id = user.acceptRecommendation(text ,event.getSource().getUserId());
-		
-		if (id.length()>11) {
-			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-			reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
-			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+		if (text.length() != 6) {
+			result = "That is not 6 digits";
 		}
-		
 		else {
-			switch (id) {
-				case "recommender": {
-					result = "You made this recommendation";
-					break;
-				}
-				case "claimed": {
-					result = "Coupon has already been claimed";
-					break;
-				}
-				case "none": {
-					result = "No such code";
-					break;
-				}
+			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
+			
+			if (id.length()>11) {
+				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+				reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
 			}
-			replyText(((MessageEvent) event).getReplyToken(), result);
+			
+			else {
+				switch (id) {
+					case "recommender": {
+						result = "You made this recommendation";
+						break;
+					}
+					case "claimed": {
+						result = "Coupon has already been claimed";
+						break;
+					}
+					case "none": {
+						result = "No such code";
+						break;
+					}
+				}
+				replyText(((MessageEvent) event).getReplyToken(), result);
 
+			}	
 		}
+		
 		categories = Categories.MAIN_MENU;
 		
 		return result;
