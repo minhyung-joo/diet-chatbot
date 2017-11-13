@@ -16,8 +16,10 @@
 
 package com.example.bot.spring;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +34,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.regex.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
+
 
 import com.example.bot.spring.controllers.*;
 
@@ -78,6 +81,8 @@ import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.model.PushMessage;
+
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
@@ -140,9 +145,22 @@ public class KitchenSinkController {
 			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
 			throw new RuntimeException(e);
 		}
-		DownloadedContent jpg = saveContent("jpg", response);
-		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+		
+		if (categories == Categories.CAMPAIGN) {
+			InputStream initialStream = response.getStream();
+			user.uploadCouponCampaign(initialStream);
+			categories = Categories.MAIN_MENU;
+			List<Message> messages = new ArrayList<Message>();
+			TextMessage reply = new TextMessage("Uploaded successful");
+			messages.add(reply);
+			messages.add(mainMenuMessage);
+			this.reply(replyToken, messages);
 
+		}
+		
+//		DownloadedContent jpg = saveContent("jpg", response);
+//		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+		
 	}
 
 	@EventMapping
@@ -206,6 +224,15 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	private void sendPushMessage(@NonNull Message message,@NonNull String id) {
+		try {
+			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, message)).get();
+			log.info("Sent messages: {}", apiResponse);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
@@ -222,26 +249,31 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
+	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
-	
+	public enum Image {CAMPAIGN, MENU}
+
 	public Categories categories = null;
+
 	
 	public Profile profile = null;
 	
 	public Menu menu = null;
 	
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
+            + "Profile - Record and view your weights and meals\n"
+            + "Food - Get nutritional details of a food\n"
+            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!";
+	
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
+	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
 		String text = content.getText();
-		String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-                + "Profile - Record and view your weights and meals\n"
-                + "Food - Get nutritional details of a food\n"
-                + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-                + "Friend - Make recommendations to a friend to get an ice cream coupon!";
-		Message mainMenuMessage = new TextMessage(showMainMenu);
+
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
@@ -255,6 +287,10 @@ public class KitchenSinkController {
 			switch (categories) {
 		    		case MAIN_MENU:
 		    			this.replyText(replyToken, handleMainMenu(text, event));
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
 		    			response = new TextMessage(handleProfile(text, event));
@@ -280,6 +316,15 @@ public class KitchenSinkController {
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
+		    		case CODE:
+		    			handleCode(text, event);
+		    			if (categories == Categories.MAIN_MENU) {
+			    			this.reply(replyToken, mainMenuMessage);
+		    			}
+		    			break; 
+		    		case CAMPAIGN:
+		    			this.replyText(replyToken, "Please upload the coupon image.");
+		    			break;
 		    		case INIT:
 		    			this.handleInit();
 		    			this.replyText(replyToken, "Database initialized.");
@@ -290,7 +335,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -326,10 +371,26 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			boolean accepted = user.acceptRecommendation("123456",event.getSource().getUserId());
+		    			if (user.checkValidityOfUser(event.getSource().getUserId())) {
+		    				categories = Categories.CODE;
+			    			result = "Insert the 6 digit code";
+		    			}
+		    			else {
+		    				result = "Not valid";
+		    			}
 		    			
 		    			break;
 		    		}
+		    		case "admin": {
+		    			if (user.isAdmin(event.getSource().getUserId())) {
+		    				result = "Please upload the photo of the coupon";
+		    				categories = Categories.CAMPAIGN;
+		    			}
+		    			else {
+		    				result = "You are not an admin";
+		    			}
+		    		}
+		    		
 			}
 		}
 		else {
@@ -543,6 +604,46 @@ public class KitchenSinkController {
 			
 	}
 	
+	private String handleCode (String text, Event event) {
+		String result = "";
+		//check if there code is 6 digits
+		if (text.length() != 6) {
+			result = "That is not 6 digits";
+		}
+		else {
+			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
+			
+			if (id.length()>11) {
+				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+				reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+			}
+			
+			else {
+				switch (id) {
+					case "recommender": {
+						result = "You made this recommendation";
+						break;
+					}
+					case "claimed": {
+						result = "Coupon has already been claimed";
+						break;
+					}
+					case "none": {
+						result = "No such code";
+						break;
+					}
+				}
+				replyText(((MessageEvent) event).getReplyToken(), result);
+
+			}	
+		}
+		
+		categories = Categories.MAIN_MENU;
+		
+		return result;
+	}
+	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
 	}
@@ -568,6 +669,17 @@ public class KitchenSinkController {
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 			log.info("Saved {}: {}", ext, tempFile);
+			return tempFile;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+	private static DownloadedContent saveContentFromDB(String ext, byte[] bytes) {
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		DownloadedContent tempFile = createTempFile(ext);
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
+			ByteStreams.copy(bis, outputStream);
 			return tempFile;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

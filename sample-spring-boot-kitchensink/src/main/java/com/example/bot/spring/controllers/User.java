@@ -2,9 +2,15 @@ package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
 import java.util.Date;
 import java.util.TimeZone;
+
 import java.text.SimpleDateFormat;
 import com.example.bot.spring.tables.*;
 
+import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +34,8 @@ public class User {
 	@Autowired
 	private RecommendationRepository recommendationRepository;
 
+	@Autowired
+	private CampaignRepository campaignRepository;
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -146,30 +154,125 @@ public class User {
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
-	public @ResponseBody boolean acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
+	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
 		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
-		if (!rd.getClaimed()) {
-			if (!rd.getUserID().equals(userID)) {
-				rd.setClaimed(true);
-				recommendationRepository.save(rd);
-				return true;
+		if (rd!=null) {
+			if (!rd.getClaimed()) {
+				if (!rd.getUserID().equals(userID)) {
+					rd.setClaimed(true);
+					recommendationRepository.save(rd);
+					
+					Profile pf = profileRepository.findByUserID(userID);
+					pf.setClaimedNewUserCoupon(true);
+					profileRepository.save(pf);
+					return rd.getUserID();
+				}
+				
+				else {
+					//the recommender entered the code
+					return "recommender";
+				}
 			}
 			else {
-				
+				//already claimed
+				return "claimed";
 			}
 		}
 		else {
-			
+			//no such code
+			return "none";
+
 		}
-		return false;
 	}
 	
 	public String makeUniqueCode(String code) {
 		return code;
 	}
 	
+	@GetMapping(path="/uploadCouponCampaign")
+	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
+		
+		Campaign campaign = null;
+		for(Campaign cp : campaignRepository.findAll()) {
+			campaign = cp;
+		}
+		
+		if (campaign == null) {
+			campaign = new Campaign();
+			campaign.setTime();
+		}
+		
+		try {
+			campaign.setCouponImage(readImage(is));
+		} catch (IOException e) {
+			
+		}
+		campaignRepository.save(campaign);	
+	}
+	
+	@GetMapping(path="/getCoupon")
+	public @ResponseBody byte [] getCoupon () {	
+		Campaign campaign;
+		for(Campaign cp : campaignRepository.findAll()) {
+			cp.incrementCount();
+			campaignRepository.save(cp);
+			return cp.getCouponImage();
+		}
+		return null;
+	}
+	
+	@GetMapping(path="/checkValidity")
+	public @ResponseBody boolean checkValidityOfUser (String id) {	
+		Profile pf = profileRepository.findByUserID(id);
+		if (pf.getClaimedNewUserCoupon()) {
+			//already claimed new user coupon
+			return false;
+		}
+		
+		Campaign campaign=null;
+		for(Campaign cp : campaignRepository.findAll()) {
+			campaign = cp;
+		}
+		
+		if (campaign != null) {
+			if (campaign.getCount()>=5000) {
+				//5000 coupons already taken
+				return false;
+			}
+			if (campaign.getTime().getTime()>pf.getRegisteredTime().getTime()) {
+				//user registered before campaign began
+				return false;
+			}
+			else {
+				return true;
+			}	
+		}
+		else {
+			//no campaign
+			return false;
+		}
+		
+		
+	}
+	
+	@GetMapping(path="/isAdmin")
+	public @ResponseBody boolean isAdmin (String userID) {	
+		return true;
+	}
 	
 	
 	
+	public byte[] readImage(InputStream is) throws IOException
+	{
+	    byte[] buffer = new byte[8192];
+	    int bytesRead;
+	    ByteArrayOutputStream output = new ByteArrayOutputStream();
+	    while ((bytesRead = is.read(buffer)) != -1)
+	    {
+	        output.write(buffer, 0, bytesRead);
+	    }
+	    return output.toByteArray();
+
+	}
 	
 }

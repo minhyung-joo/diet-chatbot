@@ -16,8 +16,6 @@ public class Profile {
 	private String[] interests;
 	private Timestamp registeredTime;
 	private boolean claimedNewUserCoupon;
-	private int couponCodeCount;
-	
 	public long getID() {
 		return id;
 	}
@@ -30,9 +28,6 @@ public class Profile {
 		return interests;
 	}
 	
-	public int getCouponCodeCount() {
-		return couponCodeCount;
-	}
 	
 	public Timestamp getRegisteredTime() {
 		return registeredTime;
@@ -53,9 +48,6 @@ public class Profile {
 		registeredTime = new Timestamp(System.currentTimeMillis());
 	}
 	
-	public void setCouponCodeCount(int count) {
-		couponCodeCount = count;
-	}
 	
 	public void setClaimedNewUserCoupon(boolean claimed) {
 		claimedNewUserCoupon = claimed;
