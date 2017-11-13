@@ -55,10 +55,10 @@ public class MenuController{
 		int[] finalScore = new int[choices.length];
 		
 		//Get Food IDs from Menu
-		List<Set<Long>> result = new ArrayList<Set<Long>>();
+		List<Set<Food>> result = new ArrayList<Set<Food>>();
     	for(int i=0;i<choices.length;i++) {
-    		Set<Long> foodIDs = generateFoodIDs(choices[i]);
-    		result.add(foodIDs);
+    		Set<Food> foods = generateFoods(choices[i]);
+    		result.add(foods);
     	}
     	
     	//Get Meals Eaten Food IDs from today (Daily progress?)
@@ -70,95 +70,159 @@ public class MenuController{
     	//Check each nutrient
     	
 		//Get FoodIDs from past few days
-		Set<Long> pastFoodIDs = getFoodIDsFromPastMeals();
+		Set<Food> pastFoods = getFoodsFromPastMeals();
 		
     	//Check if eaten
-		if(!pastFoodIDs.isEmpty()) {
-			System.out.println("NOT EMPTY");
+		if(!pastFoods.isEmpty()) {
 			for(int i=0;i<choices.length;i++) {
-	    		for(long id : result.get(i)) {
-	    			if(pastFoodIDs.contains(id)) {
-	    				scores[i][0] += ", " + foodRepository.findByFoodID(id).getName();
+				StringBuilder builder = new StringBuilder();
+	    		for(Food fd : result.get(i)) {
+	    			for(Food pastFd : pastFoods) {
+		    			if(pastFd.getFoodID() == fd.getFoodID()) {
+		    				builder.append(", ");
+		    				String fdName = processFoodName(fd.getName().toLowerCase());
+		    				builder.append(fdName);
+		    			}
 	    			}
 	    		}
+	    		scores[i][0] += builder;
+	    	}
+		}
+		
+    	//Get Interests
+    	String[] interests = profileRepository.findByUserID(userID).getInterests();
+    	
+    	//Check if interests align
+		if(interests != null) {
+	    	for(int i=0;i<choices.length;i++) {
+    			StringBuilder builder = new StringBuilder();
+	    		for(Food fd : result.get(i)) {
+	    	    	for(int j=0;j<interests.length;j++) {
+	    	    		if(interests[j].equals(fd.getCategory())) {
+		    			    builder.append(",");
+	    	    			builder.append(interests[j]);
+	    	    		}
+	    	    	}
+	    		}
+    	    	scores[i][1] += builder;
 	    	}
 		}
 
-    	//Get Interests
-    	
-    	//Check if interests align
-    	
     	//Loop through each food
     	for(int i=0;i<choices.length;i++) {
-    		for(long s : result.get(i)) {
+    		for(Food f : result.get(i)) {
     			
     		}
     	}
 		
     	//Calculate Score
-    	for(int i=0;i<choices.length;i++) {
-    		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
-            	String[] items = scores[i][0].split(",", -1);
-            	finalScore[i] -= items.length;
-    		}
-    	}
+    	finalScore = calculateScores(scores);
 		
-    	int max = finalScore[0];
-    	int finalChoice = 0;
-    	for(int i=0;i<choices.length;i++) {
-    		if(max < finalScore[i]) {
-    			max = finalScore[i];
-    			finalChoice = i;
-    		}
-    	}
-
-    	//Generate reply
-    	String reply = new String();
-    	if(scores[finalChoice][0]!=null && !scores[finalChoice][0].isEmpty()) {
-    		reply += "I know that you have eaten "+scores[finalChoice][0].substring(2)+" in the past few days.";
-    	}
-    	if(reply!=null && !reply.isEmpty()) {
-    		reply += "But I still ";
-    	}
-    	else {
-    		reply += "I ";
-    	}
-    	reply += "recommend you to choose "+choices[finalChoice]+" because ";
+    	//Find Max
+    	int finalChoice = findMax(finalScore);
     	
-    	return reply;
+    	return generateReply(scores[finalChoice], choices[finalChoice]);
 	}
 	
-	@GetMapping(path="/generatefoodids")
-	public @ResponseBody Set<Long> generateFoodIDs(@RequestParam String meal) {
-    	Set<Long> foodIds = new HashSet<Long>();
+	private String processFoodName(String fdName) {
+		if(fdName.contains(",")) {
+    		fdName = fdName.substring(0,fdName.indexOf(","));
+    	}
+    	return fdName;
+	}
+	
+	@GetMapping(path="/generatefoods")
+	public @ResponseBody Set<Food> generateFoods(@RequestParam String meal) {
+		int size = 0;
+		Set<String> foodNames = new HashSet<String>();
+    	Set<Food> foods = new HashSet<Food>();
         for(Food fd : foodRepository.findAll()) {
-        	String fdName = fd.getName().toLowerCase();
-        	if(fdName.contains(",")) {
-        		fdName = fdName.substring(0,fdName.indexOf(","));
-        	}
+        	String fdName = processFoodName(fd.getName().toLowerCase());
         	if(fdName.endsWith("s")) {
             	fdName = fdName.substring(0, fdName.length()-1);
             }
         	if(meal.toLowerCase().contains(fdName)) { 
-    	        foodIds.add(fd.getFoodID());
+        		foodNames.add(fdName);
+        		if(size<foodNames.size()) {
+        	        foods.add(fd);
+        	        size++;
+        		}
    	        }   
        	}
-        	
-    	return foodIds;
+        
+    	return foods;
 	}
 	
 	@GetMapping(path="/getpastmeals")
-	public @ResponseBody Set<Long> getFoodIDsFromPastMeals(){
-		Set<Long> foodIds = new HashSet<Long>();
+	public @ResponseBody Set<Food> getFoodsFromPastMeals(){
+		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
 			if(ml.getUserID().equals(userID)) { 
 	        		Date threeDaysAgo = new Date(System.currentTimeMillis()-(3*24*60*60*1000));
 	        		Date mealTime = new Date(ml.getTime().getTime());
 	        		if(mealTime.after(threeDaysAgo)) {
-	        			foodIds.addAll(generateFoodIDs(ml.getFood()));
+	        			foods.addAll(generateFoods(ml.getFood()));
 	        		}
 	        }
 		}
-		return foodIds;
+		return foods;
+	}
+	
+	private int[] calculateScores(String[][] scores) {
+		int[] finalScore = new int[scores.length];
+		for(int i=0;i<scores.length;i++) {
+    		if(scores[i][0]!=null && !scores[i][0].isEmpty()) {
+            	String[] items = scores[i][0].split(",", -1);
+            	finalScore[i] -= items.length;
+    		}
+    		if(scores[i][1]!=null && !scores[i][1].isEmpty()) {
+            	String[] items = scores[i][1].split(",", -1);
+            	finalScore[i] += items.length;
+    		}
+    	}
+		return finalScore;
+	}
+	
+	private int findMax(int[] finalScore) {
+		int max = finalScore[0];
+    	int finalChoice = 0;
+    	for(int i=0;i<finalScore.length;i++) {
+    		if(max < finalScore[i]) {
+    			max = finalScore[i];
+    			finalChoice = i;
+    		}
+    	}
+    	return finalChoice;
+	}
+	
+	private String generateReply(String[] scores, String finalChoice) {
+		String reply = new String();
+    	if(scores[0]!=null && !scores[0].isEmpty()) {
+    		reply += "I know that you have eaten "+scores[0].substring(6)+" in the past few days.";
+    	}
+    	if(reply!=null && !reply.isEmpty()) {
+    		reply += " But I still ";
+    	}
+    	else {
+    		reply += "I ";
+    	}
+    	reply += "recommend you to choose "+finalChoice+" because ";
+    	if(scores[1]!=null && !scores[1].isEmpty()) {
+    		Set<String> interests = new HashSet<String>();
+    		String[] items = scores[1].substring(4).split(",", -1);
+    		for(int i=0;i<items.length;i++) {
+    			interests.add(items[i]);
+    		}
+    		reply += "I know that you like foods that are ";
+    		StringBuilder builder = new StringBuilder();
+    		for(String s : interests) {
+    			 if (builder.length() != 0) {
+    			        builder.append(", ");
+    			 }
+    			 builder.append(s.toLowerCase());
+    		}
+    		reply += builder + ".";
+    	}
+    	return reply;
 	}
 }
