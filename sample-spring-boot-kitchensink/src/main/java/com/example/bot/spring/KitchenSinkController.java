@@ -363,6 +363,9 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
+		System.out.println("Cate: "+categories);
+		System.out.println("Profile: "+profile);
+		System.out.println("Menu: "+menu);
 		catList.set(index, categories);
 		profList.set(index, profile);
 		menuList.set(index, menu);
