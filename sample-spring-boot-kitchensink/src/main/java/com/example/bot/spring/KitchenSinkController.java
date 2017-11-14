@@ -304,6 +304,9 @@ public class KitchenSinkController {
 			categories = catList.get(index);
 			profile = profList.get(index);
 			menu = menuList.get(index);
+			System.out.println("Cate: "+categories);
+			System.out.println("Profile: "+profile);
+			System.out.println("Menu: "+menu);
 		}
 		
 		if (categories == null) {
