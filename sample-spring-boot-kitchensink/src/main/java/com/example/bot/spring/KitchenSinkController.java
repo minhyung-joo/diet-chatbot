@@ -249,7 +249,7 @@ public class KitchenSinkController {
 	}
 
 	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
-	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	public enum Profile {SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 
 	public Categories categories = null;
@@ -376,6 +376,9 @@ public class KitchenSinkController {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
+		    				 + "Gender - Set your gender\n"
+		    				 + "Age - Update your age\n"
+		    				 + "Height - Update your height\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
 		                     + "View - View your recorded profiles\n"
@@ -438,9 +441,31 @@ public class KitchenSinkController {
 	private String handleProfile (String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("gender|age|height|weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
+						case "gender":{
+							ConfirmTemplate confirmTemplate = new ConfirmTemplate(
+			                        "Tell me your gender",
+			                        new MessageAction("Male", "Male"),
+			                        new MessageAction("Female", "Female")
+			                );
+			                user.inputGender(""+ event.getSource().getUserId(),confirmTemplate);
+			    			result = "I successfully recorded your gender";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+			                break;
+						}
+						case "age":{
+							profile = Profile.SET_AGE;
+							result = "Tell me your current age";
+							break;
+						}
+						case "height":{
+							profile = Profile.SET_HEIGHT;
+							result = "Tell me your current height(cm)";
+							break;
+						}
 			    		case "weight": {
 			    			profile = Profile.INPUT_WEIGHT;
 			    			result = "Tell me your current weight(kg)";
@@ -480,6 +505,34 @@ public class KitchenSinkController {
 		}
 		else {
 			switch (profile) {
+					case SET_AGE:
+						try {
+			    			user.inputAge(""+ event.getSource().getUserId(),Int.parseInt(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your age";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
+					case SET_HEIGHT:
+						try {
+			    			user.inputHeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your height";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
 		    		case INPUT_WEIGHT:
 		    			boolean nan = false;
 		    			try {

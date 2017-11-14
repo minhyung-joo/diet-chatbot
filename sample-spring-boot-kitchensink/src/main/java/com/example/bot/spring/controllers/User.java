@@ -53,8 +53,25 @@ public class User {
 		}
 	}
 	
-	public void setInterests(String[] Categories) {
-		
+	@GetMapping(path="/inputgender")
+	public @ResponseBody void inputGender (@RequestParam String id, @RequestParam String gender) {
+		Profile pf = profileRepository.findByUserID(id)
+		pf.setGender(gender);
+		profileRepository.save(pf);
+	}
+	
+	@GetMapping(path="/inputage")
+	public @ResponseBody void inputAge (@RequestParam String id, @RequestParam int age) {
+		Profile pf = profileRepository.findByUserID(id)
+		pf.setAge(age);
+		profileRepository.save(pf);
+	}
+	
+	@GetMapping(path="/inputheight")
+	public @ResponseBody void inputHeight (@RequestParam String id, @RequestParam Double height) {
+		Profile pf = profileRepository.findByUserID(id)
+		pf.setHeight(height);
+		profileRepository.save(pf);
 	}
 	
 	@GetMapping(path="/inputweight")
@@ -64,7 +81,6 @@ public class User {
 		wt.setTime();
 		wt.setWeight(weight);
 		weightRepository.save(wt);
-		
 	}
 	
 	@GetMapping(path="/getWeights")
