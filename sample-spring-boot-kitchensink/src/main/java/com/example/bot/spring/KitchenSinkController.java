@@ -35,7 +35,6 @@ import java.util.function.BiConsumer;
 import java.util.regex.*;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 
-
 import com.example.bot.spring.controllers.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,14 +251,20 @@ public class KitchenSinkController {
 	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
 	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
-	public enum Image {CAMPAIGN, MENU}
 
 	public Categories categories = null;
 
-	
 	public Profile profile = null;
 	
 	public Menu menu = null;
+	
+	public List<String> userList = new ArrayList<String>();
+	
+	public List<Categories> catList = new ArrayList<Categories>();
+	
+	public List<Profile> profList = new ArrayList<Profile>();
+	
+	public List<Menu> menuList = new ArrayList<Menu>();
 	
 	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
             + "Profile - Record and view your weights and meals\n"
@@ -277,6 +282,30 @@ public class KitchenSinkController {
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
+		
+		int index = -1;
+		for(int i=0;i<userList.size();i++) {
+			if(userList.get(i).equals(event.getSource().getUserId())) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			categories = null;
+			profile = null;
+			menu = null;
+			index = userList.size();
+			userList.add(event.getSource().getUserId());
+			catList.add(categories);
+			profList.add(profile);
+			menuList.add(menu);
+		}
+		else {
+			categories = catList.get(index);
+			profile = profList.get(index);
+			menu = menuList.get(index);
+		}
+		
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
             
@@ -331,6 +360,9 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
+		catList.set(index, categories);
+		profList.set(index, profile);
+		menuList.set(index, menu);
     }
 	
 	private String handleMainMenu (String text, Event event) {
