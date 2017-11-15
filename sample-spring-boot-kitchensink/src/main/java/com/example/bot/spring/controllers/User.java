@@ -458,7 +458,8 @@ public class User {
 		DecimalFormat format = new DecimalFormat("##.00");
 		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
 				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+
-				"Body Fat Percentage (BFP): "+format.format(getBMI(userID))+"\n"+"\n"+
+				"Body Fat Percentage (BFP): "+format.format(getBFP(userID))+"\n"
+				"Current Status: "+getBMICategory(userID)+"\n"+"\n"+
 				"Remaining Nutrients: \n"+
 				"Calories: "+format.format(getRemainingCalories(userID))+"\n"+
 				"Protein: "+format.format(getRemainingProtein(userID))+"\n"+
