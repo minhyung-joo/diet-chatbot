@@ -307,10 +307,6 @@ public class KitchenSinkController {
 			menu = menuList.get(index);
 		}
 		
-		System.out.println("Cat: "+categories);
-		System.out.println("Prof: "+profile);
-		System.out.println("Menu: "+menu);
-		
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
             
@@ -325,9 +321,7 @@ public class KitchenSinkController {
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
-		    			if(messages.size()!=0) {
-			    			this.reply(replyToken, messages);
-		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
 		    			String responseText = handleProfile(replyToken, text, event);
@@ -338,7 +332,9 @@ public class KitchenSinkController {
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
-		    			this.reply(replyToken, messages);
+		    			if(messages.size()!=0) {
+			    			this.reply(replyToken, messages);
+		    			}
 		    			break;
 		    		case FOOD:
 		    			response = new TextMessage(handleFood(text));
