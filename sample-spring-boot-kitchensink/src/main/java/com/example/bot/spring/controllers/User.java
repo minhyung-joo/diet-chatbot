@@ -8,6 +8,7 @@ import java.util.TimeZone;
 
 import java.text.SimpleDateFormat;
 import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.MenuController;
 
 import java.io.InputStream;
 import java.io.File;
@@ -42,6 +43,9 @@ public class User {
 
 	@Autowired
 	private CampaignRepository campaignRepository;
+	
+	@Autowired
+	private MenuController mc;
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -390,30 +394,6 @@ public class User {
 		return bfp;
 	}
 	
-	private Set<Food> generateFoods(String meal) {
-		int size = 0;
-		Set<String> foodNames = new HashSet<String>();
-    	Set<Food> foods = new HashSet<Food>();
-        for(Food fd : foodRepository.findAll()) {
-        	String fdName = fd.getName().toLowerCase();
-        	if(fdName.contains(",")) {
-        		fdName = fdName.substring(0,fdName.indexOf(","));
-        	}
-        	if(fdName.endsWith("s")) {
-            	fdName = fdName.substring(0, fdName.length()-1);
-            }
-        	if(meal.toLowerCase().contains(fdName)) { 
-        		foodNames.add(fdName);
-        		if(size<foodNames.size()) {
-        	        foods.add(fd);
-        	        size++;
-        		}
-   	        }   
-       	}
-        
-    	return foods;
-	}
-	
 	private Set<Food> getFoodsFromToday(String userID){
 		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
@@ -425,7 +405,7 @@ public class User {
 	        		if((today.get(Calendar.ERA) == mealTime.get(Calendar.ERA) &&
 	        			today.get(Calendar.YEAR) == mealTime.get(Calendar.YEAR) &&
 	        			today.get(Calendar.DAY_OF_YEAR) == mealTime.get(Calendar.DAY_OF_YEAR))) {
-	        			foods.addAll(generateFoods(ml.getFood()));
+	        			foods.addAll(mc.generateFoods(ml.getFood()));
 	        		}
 	        }
 		}
@@ -470,5 +450,17 @@ public class User {
 			currentFat += fd.getSaturatedFat();
 		}
 		return getBMR(userID)*0.25/9.0 - currentFat;
+	}
+	
+	@GetMapping(path="/showdailyprogress")
+	public @ResponseBody String showDailyProgress (@RequestParam String userID) {
+		return "Basal Metabolic Rate (BMR): "+getBMR(userID)+"\n"+
+				"Body Mass Index (BMI): "+getBMI(userID)+"\n"+
+				"Body Fat Percentage (BFP): "+getBMI(userID)+"\n"+"\n"+
+				"Remaining Nutrients: \n"+
+				"Calories: "+getRemainingCalories(userID)+"\n"+
+				"Protein: "+getRemainingProtein(userID)+"\n"+
+				"Carbohydrate: "+getRemainingCarbohydrate(userID)+"\n"+
+				"Fat: "+getRemainingFat(userID)+"\n";			
 	}
 }

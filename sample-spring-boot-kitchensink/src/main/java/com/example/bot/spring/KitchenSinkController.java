@@ -248,7 +248,7 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
 	public enum Profile {SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 
@@ -268,6 +268,7 @@ public class KitchenSinkController {
 	
 	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
             + "Profile - Record and view your weights and meals\n"
+			+ "Daily - View your progress on nutrients today\n"
             + "Food - Get nutritional details of a food\n"
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";
@@ -304,9 +305,6 @@ public class KitchenSinkController {
 			categories = catList.get(index);
 			profile = profList.get(index);
 			menu = menuList.get(index);
-			System.out.println("Cate: "+categories);
-			System.out.println("Profile: "+profile);
-			System.out.println("Menu: "+menu);
 		}
 		
 		if (categories == null) {
@@ -318,7 +316,12 @@ public class KitchenSinkController {
 		else {
 			switch (categories) {
 		    		case MAIN_MENU:
-		    			this.replyText(replyToken, handleMainMenu(text, event));
+		    			response = new TextMessage(handleMainMenu(text, event));
+		    			messages.add(response);
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
 		    			response = new TextMessage(handleProfile(text, event));
@@ -359,9 +362,6 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
-		System.out.println("Cate: "+categories);
-		System.out.println("Profile: "+profile);
-		System.out.println("Menu: "+menu);
 		catList.set(index, categories);
 		profList.set(index, profile);
 		menuList.set(index, menu);
@@ -369,7 +369,7 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|daily|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
@@ -383,6 +383,11 @@ public class KitchenSinkController {
 		                     + "Meal - Record your meal\n"
 		                     + "View - View your recorded profiles\n"
 		                     + "Interest - Record your interests";
+		    			break;
+		    		}
+		    		case "daily": {
+		    			result = user.showDailyProgress(event.getSource().getUserId());
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		}
 		    		case "food": {

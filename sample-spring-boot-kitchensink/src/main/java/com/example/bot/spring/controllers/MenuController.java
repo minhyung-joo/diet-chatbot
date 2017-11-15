@@ -137,7 +137,7 @@ public class MenuController{
     	return fdName;
 	}
 	
-	private Set<Food> generateFoods(String meal) {
+	public Set<Food> generateFoods(String meal) {
 		int size = 0;
 		Set<String> foodNames = new HashSet<String>();
     	Set<Food> foods = new HashSet<Food>();
