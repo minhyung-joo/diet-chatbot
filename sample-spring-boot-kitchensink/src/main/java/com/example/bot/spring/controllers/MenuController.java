@@ -73,12 +73,10 @@ public class MenuController{
     	
     	double minimum = Double.MAX_VALUE;
     	int minIndex = -1;
-    	double difference = 0;
+    	double difference;
     	//Check calories
 		for(int i=0;i<choices.length;i++) {
     		double totalCalories = 0; 
-    		minimum = Double.MAX_VALUE;
-    		minIndex = -1;
     		for(Food f : result.get(i)) {
     			totalCalories += f.getCalories();
     		}
@@ -98,10 +96,10 @@ public class MenuController{
 		}
 		
 		//Check protein
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
 		for(int i=0;i<choices.length;i++) {
     		double totalProtein = 0; 
-    		minimum = Double.MAX_VALUE;
-    		minIndex = -1;
     		for(Food f : result.get(i)) {
     			totalProtein += f.getProtein();
     		}
@@ -121,10 +119,10 @@ public class MenuController{
 		}
 		
 		//Check carbohydrate
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
 		for(int i=0;i<choices.length;i++) {
     		double totalCarbohydrate = 0; 
-    		minimum = Double.MAX_VALUE;
-    		minIndex = -1;
     		for(Food f : result.get(i)) {
     			totalCarbohydrate += f.getCarbohydrate();
     		}
@@ -144,6 +142,8 @@ public class MenuController{
 		}
 		
 		//Check fat
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
 		for(int i=0;i<choices.length;i++) {
 	  		double totalFat = 0; 
     		minimum = Double.MAX_VALUE;
