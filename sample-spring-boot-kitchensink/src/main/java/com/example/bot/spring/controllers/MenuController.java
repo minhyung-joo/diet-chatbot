@@ -85,7 +85,7 @@ public class MenuController{
     		if(totalCalories>user.getRemainingCalories(userID)) {
     			scores[i][2] = "Over";
     		}
-    		if(scores[i][2]!=null && !scores[i][2].isEmpty()) {
+    		if(scores[i][2]==null && scores[i][2].isEmpty()) {
     			difference = Math.abs(totalCalories - user.getBMR(userID)/3.0);
     			if(difference<minimum) {
     				minimum = difference;
@@ -108,7 +108,7 @@ public class MenuController{
     		if(totalProtein>user.getRemainingProtein(userID)) {
     			scores[i][3] = "Over";
     		}
-    		if(scores[i][3]!=null && !scores[i][3].isEmpty()) {
+    		if(scores[i][3]==null && scores[i][3].isEmpty()) {
     			difference = Math.abs(totalProtein - user.getBMR(userID)*0.2/4.0/3.0);
     			if(difference<minimum) {
     				minimum = difference;
@@ -131,7 +131,7 @@ public class MenuController{
     		if(totalCarbohydrate>user.getRemainingCarbohydrate(userID)) {
     			scores[i][4] = "Over";
     		}
-    		if(scores[i][4]!=null && !scores[i][4].isEmpty()) {
+    		if(scores[i][4]==null && scores[i][4].isEmpty()) {
     			difference = Math.abs(totalCarbohydrate - user.getBMR(userID)*0.55/4.0/3.0);
     			if(difference<minimum) {
     				minimum = difference;
@@ -154,7 +154,7 @@ public class MenuController{
     		if(totalFat>user.getRemainingFat(userID)) {
     			scores[i][5] = "Over";
     		}
-    		if(scores[i][5]!=null && !scores[i][5].isEmpty()) {
+    		if(scores[i][5]==null && scores[i][5].isEmpty()) {
     			difference = Math.abs(totalFat - user.getBMR(userID)*0.25/9.0/3.0);
 	    		if(difference<minimum) {
 	    			minimum = difference;
