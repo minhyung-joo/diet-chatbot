@@ -450,7 +450,7 @@ public class KitchenSinkController {
 			                        new MessageAction("Male", "Male"),
 			                        new MessageAction("Female", "Female")
 			                );
-			                user.inputGender(""+ event.getSource().getUserId(),confirmTemplate);
+			                user.inputGender(""+ event.getSource().getUserId(),confirmTemplate.getText());
 			    			result = "I successfully recorded your gender";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
@@ -504,10 +504,11 @@ public class KitchenSinkController {
 			}
 		}
 		else {
+			boolean nan = false;
 			switch (profile) {
 					case SET_AGE:
 						try {
-			    			user.inputAge(""+ event.getSource().getUserId(),Int.parseInt(text));
+			    			user.inputAge(""+ event.getSource().getUserId(),Integer.parseInt(text));
 		    			} catch (NumberFormatException e) {
 		    			    //error
 		    				nan= true;
@@ -534,7 +535,6 @@ public class KitchenSinkController {
 		    			}
 		    			break;
 		    		case INPUT_WEIGHT:
-		    			boolean nan = false;
 		    			try {
 			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
 		    			} catch (NumberFormatException e) {

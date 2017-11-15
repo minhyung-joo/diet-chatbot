@@ -137,8 +137,7 @@ public class MenuController{
     	return fdName;
 	}
 	
-	@GetMapping(path="/generatefoods")
-	public @ResponseBody Set<Food> generateFoods(@RequestParam String meal) {
+	private Set<Food> generateFoods(String meal) {
 		int size = 0;
 		Set<String> foodNames = new HashSet<String>();
     	Set<Food> foods = new HashSet<Food>();
@@ -159,8 +158,7 @@ public class MenuController{
     	return foods;
 	}
 	
-	@GetMapping(path="/getpastmeals")
-	public @ResponseBody Set<Food> getFoodsFromPastMeals(){
+	private Set<Food> getFoodsFromPastMeals(){
 		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
 			if(ml.getUserID().equals(userID)) { 
