@@ -307,6 +307,10 @@ public class KitchenSinkController {
 			menu = menuList.get(index);
 		}
 		
+		System.out.println("Cat: "+categories);
+		System.out.println("Prof: "+profile);
+		System.out.println("Menu: "+menu);
+		
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
             
