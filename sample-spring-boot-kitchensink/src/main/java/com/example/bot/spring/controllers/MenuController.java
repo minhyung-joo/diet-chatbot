@@ -1,6 +1,7 @@
 package com.example.bot.spring.controllers;
 
 import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.User;
 
 import java.util.*;
 import java.util.function.*;
@@ -27,6 +28,9 @@ public class MenuController{
 	@Autowired
 	private FoodRepository foodRepository;
 	
+	@Autowired
+	private User user;
+	
 	private String userID;
 	private String menu;
 	
@@ -52,6 +56,12 @@ public class MenuController{
 		
 		//For scoring and generating reply based on reasons
 		String[][] scores = new String[choices.length][10];
+		//0 - eaten
+		//1 - interest
+		//2 - calories
+		//3 - protein
+		//4 - carbohydrate
+		//5 - fat
 		int[] finalScore = new int[choices.length];
 		
 		//Get Food IDs from Menu
@@ -61,13 +71,100 @@ public class MenuController{
     		result.add(foods);
     	}
     	
-    	//Get Meals Eaten Food IDs from today (Daily progress?)
-    	
-    	//Get Weight (Daily progress?)
-    	
-    	//Get nutrients needed today (Daily progress?)
-    	
-    	//Check each nutrient
+    	double minimum = Double.MAX_VALUE;
+    	int minIndex = -1;
+    	double difference;
+    	//Check calories
+		for(int i=0;i<choices.length;i++) {
+    		double totalCalories = 0; 
+    		for(Food f : result.get(i)) {
+    			totalCalories += f.getCalories();
+    		}
+    		if(totalCalories>user.getRemainingCalories(userID)) {
+    			scores[i][2] = "Over";
+    		}
+    		else {
+    			difference = Math.abs(totalCalories - user.getBMR(userID)/3.0);
+    			if(difference<minimum) {
+    				minimum = difference;
+    				minIndex = i;
+    			}
+    		}
+    	}
+		if(minIndex!=-1) {
+	    	scores[minIndex][2] = "calories";
+		}
+		
+		//Check protein
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
+		for(int i=0;i<choices.length;i++) {
+    		double totalProtein = 0; 
+    		for(Food f : result.get(i)) {
+    			totalProtein += f.getProtein();
+    		}
+    		if(totalProtein>user.getRemainingProtein(userID)) {
+    			scores[i][3] = "Over";
+    		}
+    		else {
+    			difference = Math.abs(totalProtein - user.getBMR(userID)*0.2/4.0/3.0);
+    			if(difference<minimum) {
+    				minimum = difference;
+    				minIndex = i;
+    			}
+    		}
+    	}
+		if(minIndex!=-1) {
+	    	scores[minIndex][3] = "protein";
+		}
+		
+		//Check carbohydrate
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
+		for(int i=0;i<choices.length;i++) {
+    		double totalCarbohydrate = 0; 
+    		for(Food f : result.get(i)) {
+    			totalCarbohydrate += f.getCarbohydrate();
+    		}
+    		if(totalCarbohydrate>user.getRemainingCarbohydrate(userID)) {
+    			scores[i][4] = "Over";
+    		}
+    		else {
+    			difference = Math.abs(totalCarbohydrate - user.getBMR(userID)*0.55/4.0/3.0);
+    			if(difference<minimum) {
+    				minimum = difference;
+    				minIndex = i;
+    			}
+    		}
+    	}
+		if(minIndex!=-1) {
+	    	scores[minIndex][4] = "carbohydrate";
+		}
+		
+		//Check fat
+		minimum = Double.MAX_VALUE;
+		minIndex = -1;
+		for(int i=0;i<choices.length;i++) {
+	  		double totalFat = 0; 
+    		minimum = Double.MAX_VALUE;
+    		minIndex = -1;
+    		for(Food f : result.get(i)) {
+    			totalFat += f.getSaturatedFat();
+    		}
+    		if(totalFat>user.getRemainingFat(userID)) {
+    			scores[i][5] = "Over";
+    		}
+    		else {
+    			difference = Math.abs(totalFat - user.getBMR(userID)*0.25/9.0/3.0);
+	    		if(difference<minimum) {
+	    			minimum = difference;
+		    		minIndex = i;
+		    	}
+		    }
+		}
+		if(minIndex!=-1) {
+		    scores[minIndex][5] = "fat";
+		}
     	
 		//Get FoodIDs from past few days
 		Set<Food> pastFoods = getFoodsFromPastMeals();
@@ -113,13 +210,6 @@ public class MenuController{
     	    	scores[i][1] += builder;
 	    	}
 		}
-
-    	//Loop through each food
-    	for(int i=0;i<choices.length;i++) {
-    		for(Food f : result.get(i)) {
-    			
-    		}
-    	}
 		
     	//Calculate Score
     	finalScore = calculateScores(scores);
@@ -183,6 +273,16 @@ public class MenuController{
             	String[] items = scores[i][1].split(",", -1);
             	finalScore[i] += items.length;
     		}
+    		for(int j=2;j<scores[i].length;j++) {
+    			if(scores[i][j]!=null && !scores[i][j].isEmpty()) {
+        			if(scores[i][j].equals("over")) {
+        				finalScore[i] -= 3;
+        			}
+        			else{
+        				finalScore[i] += 1;
+        			}
+        		}
+    		}
     	}
 		return finalScore;
 	}
@@ -210,14 +310,14 @@ public class MenuController{
     	else {
     		reply += "I ";
     	}
-    	reply += "recommend you to choose "+finalChoice+" because ";
+    	reply += "recommend you to choose "+finalChoice;
     	if(scores[1]!=null && !scores[1].isEmpty()) {
     		Set<String> interests = new HashSet<String>();
     		String[] items = scores[1].split(", ", -1);
     		for(int i=0;i<items.length;i++) {
     			interests.add(items[i]);
     		}
-    		reply += "I know that you like foods that are ";
+    		reply += " because I know that you like foods that are ";
     		StringBuilder builder = new StringBuilder();
     		for(String s : interests) {
     			 if (builder.length() != 0) {
@@ -225,7 +325,21 @@ public class MenuController{
     			 }
     			 builder.append(s.toLowerCase());
     		}
-    		reply += builder + ".";
+    		reply += builder;
+    	}
+    	
+    	StringBuilder builder2 = new StringBuilder();
+    	for(int i=2;i<scores.length;i++) {
+    		if(scores[i]!=null && !scores[i].isEmpty()) {
+    			if (builder2.length() != 0) {
+			        builder2.append(", ");
+    			}
+    			builder2.append(scores[i]);
+    		}
+    	}
+    	reply += ".";
+    	if(builder2.length() != 0) {
+    		reply += "  This choice has the most suitable amount of " + builder2 + ".";
     	}
     	return reply;
 	}
