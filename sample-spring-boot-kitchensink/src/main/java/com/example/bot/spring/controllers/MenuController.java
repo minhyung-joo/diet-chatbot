@@ -330,7 +330,7 @@ public class MenuController{
     	
     	StringBuilder builder2 = new StringBuilder();
     	for(int i=2;i<scores.length;i++) {
-    		if(!scores[i].equals("")) {
+    		if(scores[i]!=null && !scores[i].isEmpty()) {
     			if (builder2.length() != 0) {
 			        builder2.append(", ");
     			}
