@@ -278,8 +278,7 @@ public class KitchenSinkController {
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		if (categories == null) {
-            user.addUser(event.getSource().getUserId());
-            
+			user.addUser(event.getSource().getUserId());
 			this.replyText(replyToken, showMainMenu);
 			categories = Categories.MAIN_MENU;
 		}
