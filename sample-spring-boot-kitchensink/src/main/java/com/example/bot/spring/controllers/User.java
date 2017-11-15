@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import com.example.bot.spring.tables.*;
 import com.example.bot.spring.controllers.MenuController;
 
@@ -454,13 +455,14 @@ public class User {
 	
 	@GetMapping(path="/showdailyprogress")
 	public @ResponseBody String showDailyProgress (@RequestParam String userID) {
-		return "Basal Metabolic Rate (BMR): "+getBMR(userID)+"\n"+
-				"Body Mass Index (BMI): "+getBMI(userID)+"\n"+
-				"Body Fat Percentage (BFP): "+getBMI(userID)+"\n"+"\n"+
+		DecimalFormat format = new DecimalFormat("##.00");
+		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
+				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+
+				"Body Fat Percentage (BFP): "+format.format(getBMI(userID))+"\n"+"\n"+
 				"Remaining Nutrients: \n"+
-				"Calories: "+getRemainingCalories(userID)+"\n"+
-				"Protein: "+getRemainingProtein(userID)+"\n"+
-				"Carbohydrate: "+getRemainingCarbohydrate(userID)+"\n"+
-				"Fat: "+getRemainingFat(userID)+"\n";			
+				"Calories: "+format.format(getRemainingCalories(userID))+"\n"+
+				"Protein: "+format.format(getRemainingProtein(userID))+"\n"+
+				"Carbohydrate: "+format.format(getRemainingCarbohydrate(userID))+"\n"+
+				"Fat: "+format.format(getRemainingFat(userID))+"\n";			
 	}
 }

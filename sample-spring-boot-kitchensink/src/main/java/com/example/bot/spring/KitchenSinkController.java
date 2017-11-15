@@ -249,7 +249,7 @@ public class KitchenSinkController {
 	}
 
 	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
-	public enum Profile {SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 
 	public Categories categories = null;
@@ -321,11 +321,16 @@ public class KitchenSinkController {
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
-		    			this.reply(replyToken, messages);
+		    			if(messages.size()!=0) {
+			    			this.reply(replyToken, messages);
+		    			}
 		    			break;
 		    		case PROFILE:
-		    			response = new TextMessage(handleProfile(text, event));
-		    			messages.add(response);
+		    			String responseText = handleProfile(replyToken, text, event);
+		    			if(!responseText.equals("")) {
+			    			response = new TextMessage(responseText);
+			    			messages.add(response);
+		    			}
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
@@ -443,22 +448,22 @@ public class KitchenSinkController {
 	}
 	
 	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
-	private String handleProfile (String text, Event event) {
+	private String handleProfile (String replyToken, String text, Event event) {
 		String result = "";
 		if (profile == null) {
 			Matcher m = Pattern.compile("gender|age|height|weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
 						case "gender":{
+							profile = Profile.SET_GENDER;
 							ConfirmTemplate confirmTemplate = new ConfirmTemplate(
 			                        "Tell me your gender",
 			                        new MessageAction("Male", "Male"),
 			                        new MessageAction("Female", "Female")
 			                );
-			                user.inputGender(""+ event.getSource().getUserId(),confirmTemplate.getText());
-			    			result = "I successfully recorded your gender";
-			    			profile = null;
-			    			categories = Categories.MAIN_MENU;
+							TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
+			                this.reply(replyToken, templateMessage);			                
+			    			result = "";
 			                break;
 						}
 						case "age":{
@@ -511,6 +516,12 @@ public class KitchenSinkController {
 		else {
 			boolean nan = false;
 			switch (profile) {
+					case SET_GENDER:
+						user.inputGender(""+ event.getSource().getUserId(),text);
+						result = "I successfully recorded your gender";
+						profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
 					case SET_AGE:
 						try {
 			    			user.inputAge(""+ event.getSource().getUserId(),Integer.parseInt(text));
