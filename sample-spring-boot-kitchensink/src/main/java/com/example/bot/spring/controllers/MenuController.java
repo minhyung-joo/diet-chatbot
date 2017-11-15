@@ -278,7 +278,7 @@ public class MenuController{
         			if(scores[i][j].equals("over")) {
         				finalScore[i] -= 3;
         			}
-        			else if(!scores[i][j].equals("")) {
+        			else{
         				finalScore[i] += 1;
         			}
         		}
