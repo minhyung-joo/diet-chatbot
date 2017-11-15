@@ -1,10 +1,15 @@
 package com.example.bot.spring.controllers;
 import java.util.function.Consumer;
 import java.util.Date;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimeZone;
 
 import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.MenuController;
 
 import java.io.InputStream;
 import java.io.File;
@@ -30,12 +35,18 @@ public class User {
 
 	@Autowired
 	private MealRepository mealRepository;
+	
+	@Autowired
+	private FoodRepository foodRepository;
 
 	@Autowired
 	private RecommendationRepository recommendationRepository;
 
 	@Autowired
 	private CampaignRepository campaignRepository;
+	
+	@Autowired
+	private MenuController mc;
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
@@ -53,8 +64,25 @@ public class User {
 		}
 	}
 	
-	public void setInterests(String[] Categories) {
-		
+	@GetMapping(path="/inputgender")
+	public @ResponseBody void inputGender (@RequestParam String id, @RequestParam String gender) {
+		Profile pf = profileRepository.findByUserID(id);
+		pf.setGender(gender);
+		profileRepository.save(pf);
+	}
+	
+	@GetMapping(path="/inputage")
+	public @ResponseBody void inputAge (@RequestParam String id, @RequestParam int age) {
+		Profile pf = profileRepository.findByUserID(id);
+		pf.setAge(age);
+		profileRepository.save(pf);
+	}
+	
+	@GetMapping(path="/inputheight")
+	public @ResponseBody void inputHeight (@RequestParam String id, @RequestParam Double height) {
+		Profile pf = profileRepository.findByUserID(id);
+		pf.setHeight(height);
+		profileRepository.save(pf);
 	}
 	
 	@GetMapping(path="/inputweight")
@@ -64,7 +92,6 @@ public class User {
 		wt.setTime();
 		wt.setWeight(weight);
 		weightRepository.save(wt);
-		
 	}
 	
 	@GetMapping(path="/getWeights")
@@ -275,4 +302,168 @@ public class User {
 
 	}
 	
+	private Double getLastWeight(String userID) {
+		Date closest = new Date(0);
+		Weight lastWeight = null;
+		for(Weight wt : weightRepository.findAll()) {
+			if(wt.getUserID().equals(userID)) { 
+	        		Date weightTime = new Date(wt.getTime().getTime());
+	        		if(weightTime.after(closest)) {
+	        			closest = weightTime;
+	        			lastWeight = wt;
+	        		}
+	        }
+		}
+		if(lastWeight == null) {
+			return null;
+		}
+		else{
+			return lastWeight.getWeight();
+		}
+	}
+	
+	@GetMapping(path="/getbmr")
+	public @ResponseBody double getBMR (@RequestParam String userID) {		
+		Profile pf = profileRepository.findByUserID(userID);
+		Double weight = getLastWeight(userID);
+		Double height = pf.getHeight();
+		Integer age = pf.getAge();
+		if(weight == null) {
+			weight = 89.0;
+		}
+		if(height == null) {
+			height = 177.0;
+		}
+		if(age == null) {
+			age = 44;
+		}
+		double bmr = 10*weight + 6.25*height - 5*age;
+		if(pf.getGender()=="Female") {
+			bmr -= 161;
+		}
+		else {
+			bmr += 5;
+		}
+		return bmr;
+	}
+	
+	@GetMapping(path="/getbmi")
+	public @ResponseBody double getBMI (@RequestParam String userID) {		
+		Profile pf = profileRepository.findByUserID(userID);
+		Double weight = getLastWeight(userID);
+		Double height = pf.getHeight()/100.0;
+		if(weight == null) {
+			weight = 89.0;
+		}
+		if(height == null) {
+			height = 1.77;
+		}
+		return weight/(height*height);
+	}
+	
+	@GetMapping(path="/getbmicategory")
+	public @ResponseBody String getBMICategory (@RequestParam String userID) {		
+		double bmi = getBMI(userID);
+		if(bmi<18.5) {
+			return "Underweight";
+		}
+		else if(bmi<25) {
+			return "Normal";
+		}
+		else if(bmi<30) {
+			return "Overweight";
+		}
+		else {
+			return "Obese";
+		}
+	}
+	
+	@GetMapping(path="/getbfp")
+	public @ResponseBody double getBFP (@RequestParam String userID) {		
+		Profile pf = profileRepository.findByUserID(userID);
+		Integer age = pf.getAge();
+		if(age == null) {
+			age = 44;
+		}
+		double bfp = 1.2*getBMI(userID) + 0.23*age;
+		if(pf.getGender()=="Female") {
+			bfp -= 16.2;
+		}
+		else {
+			bfp -= 5.4;
+		}
+		return bfp;
+	}
+	
+	private Set<Food> getFoodsFromToday(String userID){
+		Set<Food> foods = new HashSet<Food>();
+		for(Meal ml : mealRepository.findAll()) {
+			if(ml.getUserID().equals(userID)) { 
+	        		Calendar today = Calendar.getInstance();
+	        		Calendar mealTime = Calendar.getInstance();
+	        		Date mealDate = new Date(ml.getTime().getTime());
+	        		mealTime.setTime(mealDate);
+	        		if((today.get(Calendar.ERA) == mealTime.get(Calendar.ERA) &&
+	        			today.get(Calendar.YEAR) == mealTime.get(Calendar.YEAR) &&
+	        			today.get(Calendar.DAY_OF_YEAR) == mealTime.get(Calendar.DAY_OF_YEAR))) {
+	        			foods.addAll(mc.generateFoods(ml.getFood()));
+	        		}
+	        }
+		}
+		return foods;
+	}
+	
+	@GetMapping(path="/getremainingcalories")
+	public @ResponseBody double getRemainingCalories (@RequestParam String userID) {		
+		double currentCalories = 0;
+		Set<Food> mealsToday = getFoodsFromToday(userID);
+		for(Food fd : mealsToday) {
+			currentCalories += fd.getCalories();
+		}
+		return getBMR(userID) - currentCalories;
+	}
+	
+	@GetMapping(path="/getremainingprotein")
+	public @ResponseBody double getRemainingProtein (@RequestParam String userID) {		
+		double currentProtein = 0;
+		Set<Food> mealsToday = getFoodsFromToday(userID);
+		for(Food fd : mealsToday) {
+			currentProtein += fd.getProtein();
+		}
+		return getBMR(userID)*0.2/4.0 - currentProtein;
+	}
+	
+	@GetMapping(path="/getremainingcarbohydrate")
+	public @ResponseBody double getRemainingCarbohydrate (@RequestParam String userID) {		
+		double currentCarbohydrate = 0;
+		Set<Food> mealsToday = getFoodsFromToday(userID);
+		for(Food fd : mealsToday) {
+			currentCarbohydrate += fd.getCarbohydrate();
+		}
+		return getBMR(userID)*0.55/4.0 - currentCarbohydrate;
+	}
+	
+	@GetMapping(path="/getremainingfat")
+	public @ResponseBody double getRemainingFat (@RequestParam String userID) {		
+		double currentFat = 0;
+		Set<Food> mealsToday = getFoodsFromToday(userID);
+		for(Food fd : mealsToday) {
+			currentFat += fd.getSaturatedFat();
+		}
+		return getBMR(userID)*0.25/9.0 - currentFat;
+	}
+	
+	@GetMapping(path="/showdailyprogress")
+	public @ResponseBody String showDailyProgress (@RequestParam String userID) {
+		DecimalFormat format = new DecimalFormat("##.00");
+		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
+				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+
+				"Body Fat Percentage (BFP): "+format.format(getBFP(userID))+"\n"+
+				"Current Status: "+getBMICategory(userID)+"\n"+"\n"+
+				"Remaining Nutrients: \n"+
+				"Calories: "+format.format(getRemainingCalories(userID))+"\n"+
+				"Protein: "+format.format(getRemainingProtein(userID))+"\n"+
+				"Carbohydrate: "+format.format(getRemainingCarbohydrate(userID))+"\n"+
+				"Fat: "+format.format(getRemainingFat(userID))+"\n";			
+	}
 }

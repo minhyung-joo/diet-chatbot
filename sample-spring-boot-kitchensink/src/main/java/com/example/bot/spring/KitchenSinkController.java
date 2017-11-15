@@ -248,8 +248,8 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, CODE, INIT, CAMPAIGN}
-	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
 	public enum Menu {TEXT, URL, JPEG}
 
 	public Categories categories = null;
@@ -268,6 +268,7 @@ public class KitchenSinkController {
 	
 	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
             + "Profile - Record and view your weights and meals\n"
+			+ "Daily - View your progress on nutrients today\n"
             + "Food - Get nutritional details of a food\n"
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";
@@ -304,9 +305,6 @@ public class KitchenSinkController {
 			categories = catList.get(index);
 			profile = profList.get(index);
 			menu = menuList.get(index);
-			System.out.println("Cate: "+categories);
-			System.out.println("Profile: "+profile);
-			System.out.println("Menu: "+menu);
 		}
 		
 		if (categories == null) {
@@ -318,15 +316,25 @@ public class KitchenSinkController {
 		else {
 			switch (categories) {
 		    		case MAIN_MENU:
-		    			this.replyText(replyToken, handleMainMenu(text, event));
-		    			break;
-		    		case PROFILE:
-		    			response = new TextMessage(handleProfile(text, event));
+		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
 		    			this.reply(replyToken, messages);
+		    			break;
+		    		case PROFILE:
+		    			String responseText = handleProfile(replyToken, text, event);
+		    			if(!responseText.equals("")) {
+			    			response = new TextMessage(responseText);
+			    			messages.add(response);
+		    			}
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			if(messages.size()!=0) {
+			    			this.reply(replyToken, messages);
+		    			}
 		    			break;
 		    		case FOOD:
 		    			response = new TextMessage(handleFood(text));
@@ -359,9 +367,6 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
-		System.out.println("Cate: "+categories);
-		System.out.println("Profile: "+profile);
-		System.out.println("Menu: "+menu);
 		catList.set(index, categories);
 		profList.set(index, profile);
 		menuList.set(index, menu);
@@ -369,17 +374,25 @@ public class KitchenSinkController {
 	
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|daily|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
+		    				 + "Gender - Set your gender\n"
+		    				 + "Age - Update your age\n"
+		    				 + "Height - Update your height\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
 		                     + "View - View your recorded profiles\n"
 		                     + "Interest - Record your interests";
+		    			break;
+		    		}
+		    		case "daily": {
+		    			result = user.showDailyProgress(event.getSource().getUserId());
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		}
 		    		case "food": {
@@ -435,12 +448,34 @@ public class KitchenSinkController {
 	}
 	
 	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
-	private String handleProfile (String text, Event event) {
+	private String handleProfile (String replyToken, String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("gender|age|height|weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
+						case "gender":{
+							profile = Profile.SET_GENDER;
+							ConfirmTemplate confirmTemplate = new ConfirmTemplate(
+			                        "Tell me your gender",
+			                        new MessageAction("Male", "Male"),
+			                        new MessageAction("Female", "Female")
+			                );
+							TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
+			                this.reply(replyToken, templateMessage);			                
+			    			result = "";
+			                break;
+						}
+						case "age":{
+							profile = Profile.SET_AGE;
+							result = "Tell me your current age";
+							break;
+						}
+						case "height":{
+							profile = Profile.SET_HEIGHT;
+							result = "Tell me your current height(cm)";
+							break;
+						}
 			    		case "weight": {
 			    			profile = Profile.INPUT_WEIGHT;
 			    			result = "Tell me your current weight(kg)";
@@ -479,9 +514,43 @@ public class KitchenSinkController {
 			}
 		}
 		else {
+			boolean nan = false;
 			switch (profile) {
+					case SET_GENDER:
+						user.inputGender(""+ event.getSource().getUserId(),text);
+						result = "I successfully recorded your gender";
+						profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+					case SET_AGE:
+						try {
+			    			user.inputAge(""+ event.getSource().getUserId(),Integer.parseInt(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your age";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
+					case SET_HEIGHT:
+						try {
+			    			user.inputHeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your height";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
 		    		case INPUT_WEIGHT:
-		    			boolean nan = false;
 		    			try {
 			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
 		    			} catch (NumberFormatException e) {

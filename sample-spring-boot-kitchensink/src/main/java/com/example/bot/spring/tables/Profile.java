@@ -13,6 +13,9 @@ public class Profile {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long id;
 	String userID;
+	String gender;
+	int age;
+	double height;
 	private String[] interests;
 	private Timestamp registeredTime;
 	private boolean claimedNewUserCoupon;
@@ -22,6 +25,18 @@ public class Profile {
 	
 	public String getUserID () {
 		return userID;
+	}
+	
+	public String getGender() {
+		return gender;
+	}
+	
+	public int getAge() {
+		return age;
+	}
+	
+	public double getHeight() {
+		return height;
 	}
 	
 	public String[] getInterests () {
@@ -39,6 +54,18 @@ public class Profile {
 	
 	public void setUserID(String id) {
 		userID = id;
+	}
+	
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	
+	public void setAge(int age) {
+		this.age = age;
+	}
+	
+	public void setHeight(double height) {
+		this.height = height;
 	}
 	
 	public void setInterest (String[] interestArray) {
