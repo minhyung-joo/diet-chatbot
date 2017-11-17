@@ -143,7 +143,6 @@ public class KitchenSinkController {
 		DownloadedContent jpg = saveContent("jpg", response);
 		String message = inputToFood.readFromJPEG(jpg);
 		reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
-
 	}
 
 	@EventMapping
