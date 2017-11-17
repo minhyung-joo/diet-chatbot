@@ -9,21 +9,11 @@ import java.util.Date;
 
 
 @Entity
+
+@SequenceGenerator(name="seq", initialValue=100000, allocationSize=100)
 public class Recommendation {
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(
-		    strategy=GenerationType.SEQUENCE, 
-		    generator="SEQ_GEN")
-	@javax.persistence.SequenceGenerator(
-		    name="SEQ_GEN",
-		    sequenceName="my_sequence",
-		    allocationSize=20,
-		    initialValue=100000
-		    )
-	
-	
-	private long id;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
+    @Id long id;
 	private String uniqueCode;
 	private String userID;
 	private boolean claimed;
