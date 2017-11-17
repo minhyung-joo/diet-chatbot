@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 
-@SequenceGenerator(name="seq", initialValue=100000, allocationSize=100000)
+@SequenceGenerator(name="seq", initialValue=100000, allocationSize=10000)
 public class Recommendation {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
     @Id long id;
