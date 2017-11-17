@@ -16,8 +16,10 @@
 
 package com.example.bot.spring;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,6 +80,8 @@ import com.linecorp.bot.model.message.template.CarouselColumn;
 import com.linecorp.bot.model.message.template.CarouselTemplate;
 import com.linecorp.bot.model.message.template.ConfirmTemplate;
 import com.linecorp.bot.model.response.BotApiResponse;
+import com.linecorp.bot.model.PushMessage;
+
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
@@ -107,6 +111,27 @@ public class KitchenSinkController {
 	
 	@Autowired
 	private User user;
+	
+	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	public enum Menu {TEXT, URL, JPEG}
+
+	public Categories categories = null;
+	public Profile profile = null;
+	public Menu menu = null;
+	
+	public List<String> userList = new ArrayList<String>();
+	public List<Categories> catList = new ArrayList<Categories>();
+	public List<Profile> profList = new ArrayList<Profile>();
+	public List<Menu> menuList = new ArrayList<Menu>();
+
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
+            + "Profile - Record and view your weights and meals\n"
+			+ "Daily - View your progress on nutrients today\n"
+            + "Food - Get nutritional details of a food\n"
+            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -140,9 +165,26 @@ public class KitchenSinkController {
 			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
 			throw new RuntimeException(e);
 		}
-		DownloadedContent jpg = saveContent("jpg", response);
-		String message = inputToFood.readFromJPEG(jpg);
-		reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
+		
+		if (categories == Categories.CAMPAIGN) {
+			InputStream initialStream = response.getStream();
+			user.uploadCouponCampaign(initialStream);
+			categories = Categories.MAIN_MENU;
+			List<Message> messages = new ArrayList<Message>();
+			TextMessage reply = new TextMessage("Uploaded successful");
+			messages.add(reply);
+			messages.add(mainMenuMessage);
+			this.reply(replyToken, messages);
+		}
+		else if (categories == Categories.MENU && menu = Menu.JPEG) {
+			DownloadedContent jpg = saveContent("jpg", response);
+			String message = inputToFood.readFromJPEG(jpg);
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
+		}
+		else {
+			String message = "What is this image for?";
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
+		}
 	}
 
 	@EventMapping
@@ -206,6 +248,15 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	private void sendPushMessage(@NonNull Message message,@NonNull String id) {
+		try {
+			BotApiResponse apiResponse = lineMessagingClient.pushMessage(new PushMessage(id, message)).get();
+			log.info("Sent messages: {}", apiResponse);
+		} catch (InterruptedException | ExecutionException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private void replyText(@NonNull String replyToken, @NonNull String message) {
 		if (replyToken.isEmpty()) {
@@ -221,29 +272,39 @@ public class KitchenSinkController {
 	private void handleSticker(String replyToken, StickerMessageContent content) {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
-
-	public enum Categories {MAIN_MENU, PROFILE, FOOD, MENU, INIT}
-	public enum Profile {SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
-	public enum Menu {TEXT, URL, JPEG}
-	
-	public Categories categories = null;
-	
-	public Profile profile = null;
-	
-	public Menu menu = null;
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
 		String text = content.getText();
-		String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-                + "Profile - Record and view your weights and meals\n"
-                + "Food - Get nutritional details of a food\n"
-                + "Menu - Input menu and let me pick a food for you to eat this meal!";
-		Message mainMenuMessage = new TextMessage(showMainMenu);
+
 		Message response;
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
+		
+		int index = -1;
+		for(int i=0;i<userList.size();i++) {
+			if(userList.get(i).equals(event.getSource().getUserId())) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			categories = null;
+			profile = null;
+			menu = null;
+			index = userList.size();
+			userList.add(event.getSource().getUserId());
+			catList.add(categories);
+			profList.add(profile);
+			menuList.add(menu);
+		}
+		else {
+			categories = catList.get(index);
+			profile = profList.get(index);
+			menu = menuList.get(index);
+		}
+		
 		if (categories == null) {
             user.addUser(""+ event.getSource().getUserId());
             
@@ -253,15 +314,25 @@ public class KitchenSinkController {
 		else {
 			switch (categories) {
 		    		case MAIN_MENU:
-		    			this.replyText(replyToken, handleMainMenu(text));
-		    			break;
-		    		case PROFILE:
-		    			response = new TextMessage(handleProfile(text, event));
+		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
 		    			this.reply(replyToken, messages);
+		    			break;
+		    		case PROFILE:
+		    			String responseText = handleProfile(replyToken, text, event);
+		    			if(!responseText.equals("")) {
+			    			response = new TextMessage(responseText);
+			    			messages.add(response);
+		    			}
+		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add(mainMenuMessage);
+		    			}
+		    			if(messages.size()!=0) {
+			    			this.reply(replyToken, messages);
+		    			}
 		    			break;
 		    		case FOOD:
 		    			response = new TextMessage(handleFood(text));
@@ -272,12 +343,21 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);	    			
 		    			break;
 		    		case MENU:
-		    			response = new TextMessage(handleMenu(text));
+		    			response = new TextMessage(handleMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
 		    			this.reply(replyToken, messages);
+		    			break;
+		    		case CODE:
+		    			handleCode(text, event);
+		    			if (categories == Categories.MAIN_MENU) {
+			    			this.reply(replyToken, mainMenuMessage);
+		    			}
+		    			break; 
+		    		case CAMPAIGN:
+		    			this.replyText(replyToken, "Please upload the coupon image.");
 		    			break;
 		    		case INIT:
 		    			this.handleInit();
@@ -285,20 +365,32 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
+		catList.set(index, categories);
+		profList.set(index, profile);
+		menuList.set(index, menu);
     }
 	
-	private String handleMainMenu (String text) {
+	private String handleMainMenu (String text, Event event) {
 		String result = "";
-		Matcher m = Pattern.compile("profile|food|menu|initdb", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("profile|daily|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
 		
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
 		    			result = "Under profile, these are the features that we provide:\n"
+		    				 + "Gender - Set your gender\n"
+		    				 + "Age - Update your age\n"
+		    				 + "Height - Update your height\n"
 		                     + "Weight - Record your weight\n"
 		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles";
+		                     + "View - View your recorded profiles\n"
+		                     + "Interest - Record your interests";
+		    			break;
+		    		}
+		    		case "daily": {
+		    			result = user.showDailyProgress(event.getSource().getUserId());
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		}
 		    		case "food": {
@@ -319,6 +411,31 @@ public class KitchenSinkController {
 		    			result = "Initializing...";
 		    			break;
 		    		}
+		    		case "friend": {
+		    			result = "Your unique code is " + user.makeRecommendation(event.getSource().getUserId());
+		    			break;
+		    		}
+		    		case "code": {
+		    			if (user.checkValidityOfUser(event.getSource().getUserId())) {
+		    				categories = Categories.CODE;
+			    			result = "Insert the 6 digit code";
+		    			}
+		    			else {
+		    				result = "Not valid";
+		    			}
+		    			
+		    			break;
+		    		}
+		    		case "admin": {
+		    			if (user.isAdmin(event.getSource().getUserId())) {
+		    				result = "Please upload the photo of the coupon";
+		    				categories = Categories.CAMPAIGN;
+		    			}
+		    			else {
+		    				result = "You are not an admin";
+		    			}
+		    		}
+		    		
 			}
 		}
 		else {
@@ -329,12 +446,34 @@ public class KitchenSinkController {
 	}
 	
 	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
-	private String handleProfile (String text, Event event) {
+	private String handleProfile (String replyToken, String text, Event event) {
 		String result = "";
 		if (profile == null) {
-			Matcher m = Pattern.compile("weight|meal|view", Pattern.CASE_INSENSITIVE).matcher(text);
+			Matcher m = Pattern.compile("gender|age|height|weight|meal|view|interest", Pattern.CASE_INSENSITIVE).matcher(text);
 			if (m.find()) {
 				switch (m.group().toLowerCase()) {
+						case "gender":{
+							profile = Profile.SET_GENDER;
+							ConfirmTemplate confirmTemplate = new ConfirmTemplate(
+			                        "Tell me your gender",
+			                        new MessageAction("Male", "Male"),
+			                        new MessageAction("Female", "Female")
+			                );
+							TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
+			                this.reply(replyToken, templateMessage);			                
+			    			result = "";
+			                break;
+						}
+						case "age":{
+							profile = Profile.SET_AGE;
+							result = "Tell me your current age";
+							break;
+						}
+						case "height":{
+							profile = Profile.SET_HEIGHT;
+							result = "Tell me your current height(cm)";
+							break;
+						}
 			    		case "weight": {
 			    			profile = Profile.INPUT_WEIGHT;
 			    			result = "Tell me your current weight(kg)";
@@ -351,6 +490,21 @@ public class KitchenSinkController {
 			    			result = "Would you like to display profile of your weight or meal?";
 			    			break;
 			    		}
+			    		
+			    		case "interest": {
+			    			profile = Profile.SET_INTEREST;
+			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
+			    					+ "American \n"
+			    					+ "Indian \n"
+			    					+ "Alaska \n"
+			    					+ "Vegetable \n"
+			    					+ "Sweets \n"
+			    					+ "Soups \n"
+			    					+ "Sauces \n"
+			    					+ "Gravies \n"
+			    					+ "Fast Foods";
+			    			break;
+			    		}
 				}
 			}
 			else {
@@ -358,9 +512,43 @@ public class KitchenSinkController {
 			}
 		}
 		else {
+			boolean nan = false;
 			switch (profile) {
+					case SET_GENDER:
+						user.inputGender(""+ event.getSource().getUserId(),text);
+						result = "I successfully recorded your gender";
+						profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+					case SET_AGE:
+						try {
+			    			user.inputAge(""+ event.getSource().getUserId(),Integer.parseInt(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your age";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
+					case SET_HEIGHT:
+						try {
+			    			user.inputHeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
+		    			} catch (NumberFormatException e) {
+		    			    //error
+		    				nan= true;
+		    				return "Not a number. Please enter again";
+		    			}		    			
+		    			if (!nan) {
+			    			result = "I successfully recorded your height";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			}
+		    			break;
 		    		case INPUT_WEIGHT:
-		    			boolean nan = false;
 		    			try {
 			    			user.inputWeight(""+ event.getSource().getUserId(),Double.parseDouble(text));
 		    			} catch (NumberFormatException e) {
@@ -377,6 +565,12 @@ public class KitchenSinkController {
 		    		case INPUT_MEAL:
 		    			user.inputMeal(""+ event.getSource().getUserId(),text);
 		    			result = "I successfully recorded your meal";
+		    			profile = null;
+		    			categories = Categories.MAIN_MENU;
+		    			break;
+		    		case SET_INTEREST:
+		    			user.inputInterest(""+ event.getSource().getUserId(),text);
+		    			result = "I successfully recorded your interests";
 		    			profile = null;
 		    			categories = Categories.MAIN_MENU;
 		    			break;
@@ -461,7 +655,7 @@ public class KitchenSinkController {
         }
 	}
 	
-	private String handleMenu (String text) {
+	private String handleMenu (String text, Event event) {
 		String result = "";
 		if(menu == null) {
 			Matcher m = Pattern.compile("text|url|jpeg", Pattern.CASE_INSENSITIVE).matcher(text);
@@ -489,7 +683,7 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result = inputToFood.readFromText(text);
+                result = inputToFood.readFromText(""+event.getSource().getUserId(),text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
@@ -509,6 +703,46 @@ public class KitchenSinkController {
 		}
 		return result;
 			
+	}
+	
+	private String handleCode (String text, Event event) {
+		String result = "";
+		//check if there code is 6 digits
+		if (text.length() != 6) {
+			result = "That is not 6 digits";
+		}
+		else {
+			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
+			
+			if (id.length()>11) {
+				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+				reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
+			}
+			
+			else {
+				switch (id) {
+					case "recommender": {
+						result = "You made this recommendation";
+						break;
+					}
+					case "claimed": {
+						result = "Coupon has already been claimed";
+						break;
+					}
+					case "none": {
+						result = "No such code";
+						break;
+					}
+				}
+				replyText(((MessageEvent) event).getReplyToken(), result);
+
+			}	
+		}
+		
+		categories = Categories.MAIN_MENU;
+		
+		return result;
 	}
 	
 	static String createUri(String path) {
@@ -536,6 +770,17 @@ public class KitchenSinkController {
 		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
 			ByteStreams.copy(responseBody.getStream(), outputStream);
 			log.info("Saved {}: {}", ext, tempFile);
+			return tempFile;
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+	private static DownloadedContent saveContentFromDB(String ext, byte[] bytes) {
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+		DownloadedContent tempFile = createTempFile(ext);
+		try (OutputStream outputStream = Files.newOutputStream(tempFile.path)) {
+			ByteStreams.copy(bis, outputStream);
 			return tempFile;
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);

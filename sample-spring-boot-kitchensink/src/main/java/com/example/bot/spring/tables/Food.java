@@ -18,7 +18,7 @@ public class Food {
 	double protein;
 	double carbohydrate;
 
-	public long foodID() {
+	public long getFoodID() {
 		return foodID;
 	}
 

@@ -1,6 +1,7 @@
 package com.example.bot.spring.controllers;
 
 import com.example.bot.spring.tables.*;
+import com.example.bot.spring.controllers.MenuController;
 
 import java.util.*;
 import java.util.function.*;
@@ -31,38 +32,15 @@ import org.springframework.http.MediaType;
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
+	
+	@Autowired
+	private MenuController menuController;
 
 	@GetMapping(path="/readfromtext")
-    public @ResponseBody String readFromText(@RequestParam String text) {
-		String[] menu = text.split(System.getProperty("line.separator"));
-    	List<Set<String>> result = new ArrayList<Set<String>>();
-    	for(int i=0;i<menu.length;i++) {
-    		Set<String> names = new HashSet<String>();
-        	int j=0;
-        	for(Food fd : foodRepository.findAll()) {
-        		String fdName = fd.getName().toLowerCase();
-        		if(fdName.contains(",")) {
-        			fdName = fdName.substring(0,fdName.indexOf(","));
-        		}
-        		if(fdName.endsWith("s")) {
-            		fdName = fdName.substring(0, fdName.length()-1);
-            	}
-        		if(menu[i].toLowerCase().contains(fdName)) { 
-    	        	names.add(fdName);
-       		    	j++;
-   		        }   
-       		}
-        	result.add(names);
-    	}
-    	String resultText = "The Foods in each entree are as followed:\n";
-    	for(int i=0;i<menu.length;i++) {
-    		resultText += (i+1)+". ";
-    		for(String s : result.get(i)) {
-    			resultText += s + ", ";
-    		}
-    		resultText += "\n";
-    	}
-    	return resultText;
+    public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
+		menuController.setUserID(userId);
+		menuController.setMenu(text);
+    	return menuController.pickFood();
     }
 
     public String readFromJSON(String url) {
