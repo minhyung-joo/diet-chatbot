@@ -176,7 +176,7 @@ public class KitchenSinkController {
 			messages.add(mainMenuMessage);
 			this.reply(replyToken, messages);
 		}
-		else if (categories == Categories.MENU && menu = Menu.JPEG) {
+		else if (categories == Categories.MENU && menu == Menu.JPEG) {
 			DownloadedContent jpg = saveContent("jpg", response);
 			String message = inputToFood.readFromJPEG(jpg);
 			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
