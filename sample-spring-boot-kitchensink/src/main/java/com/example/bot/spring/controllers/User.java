@@ -134,6 +134,26 @@ public class User {
 		}
 	}
 	
+	@GetMapping(path="/getInterests")
+	public @ResponseBody String outputInterest (@RequestParam String id) {		
+		boolean interestFound = false;
+		String outputStr = "";
+		for(Profile pf : profileRepository.findAll()) {
+			if(pf.getUserID().equals(id)) { 
+				if(pf.getInterests() != null) {
+					interestFound = true;
+					outputStr += "Your interests in food are: \n";
+					for(int i=0; i<pf.getInterests().length; i++) {
+						outputStr += pf.getInterests()[i] + "\n";
+					}
+					return outputStr;
+				}
+	        }
+		}
+		outputStr += "You did not tell me your food interests yet.";		
+		return outputStr;
+	}
+	
 	
 	@GetMapping(path="/inputmeal")
 	public @ResponseBody void inputMeal (@RequestParam String id, @RequestParam String food) {		
