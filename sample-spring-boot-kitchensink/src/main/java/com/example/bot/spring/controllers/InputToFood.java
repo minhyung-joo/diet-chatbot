@@ -22,7 +22,6 @@ import com.example.bot.spring.models.Menu;
 import com.example.bot.spring.models.OCRResponse;
 import com.example.bot.spring.models.Response;
 import com.example.bot.spring.models.TextAnnotation;
-import net.sourceforge.tess4j.*;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
