@@ -178,8 +178,10 @@ public class KitchenSinkController {
 		}
 		else if (categories == Categories.MENU && menu == Menu.JPEG) {
 			DownloadedContent jpg = saveContent("jpg", response);
-			String message = inputToFood.readFromJPEG(jpg);
-			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
+			String menu = inputToFood.readFromJPEG(jpg); // Use this menu string for features
+			categories = Categories.MAIN_MENU;
+			menu = null;
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(menu));
 		}
 		else {
 			String message = "What is this image for?";

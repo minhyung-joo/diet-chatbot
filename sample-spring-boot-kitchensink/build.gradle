@@ -19,9 +19,8 @@ apply plugin: 'org.springframework.boot'
 dependencies {
     compile project(':line-bot-spring-boot')
     compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
-    compile group: 'net.sourceforge.tess4j', name: 'tess4j', version: '3.2.1'
+    compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile group: 'com.asprise.ocr', name: 'java-ocr-api', version: '[15,)'
 }
 
 test {
