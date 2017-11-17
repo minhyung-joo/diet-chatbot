@@ -417,12 +417,20 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			if (user.checkValidityOfUser(event.getSource().getUserId())) {
-		    				categories = Categories.CODE;
-			    			result = "Insert the 6 digit code";
-		    			}
-		    			else {
-		    				result = "Not valid";
+		    			switch(user.checkValidityOfUser(event.getSource().getUserId())) {
+			    			case "claimed":
+			    				result = "You already accepted a recommendation";
+			    				break;
+			    			case "taken":
+			    				result = "This recommendation code is already used";
+			    				break;
+			    			case "before":
+			    				result = "This campaign started after you registered";
+			    				break;
+			    			case "valid":
+				    			result = "Insert the 6 digit code";
+			    				categories = Categories.CODE;
+			    				break;	
 		    			}
 		    			
 		    			break;

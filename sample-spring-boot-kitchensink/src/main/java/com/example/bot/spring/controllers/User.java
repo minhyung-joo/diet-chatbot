@@ -244,11 +244,11 @@ public class User {
 	}
 	
 	@GetMapping(path="/checkValidity")
-	public @ResponseBody boolean checkValidityOfUser (String id) {	
+	public @ResponseBody String checkValidityOfUser (String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
-			//already claimed new user coupon
-			return false;
+			
+			return "claimed";
 		}
 		
 		Campaign campaign=null;
@@ -259,26 +259,27 @@ public class User {
 		if (campaign != null) {
 			if (campaign.getCount()>=5000) {
 				//5000 coupons already taken
-				return false;
+				return "taken";
 			}
 			if (campaign.getTime().getTime()>pf.getRegisteredTime().getTime()) {
 				//user registered before campaign began
-				return false;
+				return "before";
 			}
 			else {
-				return true;
+				return "valid";
 			}	
 		}
 		else {
 			//no campaign
-			return false;
+			return "none";
 		}
 		
 		
 	}
 	
 	@GetMapping(path="/isAdmin")
-	public @ResponseBody boolean isAdmin (String userID) {	
+	public @ResponseBody boolean isAdmin (String userID) {
+		//TODO
 		return true;
 	}
 	

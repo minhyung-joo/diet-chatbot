@@ -11,8 +11,18 @@ import java.util.Date;
 @Entity
 public class Recommendation {
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id")
+	@GeneratedValue(
+		    strategy=GenerationType.SEQUENCE, 
+		    generator="SEQ_GEN")
+	@javax.persistence.SequenceGenerator(
+		    name="SEQ_GEN",
+		    sequenceName="my_sequence",
+		    allocationSize=20,
+		    initialValue=100000
+		    )
+	
+	
 	private long id;
 	private String uniqueCode;
 	private String userID;
