@@ -169,15 +169,14 @@ public class User {
 	public @ResponseBody String makeRecommendation (@RequestParam String id) {		
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
-		rd.setUniqueCode(makeUniqueCode("123456"));
 		rd.setClaimed(false);
 		recommendationRepository.save(rd);	
-		return rd.getUniqueCode();
+		return Long.toString(rd.getID());
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
 	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
-		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
+		Recommendation rd = recommendationRepository.findById(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
 				if (!rd.getUserID().equals(userID)) {
@@ -206,11 +205,7 @@ public class User {
 
 		}
 	}
-	
-	public String makeUniqueCode(String code) {
-		return code;
-	}
-	
+		
 	@GetMapping(path="/uploadCouponCampaign")
 	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
 		

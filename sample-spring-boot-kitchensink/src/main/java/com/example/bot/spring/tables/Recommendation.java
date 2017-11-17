@@ -18,6 +18,9 @@ public class Recommendation {
 	private String userID;
 	private boolean claimed;
 	
+	public long getID () {
+		return id;
+	}
 	public String getUserID () {
 		return userID;
 	}
