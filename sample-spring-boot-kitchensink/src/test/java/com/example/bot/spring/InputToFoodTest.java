@@ -1,6 +1,5 @@
 package com.example.bot.spring;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -15,6 +14,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,17 +42,29 @@ import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.bot.spring.DatabaseEngine;
-import com.example.bot.spring.SQLDatabaseEngine;
+import com.example.bot.spring.controllers.InputToFood;
+import com.example.bot.spring.controllers.MenuController;
+import com.example.bot.spring.tables.FoodRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { InputToFoodTest.class, SQLDatabaseEngine.class })
+@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })
 public class InputToFoodTest {
-	@Autowired
-	private DatabaseEngine databaseEngine;
+//	@Autowired
+//	private InputToFood inputToFood;
 	
 	@Test
-	public void testNotFound() throws Exception {
-		
+	public void testReadFromJSON() throws Exception {
+//		String nullStr = null;
+//		String emptyStr = "";
+//		String invalidUrl = "htt:asdf1234.com";
+//		
+//		String nullResult = inputToFood.readFromJSON(nullStr);
+//		assertEquals(nullResult, "Failed to load URL.");
+//		
+//		String emptyResult = inputToFood.readFromJSON(emptyStr);
+//		assertEquals(emptyResult, "Failed to load URL.");
+//		
+//		String invalidResult = inputToFood.readFromJSON(invalidUrl);
+//		assertEquals(invalidResult, "Failed to load URL.");
 	}
 }

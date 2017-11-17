@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping(path="/menu")
 public class MenuController{
 	
 	@Autowired
@@ -50,7 +48,6 @@ public class MenuController{
 		menu = menuList;
 	}
 	
-	@GetMapping(path="/pickfood")
 	public @ResponseBody String pickFood() {
 		String[] choices = menu.split(System.getProperty("line.separator"));
 		

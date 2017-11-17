@@ -26,8 +26,8 @@ import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 
-@Controller
-@RequestMapping(path="/input")
+import lombok.extern.slf4j.Slf4j;
+
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
@@ -35,7 +35,6 @@ public class InputToFood {
 	@Autowired
 	private MenuController menuController;
 
-	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
