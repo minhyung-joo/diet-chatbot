@@ -134,21 +134,48 @@ public class User {
 		}
 	}
 	
+	@GetMapping(path="/getgeneral")
+	public @ResponseBody String outputGeneral (@RequestParam String id) {		
+		Profile pf = profileRepository.findByUserID(id);
+		String outputStr = "Gender: ";
+		Integer age = pf.getAge();
+		String gender = pf.getGender();
+		Double height = pf.getHeight();
+		if(pf.getGender()=="Female") {
+			outputStr += "Female\n";
+		}
+		else {
+			outputStr += "Male\n";
+		}
+		outputStr += "Age: ";
+		if(age == null) {
+			outputStr += "44\n";
+		}
+		else {
+			outputStr += age.toString()+"\n";
+		}
+		outputStr += "Height: ";
+		if(height == null) {
+			outputStr += "177cm\n\n";
+		}
+		else {
+			outputStr += height.toString()+"\n\n";
+		}
+		return outputStr;
+	}
+	
 	@GetMapping(path="/getInterests")
 	public @ResponseBody String outputInterest (@RequestParam String id) {		
 		boolean interestFound = false;
 		String outputStr = "";
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-				if(pf.getInterests() != null) {
-					interestFound = true;
-					outputStr += "Your interests in food are: \n";
-					for(int i=0; i<pf.getInterests().length; i++) {
-						outputStr += pf.getInterests()[i] + "\n";
-					}
-					return outputStr;
-				}
-	        }
+		Profile pf = profileRepository.findByUserID(id);
+		if(pf.getInterests() != null) {
+			interestFound = true;
+			outputStr += "Your interests in food are: \n";
+			for(int i=0; i<pf.getInterests().length; i++) {
+				outputStr += pf.getInterests()[i] + "\n";
+			}
+			return outputStr;
 		}
 		outputStr += "You did not tell me your food interests yet.";		
 		return outputStr;
