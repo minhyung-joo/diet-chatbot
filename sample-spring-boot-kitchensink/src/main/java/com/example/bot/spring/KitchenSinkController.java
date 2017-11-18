@@ -515,7 +515,7 @@ public class KitchenSinkController {
 			                        		   new MessageAction("Nuts", "Nut and Seed Products"),
 			                        		   new MessageAction("Beef", "Beef Products"),
 			                        		   new MessageAction("Beverages", "Beverages"),
-			                        		   new MessageAction("Fish", "Finfish and Shellfish Products"),
+			                        		   new MessageAction("Fish", "Finfish and Shellfish Products")
 			                        		   
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
