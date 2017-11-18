@@ -597,7 +597,7 @@ public class KitchenSinkController {
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
 		    			} else if(text.toLowerCase().equals("reset")) {
-		    				result = "Your interest records were deleted. Tell me your interests again."
+		    				result = "Your interest records were deleted. Tell me your interests again.";
 		    				user.resetInterest(""+ event.getSource().getUserId());
 		    			} else {
 			    			result = user.inputInterest(""+ event.getSource().getUserId(),text);
