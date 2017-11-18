@@ -133,7 +133,7 @@ public class User {
 		}
 		
 		if(categoryFound != splitInterest.length) {
-			return "You selected invalid interests";
+			return "Those interests are not valid.";
 		}
 		
 		Profile pf = profileRepository.findByUserID(id);	
