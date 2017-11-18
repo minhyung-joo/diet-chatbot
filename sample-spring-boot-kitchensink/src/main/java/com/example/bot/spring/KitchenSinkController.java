@@ -623,8 +623,11 @@ public class KitchenSinkController {
 					break;
 				}
 				case "general": {
+					System.out.println("General works here");
 					result = user.outputGeneral(""+event.getSource().getUserId());
+					System.out.println("General works here");
 					result += user.outputInterest(""+event.getSource().getUserId());
+					System.out.println("interest works here");
 					break;
 				}
 			}
