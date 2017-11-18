@@ -107,10 +107,31 @@ public class KitchenSinkController {
 	private LineMessagingClient lineMessagingClient;
 	
 	@Autowired
-	private InputToFood i;
+	private InputToFood inputToFood;
 	
 	@Autowired
 	private User user;
+	
+	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	public enum Menu {TEXT, URL, JPEG}
+
+	public Categories categories = null;
+	public Profile profile = null;
+	public Menu menu = null;
+	
+	public List<String> userList = new ArrayList<String>();
+	public List<Categories> catList = new ArrayList<Categories>();
+	public List<Profile> profList = new ArrayList<Profile>();
+	public List<Menu> menuList = new ArrayList<Menu>();
+
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
+            + "Profile - Record and view your weights and meals\n"
+			+ "Daily - View your progress on nutrients today\n"
+            + "Food - Get nutritional details of a food\n"
+            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -178,17 +199,24 @@ public class KitchenSinkController {
 			messages.add(reply);
 			messages.add(mainMenuMessage);
 			this.reply(replyToken, messages);
-
+		}
+		
+		else if (categories == Categories.MENU && menu == Menu.JPEG) {
+			DownloadedContent jpg = saveContent("jpg", response);
+			String menu = inputToFood.readFromJPEG(jpg); // Use this menu string for features
+			categories = Categories.MAIN_MENU;
+			menu = null;
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(menu));
+		}
+		else {
+			String message = "What is this image for?";
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
 		}
 		
 		catList.set(index, categories);
 		profList.set(index, profile);
 		menuList.set(index, menu);
 
-		
-//		DownloadedContent jpg = saveContent("jpg", response);
-//		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
-		
 	}
 
 	@EventMapping
@@ -277,33 +305,6 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
-	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
-	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
-	public enum Menu {TEXT, URL, JPEG}
-
-	public Categories categories = null;
-
-	public Profile profile = null;
-	
-	public Menu menu = null;
-	
-	public List<String> userList = new ArrayList<String>();
-	
-	public List<Categories> catList = new ArrayList<Categories>();
-	
-	public List<Profile> profList = new ArrayList<Profile>();
-	
-	public List<Menu> menuList = new ArrayList<Menu>();
-	
-	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-            + "Profile - Record and view your weights and meals\n"
-			+ "Daily - View your progress on nutrients today\n"
-            + "Food - Get nutritional details of a food\n"
-            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-            + "Friend - Make recommendations to a friend to get an ice cream coupon!\n"
-            + "Code - Accept recommendations from a friend";
-	
-	public Message mainMenuMessage = new TextMessage(showMainMenu);
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
@@ -523,7 +524,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to display profile of your weight or meal?";
+			    			result = "Would you like to view your general profile, or your past weights or meals?";
 			    			break;
 			    		}
 			    		
@@ -623,7 +624,7 @@ public class KitchenSinkController {
 	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
-		Matcher m = Pattern.compile("weight|meal", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("weight|meal|general", Pattern.CASE_INSENSITIVE).matcher(text);
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 				case "weight": {
@@ -632,6 +633,11 @@ public class KitchenSinkController {
 				}
 				case "meal": {
 					result = user.outputMeal(""+event.getSource().getUserId());
+					break;
+				}
+				case "general": {
+					result = user.outputGeneral(""+event.getSource().getUserId());
+					result += user.outputInterest(""+event.getSource().getUserId());
 					break;
 				}
 			}
@@ -647,7 +653,7 @@ public class KitchenSinkController {
 	private String handleFood (String text) {
 		categories = Categories.MAIN_MENU;
 		String result = "";
-		result = i.getFoodDetails(text);
+		result = inputToFood.getFoodDetails(text);
 		return result;
 	}
 	
@@ -719,12 +725,12 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result = i.readFromText(""+event.getSource().getUserId(),text);
+                result = inputToFood.readFromText(""+event.getSource().getUserId(),text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
-    			result = i.readFromJSON(text);
+    			result = inputToFood.readFromJSON(text);
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
