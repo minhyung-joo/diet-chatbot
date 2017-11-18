@@ -50,11 +50,19 @@ public class User {
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
+		
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf == null) {
+			
 			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
+			if (profileRepository.count() == 0) {
+				pf.setAdmin(true);
+			}
+			else {
+				pf.setAdmin(false);
+			}
 			profileRepository.save(pf);
 		}
 	}
@@ -275,7 +283,13 @@ public class User {
 	@GetMapping(path="/isAdmin")
 	public @ResponseBody boolean isAdmin (String userID) {
 		//TODO
-		return true;
+		Profile pf = profileRepository.findByUserID(userID);
+		if (pf !=null) {
+			if (pf.getAdmin()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
