@@ -181,6 +181,11 @@ public class KitchenSinkController {
 
 		}
 		
+		catList.set(index, categories);
+		profList.set(index, profile);
+		menuList.set(index, menu);
+
+		
 //		DownloadedContent jpg = saveContent("jpg", response);
 //		reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
 		
