@@ -3,6 +3,7 @@ import java.util.function.Consumer;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -125,6 +126,10 @@ public class User {
 	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		
 		String[] splitInterest = interest.split(", ");
+		
+			for(Food fd : foodRepository.findAll()) {
+				System.out.println(fd.getCategory());
+			}
 		
 		for(Profile pf : profileRepository.findAll()) {
 			if(pf.getUserID().equals(id)) { 

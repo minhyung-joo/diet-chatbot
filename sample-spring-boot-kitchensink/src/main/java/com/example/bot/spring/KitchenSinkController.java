@@ -495,6 +495,25 @@ public class KitchenSinkController {
 			    		
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
+			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
+			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+			                        imageUrl,
+			                        "My Food Interests",
+			                        "Plese select all your interests",
+			                        Arrays.asList(
+			                                new URIAction("Go to line.me",
+			                                              "https://line.me"),
+			                                new PostbackAction("Say hello1",
+			                                                   "hello こんにちは"),
+			                                new PostbackAction("言 hello2",
+			                                                   "hello こんにちは",
+			                                                   "hello こんにちは"),
+			                                new MessageAction("Say message",
+			                                                  "Rice=米")
+			                        ));
+			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
+
+			                
 			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
 			    					+ "American \n"
 			    					+ "Indian \n"
