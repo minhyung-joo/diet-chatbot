@@ -508,7 +508,7 @@ public class KitchenSinkController {
 			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
-			                                new CarouselColumn(imageUrl, "Categories 3", "Please choose your interests", Arrays.asList(
+			                                new CarouselColumn("", "Categories 3", "Please choose your interests", Arrays.asList(
 			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
