@@ -130,7 +130,8 @@ public class KitchenSinkController {
 			+ "Daily - View your progress on nutrients today\n"
             + "Food - Get nutritional details of a food\n"
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!\n"
+            + "Code - Accept recommendations to get an ice cream coupon";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
 	
 	@EventMapping
@@ -781,10 +782,10 @@ public class KitchenSinkController {
 				messages.add(new TextMessage(result));
 
 			}	
-			messages.add(mainMenuMessage);
 
 		}
-		
+		messages.add(mainMenuMessage);
+
 		reply(((MessageEvent) event).getReplyToken(), messages);
 		
 		categories = Categories.MAIN_MENU;
