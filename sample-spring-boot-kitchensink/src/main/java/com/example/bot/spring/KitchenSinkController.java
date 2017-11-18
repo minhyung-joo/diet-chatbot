@@ -136,12 +136,17 @@ public class KitchenSinkController {
 	public TemplateMessage menuTemplateMessage = null;
 	
 	@PostConstruct
-	public void initMenuTemplate() {
-	    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
-	    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
-	    String imageFood = createUri("/static/buttons/menuFood.jpg");
-	    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
-	    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
+	public void init() {
+//	    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
+//	    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
+//	    String imageFood = createUri("/static/buttons/menuFood.jpg");
+//	    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
+//	    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
+	    String imageProfile = "/static/buttons/menuProfile.jpg";
+	    String imageDaily = "/static/buttons/menuDaily.jpg";
+	    String imageFood = "/static/buttons/menuFood.jpg";
+	    String imageMenu = "/static/buttons/menuMenu.jpg"; 
+	    String imageFriend = "/static/buttons/menuFriend.jpg";
 	    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
 	            Arrays.asList(
 	                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
