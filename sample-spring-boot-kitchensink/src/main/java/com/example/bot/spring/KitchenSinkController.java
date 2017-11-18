@@ -133,10 +133,7 @@ public class KitchenSinkController {
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
-	public TemplateMessage menuTemplateMessage = null;
 	
-	@PostConstruct
-	public void init() {
 //	    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
 //	    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
 //	    String imageFood = createUri("/static/buttons/menuFood.jpg");
@@ -165,8 +162,7 @@ public class KitchenSinkController {
 	                            new MessageAction("Click here", "friend")
 	                    ))
 	            ));
-	    this.menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
-	}
+	    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 
 	
 	@EventMapping
