@@ -126,12 +126,12 @@ public class KitchenSinkController {
 	public List<Profile> profList = new ArrayList<Profile>();
 	public List<Menu> menuList = new ArrayList<Menu>();
 
-	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-            + "Profile - Record and view your weights and meals\n"
-			+ "Daily - View your progress on nutrients today\n"
-            + "Food - Get nutritional details of a food\n"
-            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n";
+//            + "Profile - Record and view your weights and meals\n"
+//			+ "Daily - View your progress on nutrients today\n"
+//            + "Food - Get nutritional details of a food\n"
+//            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+//            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
 
     String imageProfile;
@@ -394,7 +394,9 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
-			this.reply(replyToken, getMenuTemplate()); 
+			messages.add(mainMenuMessage);
+			messages.add(getMenuTemplate());
+			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -403,7 +405,6 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
 		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
@@ -415,7 +416,7 @@ public class KitchenSinkController {
 			    			messages.add(response);
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			if(messages.size()!=0) {
 			    			this.reply(replyToken, messages);
@@ -425,7 +426,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleFood(text));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);	    			
 		    			break;
@@ -433,7 +434,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
