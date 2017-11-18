@@ -38,7 +38,7 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.example.bot.spring.controllers.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
