@@ -496,28 +496,40 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
-			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
-			                        imageUrl,
-			                        "My Food Interests",
-			                        "Plese select all your interests",
-			                        Arrays.asList(
-			                        		   new MessageAction("Dairy/Egg products", "Dairy and Egg Products"),
-			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
-			                        		   new MessageAction("Baby food", "Baby Foods"),
-			                        		   new MessageAction("Fats/Oils", "Fats and Oils")
-//			                        		   new MessageAction("Soups/Sauces/Gravies", "Soups, Sauces, and Gravies"),
-//			                        		   new MessageAction("Sausages", "Sausages and Luncheon Meats"),
-//			                        		   new MessageAction("Cereals", "Breakfast Cereals"),
-//			                        		   new MessageAction("Fruits", "Fruits and Fruit Juices"),
-//			                        		   new MessageAction("Pork", "Pork Products"),
-//			                        		   new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
-//			                        		   new MessageAction("Nuts", "Nut and Seed Products"),
-//			                        		   new MessageAction("Beef", "Beef Products"),
-//			                        		   new MessageAction("Beverages", "Beverages"),
-//			                        		   new MessageAction("Fish", "Finfish and Shellfish Products")
-			                        		   
-			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
+			                CarouselTemplate carouselTemplate = new CarouselTemplate(
+			                		Arrays.asList(
+	                                new CarouselColumn(imageUrl, "Your food interests", "Choose your food interests", Arrays.asList(
+	                                        new MessageAction("Lamb", "Lamb, Veal and Game Products"),
+	                                        new MessageAction("Fish", "Finfish and Shellfish Products"),
+	                                        new MessageAction("Beef", "Beef Products")
+	                                )),
+	                                new CarouselColumn(null, "", "", Arrays.asList(
+	                                        new MessageAction("Pork", "Pork Products"),
+	                                        new MessageAction("Sausage", "Sausages and Luncheon Meats"),
+	                                        new MessageAction("Poultry", "Poultry Products")
+	                                )),
+	                                new CarouselColumn(imageUrl, "Datetime Picker", "Please select a date, time or datetime", Arrays.asList(
+	                                        new DatetimePickerAction("Datetime",
+	                                                "action=sel",
+	                                                "datetime",
+	                                                "2017-06-18T06:15",
+	                                                "2100-12-31T23:59",
+	                                                "1900-01-01T00:00"),
+	                                        new DatetimePickerAction("Date",
+	                                                "action=sel&only=date",
+	                                                "date",
+	                                                "2017-06-18",
+	                                                "2100-12-31",
+	                                                "1900-01-01"),
+	                                        new DatetimePickerAction("Time",
+	                                                "action=sel&only=time",
+	                                                "time",
+	                                                "06:15",
+	                                                "23:59",
+	                                                "00:00")
+	                                ))
+	                        ));
+			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", carouselTemplate);
 			                this.reply(replyToken, templateMessage);
 
 			    			break;
