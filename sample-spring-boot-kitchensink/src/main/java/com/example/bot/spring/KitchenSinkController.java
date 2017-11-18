@@ -366,7 +366,7 @@ public class KitchenSinkController {
 		String text = content.getText();
 
 		Message response;
-		List<Message> messages = new ArrayList<Message>();
+		List<com.sun.xml.internal.ws.wsdl.writer.document.Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		
 		int index = -1;
@@ -405,6 +405,7 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
@@ -416,6 +417,7 @@ public class KitchenSinkController {
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			if(messages.size()!=0) {
 			    			this.reply(replyToken, messages);
@@ -426,6 +428,7 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);	    			
 		    			break;
@@ -434,6 +437,7 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
