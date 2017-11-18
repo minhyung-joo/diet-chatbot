@@ -133,7 +133,7 @@ public class KitchenSinkController {
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
-	public TemplateMessage menuTemplateMessage;
+	public TemplateMessage menuTemplateMessage = null;
 	
 	@PostConstruct
 	public void initMenuTemplate() {
@@ -160,7 +160,7 @@ public class KitchenSinkController {
 	                            new MessageAction("Click here", "friend")
 	                    ))
 	            ));
-	    menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+	    this.menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 	}
 
 	
