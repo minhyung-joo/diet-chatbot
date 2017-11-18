@@ -509,7 +509,7 @@ public class KitchenSinkController {
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
 			                
-			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+			                ButtonsTemplate buttonsTemplate2 = new ButtonsTemplate(
 			                        imageUrl,
 			                        "My Food Interests",
 			                        "Plese select all your interests",
@@ -519,8 +519,8 @@ public class KitchenSinkController {
 			                        		   new MessageAction("Baby food", "Baby Foods"),
 			                        		   new MessageAction("Fats/Oils", "Fats and Oils")		                        		   
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
-			                this.reply(replyToken, templateMessage);
+			                TemplateMessage templateMessage2 = new TemplateMessage("ChoosePlease:", buttonsTemplate2);
+			                this.reply(replyToken, templateMessage2);
 
 			    			break;
 			    		}
