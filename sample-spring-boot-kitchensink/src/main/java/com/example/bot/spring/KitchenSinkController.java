@@ -498,7 +498,7 @@ public class KitchenSinkController {
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
 			                CarouselTemplate carouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
-			                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 1", "Please choose your interests", Arrays.asList(
 			                                        new URIAction("Go to line.me",
 			                                                      "https://line.me"),
 			                                        new URIAction("Go to line.me",
@@ -506,7 +506,7 @@ public class KitchenSinkController {
 			                                        new PostbackAction("Say hello1",
 			                                                           "hello こんにちは")
 			                                )),
-			                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 2", "Please choose your interests", Arrays.asList(
 			                                        new PostbackAction("言 hello2",
 			                                                           "hello こんにちは",
 			                                                           "hello こんにちは"),
@@ -516,7 +516,17 @@ public class KitchenSinkController {
 			                                        new MessageAction("Say message",
 			                                                          "Rice=米")
 			                                )),
-			                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 3", "Please choose your interests", Arrays.asList(
+			                                        new PostbackAction("言 hello2",
+			                                                           "hello こんにちは",
+			                                                           "hello こんにちは"),
+			                                        new PostbackAction("言 hello2",
+			                                                "hello こんにちは",
+			                                                "hello こんにちは"),
+			                                        new MessageAction("Say message",
+			                                                          "Rice=米")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Categories 4", "Please choose your interests", Arrays.asList(
 			                                        new PostbackAction("言 hello2",
 			                                                           "hello こんにちは",
 			                                                           "hello こんにちは"),
@@ -526,6 +536,7 @@ public class KitchenSinkController {
 			                                        new MessageAction("Say message",
 			                                                          "Rice=米")
 			                                ))
+			                                
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
 			                this.reply(replyToken, templateMessage);
