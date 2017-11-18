@@ -512,7 +512,7 @@ public class KitchenSinkController {
 			                                                  "Rice=米")
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
-
+			                this.reply(replyToken, templateMessage);
 			                
 			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
 			    					+ "American \n"
