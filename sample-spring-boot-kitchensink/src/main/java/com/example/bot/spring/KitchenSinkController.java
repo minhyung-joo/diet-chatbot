@@ -392,8 +392,7 @@ public class KitchenSinkController {
 			menu = menuList.get(index);
 		}
 		
-		if (categories == null) {
-			
+		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
 			this.reply(replyToken, getMenuTemplate()); 
 			categories = Categories.MAIN_MENU;
@@ -405,7 +404,6 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
-		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
@@ -416,7 +414,7 @@ public class KitchenSinkController {
 			    			messages.add(response);
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(getMenuTemplate());
+		    				messages.add(mainMenuMessage);
 		    			}
 		    			if(messages.size()!=0) {
 			    			this.reply(replyToken, messages);
