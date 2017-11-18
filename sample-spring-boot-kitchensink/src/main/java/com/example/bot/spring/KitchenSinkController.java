@@ -133,29 +133,29 @@ public class KitchenSinkController {
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
     String imageProfile = createUri("/static/buttons/menuProfile.jpg");
-//    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
-//    String imageFood = createUri("/static/buttons/menuFood.jpg");
-//    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
-//    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
-//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
-//            Arrays.asList(
-//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
-//                            new MessageAction("Click here", "profile")
-//                    )),
-//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
-//                            new MessageAction("Click here", "daily")
-//                    )),
-//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
-//                            new MessageAction("Click here", "food")
-//                    )),
-//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
-//                            new MessageAction("Click here", "menu")
-//                    )),
-//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
-//                            new MessageAction("Click here", "friend")
-//                    ))
-//            ));
-//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
+    String imageFood = createUri("/static/buttons/menuFood.jpg");
+    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
+    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
+    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
+            Arrays.asList(
+                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
+                            new MessageAction("Click here", "profile")
+                    )),
+                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
+                            new MessageAction("Click here", "daily")
+                    )),
+                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
+                            new MessageAction("Click here", "food")
+                    )),
+                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
+                            new MessageAction("Click here", "menu")
+                    )),
+                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
+                            new MessageAction("Click here", "friend")
+                    ))
+            ));
+    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 
 	
 	@EventMapping
