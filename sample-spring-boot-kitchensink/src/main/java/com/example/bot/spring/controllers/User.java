@@ -116,6 +116,12 @@ public class User {
 		return outputStr;
 	}
 	
+	@GetMapping(path="/resetinterest")
+	public @ResponseBody void resetInterest (@RequestParam String id) {	
+		Profile pf = profileRepository.findByUserId(id);
+		pf.setInterest(null);
+	}
+	
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		int categoryFound = 0;
