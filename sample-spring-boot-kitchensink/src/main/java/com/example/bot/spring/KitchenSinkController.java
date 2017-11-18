@@ -496,34 +496,28 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
-//			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
-//			                        imageUrl,
-//			                        "Your Food Interests",
-//			                        "Please choose your interests in food",
-//			                        Arrays.asList(
-//			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
-//			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
-//			                                new MessageAction("Soups, Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
-//			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
-//			                        ));
-//			                TemplateMessage templateMessage = new TemplateMessage("Please choose your interests", buttonsTemplate);
-//			                this.reply(replyToken, templateMessage);
-			                
 			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
 			                        imageUrl,
-			                        "My button sample",
-			                        "Hello, my button",
+			                        "My Food Interests",
+			                        "Plese select all your interests",
 			                        Arrays.asList(
-			                                new URIAction("Go to line.me",
-			                                              "https://line.me"),
-			                                new PostbackAction("Say hello1",
-			                                                   "hello こんにちは"),
-			                                new MessageAction("Breakfast Dairy and Egg",
-			                                                   "hello こんにちは"),
-			                                new MessageAction("Say ",
-			                                                  "Rice=米")
+			                        		   new MessageAction("Dairy/Egg products", "Dairy and Egg Products"),
+			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
+			                        		   new MessageAction("Baby food", "Baby Foods"),
+			                        		   new MessageAction("Fats/Oils", "Fats and Oils")
+//			                        		   new MessageAction("Soups/Sauces/Gravies", "Soups, Sauces, and Gravies"),
+//			                        		   new MessageAction("Sausages", "Sausages and Luncheon Meats"),
+//			                        		   new MessageAction("Cereals", "Breakfast Cereals"),
+//			                        		   new MessageAction("Fruits", "Fruits and Fruit Juices"),
+//			                        		   new MessageAction("Pork", "Pork Products"),
+//			                        		   new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
+//			                        		   new MessageAction("Nuts", "Nut and Seed Products"),
+//			                        		   new MessageAction("Beef", "Beef Products"),
+//			                        		   new MessageAction("Beverages", "Beverages"),
+//			                        		   new MessageAction("Fish", "Finfish and Shellfish Products")
+			                        		   
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("Button alt text", buttonsTemplate);
+			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
 
 			    			break;
