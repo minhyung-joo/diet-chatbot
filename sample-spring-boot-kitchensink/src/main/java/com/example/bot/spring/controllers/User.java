@@ -125,11 +125,7 @@ public class User {
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		
-		String[] splitInterest = interest.split(", ");
-		
-		for(Food fd : foodRepository.findAll()) {
-			System.out.println(fd.getCategory());
-		}
+		String[] splitInterest = interest.split("/");
 		
 		for(Profile pf : profileRepository.findAll()) {
 			if(pf.getUserID().equals(id)) { 
@@ -171,11 +167,9 @@ public class User {
 	
 	@GetMapping(path="/getInterests")
 	public @ResponseBody String outputInterest (@RequestParam String id) {		
-		boolean interestFound = false;
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
 		if(pf.getInterests() != null) {
-			interestFound = true;
 			outputStr += "Your interests in food are: \n";
 			for(int i=0; i<pf.getInterests().length; i++) {
 				outputStr += pf.getInterests()[i] + "\n";
