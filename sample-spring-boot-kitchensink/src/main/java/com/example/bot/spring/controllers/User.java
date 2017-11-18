@@ -149,7 +149,7 @@ public class User {
 			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
 			for(int i=0; i<splitInterest.length; i++) {
 				if(!temp.contains(splitInterest[i])) {
-					temp.add(splitInterest[i]);
+					temp.add("-" + splitInterest[i]);
 				} else {
 					return "I already recorded that";
 				}
