@@ -514,15 +514,10 @@ public class KitchenSinkController {
 			                        "My button sample",
 			                        "Hello, my button",
 			                        Arrays.asList(
-			                                new URIAction("Go to line.me",
-			                                              "https://line.me"),
-			                                new PostbackAction("Say hello1",
-			                                                   "hello こんにちは"),
-			                                new PostbackAction("言 hello2",
-			                                                   "hello こんにちは",
-			                                                   "hello こんにちは"),
-			                                new MessageAction("Say message",
-			                                                  "Rice=米")
+			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
+			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
+			                                new MessageAction("Soups Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
+			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("Button alt text", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
