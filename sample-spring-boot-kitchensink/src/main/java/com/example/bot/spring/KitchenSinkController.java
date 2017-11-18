@@ -498,7 +498,6 @@ public class KitchenSinkController {
 			                );
 							TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
 			                this.reply(replyToken, templateMessage);			                
-			    			result = "";
 			                break;
 						}
 						case "age":{
@@ -530,16 +529,38 @@ public class KitchenSinkController {
 			    		
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
-			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
-			    					+ "American \n"
-			    					+ "Indian \n"
-			    					+ "Alaska \n"
-			    					+ "Vegetable \n"
-			    					+ "Sweets \n"
-			    					+ "Soups \n"
-			    					+ "Sauces \n"
-			    					+ "Gravies \n"
-			    					+ "Fast Foods";
+			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
+			                CarouselTemplate carouselTemplate = new CarouselTemplate(
+			                        Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
+			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/ Breakfast Cereals"),
+			                                        new MessageAction("Fast Foods", "Fast Foods/ Fats and Oils"),
+			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/ Soups, Sauces, and Gravies")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
+			                                        new MessageAction("Sweets and Snacks", "Sweets/ Snacks"),
+			                                        new MessageAction("Pork and meat", "Pork Products/ Sausages and Luncheon Meats"),
+			                                        new MessageAction("Beef", "Beef Products")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
+			                                        new MessageAction("Chicken", "Poultry Products"),
+			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
+			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
+			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/ Vegetables and Vegetable Products"),
+			                                        new MessageAction("Beverages", "Beverages"),
+			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/ Meals, Entrees, and Sidedishes")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
+			                                        new MessageAction("Bakeries", "Baked Products"),
+			                                        new MessageAction("Rice, Pasta, Grains", "Cereal Grains and Pasta"),
+			                                        new MessageAction("Baby Food", "Baby Foods")
+			                                ))
+			                                
+			                        ));
+			                TemplateMessage templateMessage = new TemplateMessage("Choosing your interests", carouselTemplate);
+			                this.reply(replyToken, templateMessage);
 			    			break;
 			    		}
 				}
@@ -606,10 +627,19 @@ public class KitchenSinkController {
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case SET_INTEREST:
-		    			user.inputInterest(""+ event.getSource().getUserId(),text);
-		    			result = "I successfully recorded your interests";
-		    			profile = null;
-		    			categories = Categories.MAIN_MENU;
+		    			if(text.toLowerCase().equals("done")) {
+			    			result = "Your interests were recorded.";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			} else if(text.toLowerCase().equals("reset")) {
+		    				result = user.resetInterest(""+ event.getSource().getUserId());
+		    			} else {
+			    			result = user.inputInterest(""+ event.getSource().getUserId(),text);
+		    			}
+//		    			user.inputInterest(""+ event.getSource().getUserId(),text);
+//		    			result = "I successfully recorded your interests";
+//		    			profile = null;
+//		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = handRequestProfile(text, event);
@@ -638,6 +668,7 @@ public class KitchenSinkController {
 				case "general": {
 					result = user.outputGeneral(""+event.getSource().getUserId());
 					result += user.outputInterest(""+event.getSource().getUserId());
+					System.out.println("interest works here");
 					break;
 				}
 			}
