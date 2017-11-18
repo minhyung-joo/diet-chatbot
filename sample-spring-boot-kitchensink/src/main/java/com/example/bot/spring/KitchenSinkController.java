@@ -503,17 +503,17 @@ public class KitchenSinkController {
 			                                        new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
 			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
 			                                )),
-			                                new CarouselColumn("Categories 2", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn("Please choose all your interests", Arrays.asList(
 			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
 			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
-			                                new CarouselColumn("Categories 3", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn("Please choose all your interests", Arrays.asList(
 			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
-			                                new CarouselColumn("Categories 4", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn("Please choose all your interests", Arrays.asList(
 			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/Vegetables and Vegetable Products"),
 			                                        new MessageAction("Beverages", "Beverages"),
 			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/Meals, Entrees, and Sidedishes")
