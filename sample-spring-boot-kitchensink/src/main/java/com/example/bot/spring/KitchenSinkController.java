@@ -501,21 +501,23 @@ public class KitchenSinkController {
 			                        "My Food Interests",
 			                        "Plese select all your interests",
 			                        Arrays.asList(
-			                        		   new MessageAction("Dairy/Egg products", "Dairy and Egg Products"),
+			                        		   new MessageAction("", "Dairy and Egg Products"),
 			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
 			                        		   new MessageAction("Baby food", "Baby Foods"),
-			                        		   new MessageAction("Fats/Oils", "Fats and Oils")
-//			                        		   new MessageAction("Soups/Sauces/Gravies", "Soups, Sauces, and Gravies"),
-//			                        		   new MessageAction("Sausages", "Sausages and Luncheon Meats"),
-//			                        		   new MessageAction("Cereals", "Breakfast Cereals"),
-//			                        		   new MessageAction("Fruits", "Fruits and Fruit Juices"),
-//			                        		   new MessageAction("Pork", "Pork Products"),
-//			                        		   new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
-//			                        		   new MessageAction("Nuts", "Nut and Seed Products"),
-//			                        		   new MessageAction("Beef", "Beef Products"),
-//			                        		   new MessageAction("Beverages", "Beverages"),
-//			                        		   new MessageAction("Fish", "Finfish and Shellfish Products")
-			                        		   
+			                        		   new MessageAction("Fats/Oils", "Fats and Oils")		                        		   
+			                        ));
+			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
+			                this.reply(replyToken, templateMessage);
+			                
+			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+			                        imageUrl,
+			                        "My Food Interests",
+			                        "Plese select all your interests",
+			                        Arrays.asList(
+			                        		   new MessageAction("", "Dairy and Egg Products"),
+			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
+			                        		   new MessageAction("Baby food", "Baby Foods"),
+			                        		   new MessageAction("Fats/Oils", "Fats and Oils")		                        		   
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
