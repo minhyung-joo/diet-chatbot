@@ -504,11 +504,11 @@ public class KitchenSinkController {
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 2", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
 			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
-			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
+			                                        new MessageAction("Pork and meat", "Pork Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 3", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
-			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
+			                                        new MessageAction("Chicken", "Poultry Products"),
 			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
@@ -593,7 +593,7 @@ public class KitchenSinkController {
 		    			break;
 		    		case SET_INTEREST:
 		    			if(text.toLowerCase().equals("done")) {
-			    			result = "I successfully recorded all your valid interests";
+			    			result = "Your interests were recorded."";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
 		    			} else {
