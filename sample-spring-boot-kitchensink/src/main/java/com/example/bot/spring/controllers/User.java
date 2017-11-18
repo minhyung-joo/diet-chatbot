@@ -117,9 +117,11 @@ public class User {
 	}
 	
 	@GetMapping(path="/resetinterest")
-	public @ResponseBody void resetInterest (@RequestParam String id) {	
+	public @ResponseBody String resetInterest (@RequestParam String id) {	
 		Profile pf = profileRepository.findByUserID(id);
-		pf.setInterest(null);
+		String[] emptyArray = null;
+		pf.setInterest(emptyArray);
+		return "Your interest records were deleted. Tell me your interests again.";
 	}
 	
 	@GetMapping(path="/inputinterest")
