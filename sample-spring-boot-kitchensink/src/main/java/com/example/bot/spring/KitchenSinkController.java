@@ -607,7 +607,7 @@ public class KitchenSinkController {
 
 	}
 	
-	private String handleRequestProfile (String text, Event event) {
+	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
 		Matcher m = Pattern.compile("weight|meal|general", Pattern.CASE_INSENSITIVE).matcher(text);
