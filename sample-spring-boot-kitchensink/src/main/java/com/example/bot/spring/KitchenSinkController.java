@@ -504,38 +504,23 @@ public class KitchenSinkController {
 			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 2", "Please choose your interests", Arrays.asList(
-			                                        new PostbackAction("言 hello2",
-			                                                           "hello こんにちは",
-			                                                           "hello こんにちは"),
-			                                        new PostbackAction("言 hello2",
-			                                                "hello こんにちは",
-			                                                "hello こんにちは"),
-			                                        new MessageAction("Say message",
-			                                                          "Rice=米")
+			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
+			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
+			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 3", "Please choose your interests", Arrays.asList(
-			                                        new PostbackAction("言 hello2",
-			                                                           "hello こんにちは",
-			                                                           "hello こんにちは"),
-			                                        new PostbackAction("言 hello2",
-			                                                "hello こんにちは",
-			                                                "hello こんにちは"),
-			                                        new MessageAction("Say message",
-			                                                          "Rice=米")
+			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
+			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
+			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 4", "Please choose your interests", Arrays.asList(
-			                                        new PostbackAction("言 hello2",
-			                                                           "hello こんにちは",
-			                                                           "hello こんにちは"),
-			                                        new PostbackAction("言 hello2",
-			                                                "hello こんにちは",
-			                                                "hello こんにちは"),
-			                                        new MessageAction("Say message",
-			                                                          "Rice=米")
+			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/Vegetables and Vegetable Products"),
+			                                        new MessageAction("Beverages", "Beverages"),
+			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/Meals, Entrees, and Sidedishes")
 			                                ))
 			                                
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+			                TemplateMessage templateMessage = new TemplateMessage("Choosing your interests", carouselTemplate);
 			                this.reply(replyToken, templateMessage);
 			    			break;
 			    		}

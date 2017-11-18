@@ -127,6 +127,10 @@ public class User {
 		
 		String[] splitInterest = interest.split(", ");
 		
+		for(Food fd : foodRepository.findAll()) {
+			System.out.println(fd.getCategory());
+		}
+		
 		for(Profile pf : profileRepository.findAll()) {
 			if(pf.getUserID().equals(id)) { 
 				pf.setInterest(splitInterest);
