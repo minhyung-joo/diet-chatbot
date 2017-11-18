@@ -121,6 +121,9 @@ public class User {
 		Profile pf = profileRepository.findByUserID(id);
 		String[] emptyArray = null;
 		pf.setInterest(emptyArray);
+		if(pf.getInterest() == null) {
+			return "succeed";
+		}
 		return "Your interest records were deleted. Tell me your interests again.";
 	}
 	
