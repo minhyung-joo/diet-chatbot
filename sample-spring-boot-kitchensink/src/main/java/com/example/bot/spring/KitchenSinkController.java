@@ -496,17 +496,35 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
+//			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+//			                        imageUrl,
+//			                        "Your Food Interests",
+//			                        "Please choose your interests in food",
+//			                        Arrays.asList(
+//			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
+//			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
+//			                                new MessageAction("Soups, Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
+//			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
+//			                        ));
+//			                TemplateMessage templateMessage = new TemplateMessage("Please choose your interests", buttonsTemplate);
+//			                this.reply(replyToken, templateMessage);
+			                
 			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
 			                        imageUrl,
-			                        "Your Food Interests",
-			                        "Please choose your interests in food",
+			                        "My button sample",
+			                        "Hello, my button",
 			                        Arrays.asList(
-			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
-			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
-			                                new MessageAction("Soups, Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
-			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
+			                                new URIAction("Go to line.me",
+			                                              "https://line.me"),
+			                                new PostbackAction("Say hello1",
+			                                                   "hello こんにちは"),
+			                                new PostbackAction("言 hello2",
+			                                                   "hello こんにちは",
+			                                                   "hello こんにちは"),
+			                                new MessageAction("Say message",
+			                                                  "Rice=米")
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("Please choose your interests", buttonsTemplate);
+			                TemplateMessage templateMessage = new TemplateMessage("Button alt text", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
 
 			    			break;
