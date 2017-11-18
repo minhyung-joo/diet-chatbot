@@ -132,7 +132,7 @@ public class KitchenSinkController {
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
-//    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
+    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
 //    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
 //    String imageFood = createUri("/static/buttons/menuFood.jpg");
 //    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
