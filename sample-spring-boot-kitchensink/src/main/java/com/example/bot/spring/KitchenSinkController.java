@@ -395,7 +395,7 @@ public class KitchenSinkController {
 		if (categories == null) {
 
 			user.addUser(event.getSource().getUserId());
-			this.reply(replyToken, menuTemplateMessage); 
+			this.replyText(replyToken, mainMenuMessage); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -406,7 +406,7 @@ public class KitchenSinkController {
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
 		    			}
-		    			this.replyText(replyToken, messages);
+		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
 		    			String responseText = handleProfile(replyToken, text, event);
