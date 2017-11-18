@@ -117,7 +117,7 @@ public class User {
 	}
 	
 	@GetMapping(path="/inputinterest")
-	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
+	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		int categoryFound = 0;
 		String[] splitInterest = interest.split("/");
 
@@ -133,7 +133,7 @@ public class User {
 		}
 		
 		if(categoryFound != splitInterest.length) {
-			return;
+			return "You selected invalid interests";
 		}
 		
 		Profile pf = profileRepository.findByUserID(id);	
@@ -142,14 +142,18 @@ public class User {
 		} else {
 			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
 			for(int i=0; i<splitInterest.length; i++) {
-				if(!temp.contains(splitInterest[i]))
+				if(!temp.contains(splitInterest[i])) {
 					temp.add(splitInterest[i]);
+				} else {
+					return "I already recorded that";
+				}
 			}
 			String[] tempInterest = new String[temp.size()];
 			temp.toArray(tempInterest);
 			pf.setInterest(tempInterest);
 		}
 		profileRepository.save(pf);
+		return "";
 	}
 	
 	@GetMapping(path="/getgeneral")

@@ -597,7 +597,7 @@ public class KitchenSinkController {
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
 		    			} else {
-			    			user.inputInterest(""+ event.getSource().getUserId(),text);
+			    			result = user.inputInterest(""+ event.getSource().getUserId(),text);
 		    			}
 //		    			user.inputInterest(""+ event.getSource().getUserId(),text);
 //		    			result = "I successfully recorded your interests";
