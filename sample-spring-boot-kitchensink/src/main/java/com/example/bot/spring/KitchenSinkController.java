@@ -746,6 +746,7 @@ public class KitchenSinkController {
 		String result = "";
 		if (text.length() != 6) {
 			result = "That is not 6 digits";
+			messages.add(new TextMessage(result));
 		}
 		else {
 			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
@@ -774,9 +775,10 @@ public class KitchenSinkController {
 				messages.add(new TextMessage(result));
 
 				messages.add(mainMenuMessage);
-				reply(((MessageEvent) event).getReplyToken(), messages);
 			}	
 		}
+		
+		reply(((MessageEvent) event).getReplyToken(), messages);
 		
 		categories = Categories.MAIN_MENU;
 		

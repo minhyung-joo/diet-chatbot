@@ -10,10 +10,10 @@ import javax.persistence.SequenceGenerator;
 
 @Entity
 
-@SequenceGenerator(name="seq", initialValue=1, allocationSize=1)
 public class Profile {
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-    @Id long id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	long id;
 	String userID;
 	String gender;
 	int age;
