@@ -385,8 +385,9 @@ public class KitchenSinkController {
 		    			String res = handleCode(text, event);
 		    			System.out.print(res);
 		    			if (categories == Categories.MAIN_MENU) {
-			    			this.reply(replyToken, mainMenuMessage);
+		    				messages.add(mainMenuMessage);
 		    			}
+		    			this.reply(replyToken, messages);
 		    			break; 
 		    		case CAMPAIGN:
 		    			this.replyText(replyToken, "Please upload the coupon image.");
