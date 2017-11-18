@@ -750,8 +750,8 @@ public class KitchenSinkController {
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		if (text.length() != 6) {
-			result = "That is not 6 digits";
+		if (text.length() != 6 || isInteger(text)) {
+			result = "That is not 6 digit number";
 			messages.add(new TextMessage(result));
 		}
 		else {
@@ -791,6 +791,19 @@ public class KitchenSinkController {
 		
 		return result;
 	}
+	
+	public boolean isInteger (String string) {
+		int size = string.length();
+		
+		for (int i = 0; i < size; i++) {
+	        if (!Character.isDigit(string.charAt(i))) {
+	            return false;
+	        }
+	    }
+
+	    return size > 0;
+	}
+	
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
