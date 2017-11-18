@@ -514,10 +514,10 @@ public class KitchenSinkController {
 			                        "My button sample",
 			                        "Hello, my button",
 			                        Arrays.asList(
-			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
-			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
-			                                new MessageAction("Soups Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
-			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
+			                                new MessageAction("Breakfast Dairy and Egg",
+	                                                  		"Rice=米"),
+			                                new MessageAction("Fast foods",
+			                                                  "Rice=米")
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("Button alt text", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
