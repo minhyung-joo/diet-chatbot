@@ -501,7 +501,7 @@ public class KitchenSinkController {
 			                        "My Food Interests",
 			                        "Plese select all your interests",
 			                        Arrays.asList(
-			                        		   new MessageAction("", "Dairy and Egg Products"),
+			                        		   new MessageAction("Dairy Breakfast", "Dairy and Egg Products"),
 			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
 			                        		   new MessageAction("Baby food", "Baby Foods"),
 			                        		   new MessageAction("Fats/Oils", "Fats and Oils")		                        		   
@@ -514,7 +514,7 @@ public class KitchenSinkController {
 			                        "My Food Interests",
 			                        "Plese select all your interests",
 			                        Arrays.asList(
-			                        		   new MessageAction("", "Dairy and Egg Products"),
+			                        		   new MessageAction("Dairy Breakfast", "Dairy and Egg Products"),
 			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
 			                        		   new MessageAction("Baby food", "Baby Foods"),
 			                        		   new MessageAction("Fats/Oils", "Fats and Oils")		                        		   
