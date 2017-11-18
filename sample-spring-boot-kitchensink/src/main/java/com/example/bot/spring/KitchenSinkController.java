@@ -499,12 +499,9 @@ public class KitchenSinkController {
 			                CarouselTemplate carouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
 			                                new CarouselColumn(imageUrl, "Categories 1", "Please choose your interests", Arrays.asList(
-			                                        new MessageAction("Breakfast/Eggs",
-	                                                          "Dairy and Egg Products"),
-			                                        new URIAction("Go to line.me",
-			                                                "https://line.me"),
-			                                        new PostbackAction("Say hello1",
-			                                                           "hello こんにちは")
+			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/Breakfast Cereals"),
+			                                        new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
+			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 2", "Please choose your interests", Arrays.asList(
 			                                        new PostbackAction("言 hello2",
