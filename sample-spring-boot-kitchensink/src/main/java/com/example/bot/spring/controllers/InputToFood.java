@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import com.example.bot.spring.models.Menu;
 import com.example.bot.spring.models.OCRResponse;
 import com.example.bot.spring.models.Response;
@@ -28,6 +29,7 @@ import org.springframework.http.MediaType;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Service
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
