@@ -6,12 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 @Entity
+
+@SequenceGenerator(name="seq", initialValue=1, allocationSize=1)
 public class Profile {
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	long id;
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
+    @Id long id;
 	String userID;
 	String gender;
 	int age;
