@@ -393,9 +393,9 @@ public class KitchenSinkController {
 		}
 		
 		if (categories == null) {
-
+			
 			user.addUser(event.getSource().getUserId());
-			this.reply(replyToken, mainMenuMessage); 
+			this.reply(replyToken, getMenuTemplate()); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
