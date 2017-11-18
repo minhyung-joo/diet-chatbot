@@ -416,7 +416,6 @@ public class KitchenSinkController {
 			    			messages.add(response);
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
 		    				messages.add(getMenuTemplate());
 		    			}
 		    			if(messages.size()!=0) {
@@ -428,7 +427,6 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
-		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);	    			
 		    			break;
@@ -437,7 +435,6 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
-		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
