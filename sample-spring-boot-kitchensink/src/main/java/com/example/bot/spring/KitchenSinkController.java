@@ -382,7 +382,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case CODE:
-		    			respone = handleCode(text, event);
+		    			String res = handleCode(text, event);
 		    			if (categories == Categories.MAIN_MENU) {
 			    			this.reply(replyToken, mainMenuMessage);
 		    			}
