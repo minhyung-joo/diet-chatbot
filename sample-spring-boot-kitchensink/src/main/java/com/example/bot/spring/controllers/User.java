@@ -118,7 +118,7 @@ public class User {
 	
 	@GetMapping(path="/resetinterest")
 	public @ResponseBody void resetInterest (@RequestParam String id) {	
-		Profile pf = profileRepository.findByUserId(id);
+		Profile pf = profileRepository.findByUserID(id);
 		pf.setInterest(null);
 	}
 	
