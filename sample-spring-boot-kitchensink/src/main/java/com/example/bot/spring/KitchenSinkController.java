@@ -514,17 +514,6 @@ public class KitchenSinkController {
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
 
-			                
-			    			result = "Tell me all your interests out of the following (use comma space in between): \n"
-			    					+ "American \n"
-			    					+ "Indian \n"
-			    					+ "Alaska \n"
-			    					+ "Vegetable \n"
-			    					+ "Sweets \n"
-			    					+ "Soups \n"
-			    					+ "Sauces \n"
-			    					+ "Gravies \n"
-			    					+ "Fast Foods";
 			    			break;
 			    		}
 				}
