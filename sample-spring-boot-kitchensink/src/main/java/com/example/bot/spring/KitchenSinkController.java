@@ -300,7 +300,8 @@ public class KitchenSinkController {
 			+ "Daily - View your progress on nutrients today\n"
             + "Food - Get nutritional details of a food\n"
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-            + "Friend - Make recommendations to a friend to get an ice cream coupon!";
+            + "Friend - Make recommendations to a friend to get an ice cream coupon!"
+            + "Code - Accept recommendations from a friend";
 	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
 	
@@ -381,7 +382,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case CODE:
-		    			handleCode(text, event);
+		    			respone = handleCode(text, event);
 		    			if (categories == Categories.MAIN_MENU) {
 			    			this.reply(replyToken, mainMenuMessage);
 		    			}

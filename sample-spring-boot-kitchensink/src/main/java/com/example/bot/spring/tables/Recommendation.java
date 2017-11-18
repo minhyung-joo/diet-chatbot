@@ -18,7 +18,6 @@ import java.util.Date;
 public class Recommendation {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
     @Id long id;
-	private String uniqueCode;
 	private String userID;
 	private boolean claimed;
 	
@@ -29,10 +28,6 @@ public class Recommendation {
 		return userID;
 	}
 	
-	public String getUniqueCode () {
-		return uniqueCode;
-	}
-	
 	public boolean getClaimed() {
 		return claimed;
 	}
@@ -40,11 +35,7 @@ public class Recommendation {
 	public void setUserID(String id) {
 		userID = id;
 	}
-	
-	public void setUniqueCode (String unique) {
-		uniqueCode = unique;
-	}
-	
+		
 	public void setClaimed(boolean claim) {
 		claimed = claim;
 	}
