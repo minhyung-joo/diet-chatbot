@@ -501,15 +501,11 @@ public class KitchenSinkController {
 			                        "My Food Interests",
 			                        "Plese select all your interests",
 			                        Arrays.asList(
-			                                new URIAction("Go to line.me",
-			                                              "https://line.me"),
-			                                new PostbackAction("Say hello1",
-			                                                   "hello こんにちは"),
-			                                new PostbackAction("言 hello2",
-			                                                   "hello こんにちは",
-			                                                   "hello こんにちは"),
-			                                new MessageAction("Say message",
-			                                                  "Rice=米")
+			                        		   new MessageAction("Dairy/Egg products", "Dairy and Egg Products"),
+			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
+			                        		   new MessageAction("Baby food", "Baby Foods"),
+			                        		   new MessageAction("Fats/Oils", "Fats and Oils")
+			                        		   
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
