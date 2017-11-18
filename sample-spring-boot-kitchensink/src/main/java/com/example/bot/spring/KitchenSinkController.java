@@ -496,25 +496,17 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
-			                CarouselTemplate carouselTemplate = new CarouselTemplate(
-			                		Arrays.asList(
-	                                new CarouselColumn(imageUrl, "Your food interests", "Choose your food interests", Arrays.asList(
-	                                        new MessageAction("Lamb", "Lamb, Veal and Game Products"),
-	                                        new MessageAction("Fish", "Finfish and Shellfish Products"),
-	                                        new MessageAction("Beef", "Beef Products")
-	                                )),
-	                                new CarouselColumn("", "", "", Arrays.asList(
-	                                        new MessageAction("Pork", "Pork Products"),
-	                                        new MessageAction("Sausage", "Sausages and Luncheon Meats"),
-	                                        new MessageAction("Poultry", "Poultry Products")
-	                                )),
-	                                new CarouselColumn("", "", "", Arrays.asList(
-	                                        new MessageAction("Dairy and Egg", "Dairy and Egg Products"),
-	                                        new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
-	                                        new MessageAction("Fast Food", "Fast Foods")
-	                                ))
-	                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", carouselTemplate);
+			                ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
+			                        imageUrl,
+			                        "Your Food Interests",
+			                        "Please choose your interests in food",
+			                        Arrays.asList(
+			                                new MessageAction("Breakfast Dairy and Egg", "Dairy and Egg Products/Breakfast Cereals"),
+			                                new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
+			                                new MessageAction("Soups, Herbs and Gravies", "Spices and Herbs/Soups, Sauces, and Gravies"),
+			                                new MessageAction("Sweety snacks", "Sweets/Snacks")
+			                        ));
+			                TemplateMessage templateMessage = new TemplateMessage("Please choose your interests", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
 
 			    			break;
