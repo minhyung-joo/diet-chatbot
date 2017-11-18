@@ -132,6 +132,31 @@ public class KitchenSinkController {
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
+//    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
+//    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
+//    String imageFood = createUri("/static/buttons/menuFood.jpg");
+//    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
+//    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
+//    CarouselTemplate menuCarousel = new CarouselTemplate(
+//            Arrays.asList(
+//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
+//                            new MessageAction("Click here", "profile")
+//                    )),
+//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
+//                            new MessageAction("Click here", "daily")
+//                    )),
+//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
+//                            new MessageAction("Click here", "food")
+//                    )),
+//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
+//                            new MessageAction("Click here", "menu")
+//                    )),
+//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
+//                            new MessageAction("Click here", "friend")
+//                    ))
+//            ));
+//    TemplateMessage templateMessage = new TemplateMessage("Front Menu", menuCarousel);
+
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -340,7 +365,7 @@ public class KitchenSinkController {
 		
 		if (categories == null) {
 			user.addUser(event.getSource().getUserId());
-			this.replyText(replyToken, showMainMenu);
+			this.replyText(replyToken, showMainMenu); //Here
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -530,7 +555,7 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
-			                CarouselTemplate carouselTemplate = new CarouselTemplate(
+			                CarouselTemplate interestCarouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
 			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
 			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/ Breakfast Cereals"),
@@ -559,8 +584,8 @@ public class KitchenSinkController {
 			                                ))
 			                                
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("Choosing your interests", carouselTemplate);
-			                this.reply(replyToken, templateMessage);
+			                TemplateMessage interestTemplateMessage = new TemplateMessage("Choosing your interests", interestCarouselTemplate);
+			                this.reply(replyToken, interestTemplateMessage);
 			    			break;
 			    		}
 				}
