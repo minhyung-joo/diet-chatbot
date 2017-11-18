@@ -752,7 +752,7 @@ public class KitchenSinkController {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
 		if (text.length() != 6 || !isInteger(text)) {
-			result = "That is not 6 digit number";
+			result = "That is not a 6 digit number.";
 			messages.add(new TextMessage(result));
 		}
 		else {
@@ -775,7 +775,7 @@ public class KitchenSinkController {
 						break;
 					}
 					case "none": {
-						result = "No such code";
+						result = "There is no such code";
 						break;
 					}
 				}
