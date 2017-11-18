@@ -774,8 +774,9 @@ public class KitchenSinkController {
 				}
 				messages.add(new TextMessage(result));
 
-				messages.add(mainMenuMessage);
 			}	
+			messages.add(mainMenuMessage);
+
 		}
 		
 		reply(((MessageEvent) event).getReplyToken(), messages);
