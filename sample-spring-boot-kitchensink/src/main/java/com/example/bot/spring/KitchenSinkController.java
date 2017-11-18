@@ -366,7 +366,7 @@ public class KitchenSinkController {
 		String text = content.getText();
 
 		Message response;
-		List<com.sun.xml.internal.ws.wsdl.writer.document.Message> messages = new ArrayList<Message>();
+		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		
 		int index = -1;
