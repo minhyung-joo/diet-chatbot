@@ -145,6 +145,30 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		
+		int index = -1;
+		for(int i=0;i<userList.size();i++) {
+			if(userList.get(i).equals(event.getSource().getUserId())) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			categories = null;
+			profile = null;
+			menu = null;
+			index = userList.size();
+			userList.add(event.getSource().getUserId());
+			catList.add(categories);
+			profList.add(profile);
+			menuList.add(menu);
+		}
+		else {
+			categories = catList.get(index);
+			profile = profList.get(index);
+			menu = menuList.get(index);
+		}
+		
+		
 		if (categories == Categories.CAMPAIGN) {
 			InputStream initialStream = response.getStream();
 			user.uploadCouponCampaign(initialStream);
