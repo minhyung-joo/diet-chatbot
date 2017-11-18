@@ -504,7 +504,7 @@ public class KitchenSinkController {
 			                        		   new MessageAction("Dairy/Egg products", "Dairy and Egg Products"),
 			                        		   new MessageAction("Spices/Herbs", "Spices and Herbs"),
 			                        		   new MessageAction("Baby food", "Baby Foods"),
-			                        		   new MessageAction("Fats/Oils", "Fats and Oils")
+			                        		   new MessageAction("Fats/Oils", "Fats and Oils"),
 			                        		   new MessageAction("Poultry products", "Poultry Products"),
 			                        		   new MessageAction("Soups/Sauces/Gravies", "Soups, Sauces, and Gravies"),
 			                        		   new MessageAction("Sausages", "Sausages and Luncheon Meats"),
