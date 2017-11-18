@@ -128,7 +128,7 @@ public class User {
 			for(int i=0; i<splitInterest.length; i++) {
 				temp.add(splitInterest[i]);
 			}
-			String[] tempInterest = new String[list.size()];
+			String[] tempInterest = new String[temp.size()];
 			temp.toArray(tempInterest);
 			pf.setInterest(tempInterest);
 		}
