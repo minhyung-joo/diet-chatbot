@@ -119,7 +119,7 @@ public class User {
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
 		int categoryFound = 0;
-		String[] splitInterest = interest.split("/");
+		String[] splitInterest = interest.split("/ ");
 
 		//Check for validity/existence of interest
 		for(int i=0; i<splitInterest.length; i++) {

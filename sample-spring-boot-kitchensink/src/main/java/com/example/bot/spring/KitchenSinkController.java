@@ -498,13 +498,13 @@ public class KitchenSinkController {
 			                CarouselTemplate carouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
 			                                new CarouselColumn(imageUrl, "Categories 1", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
-			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/Breakfast Cereals"),
-			                                        new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
-			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
+			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/ Breakfast Cereals"),
+			                                        new MessageAction("Fast Foods", "Fast Foods/ Fats and Oils"),
+			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/ Soups, Sauces, and Gravies")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 2", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
-			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
-			                                        new MessageAction("Pork and meat", "Pork Products/Sausages and Luncheon Meats"),
+			                                        new MessageAction("Sweets and Snacks", "Sweets/ Snacks"),
+			                                        new MessageAction("Pork and meat", "Pork Products/ Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 3", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
@@ -513,9 +513,9 @@ public class KitchenSinkController {
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 4", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
-			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/Vegetables and Vegetable Products"),
+			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/ Vegetables and Vegetable Products"),
 			                                        new MessageAction("Beverages", "Beverages"),
-			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/Meals, Entrees, and Sidedishes")
+			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/ Meals, Entrees, and Sidedishes")
 			                                )),
 			                                new CarouselColumn(imageUrl, "Categories 5", "Choose all your interests and type \"done\" if you finish", Arrays.asList(
 			                                        new MessageAction("Bakeries", "Baked Products"),
