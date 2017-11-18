@@ -503,20 +503,25 @@ public class KitchenSinkController {
 			                                        new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
 			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
 			                                )),
-			                                new CarouselColumn(null, null, "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 2", "", Arrays.asList(
 			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
 			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
-			                                new CarouselColumn(null, null, "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 3", "", Arrays.asList(
 			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
-			                                new CarouselColumn(null, null, "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 4", "", Arrays.asList(
 			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/Vegetables and Vegetable Products"),
 			                                        new MessageAction("Beverages", "Beverages"),
 			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/Meals, Entrees, and Sidedishes")
+			                                )),
+			                                new CarouselColumn(imageUrl, "Categories 5", "", Arrays.asList(
+			                                        new MessageAction("Bakeries", "Baked Products"),
+			                                        new MessageAction("Rice, Pasta, Grains", "Cereal Grains and Pasta"),
+			                                        new MessageAction("Baby Food", "Baby Foods")
 			                                ))
 			                                
 			                        ));
