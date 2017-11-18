@@ -38,6 +38,7 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.example.bot.spring.controllers.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.PostConstruct;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
@@ -125,13 +126,39 @@ public class KitchenSinkController {
 	public List<Profile> profList = new ArrayList<Profile>();
 	public List<Menu> menuList = new ArrayList<Menu>();
 
-	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-            + "Profile - Record and view your weights and meals\n"
-			+ "Daily - View your progress on nutrients today\n"
-            + "Food - Get nutritional details of a food\n"
-            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
+	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n";
+//            + "Profile - Record and view your weights and meals\n"
+//			+ "Daily - View your progress on nutrients today\n"
+//            + "Food - Get nutritional details of a food\n"
+//            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
+//            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
+
+    String imageProfile;
+    String imageDaily;
+    String imageFood;
+    String imageMenu; 
+    String imageFriend;
+//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
+//            Arrays.asList(
+//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
+//                            new MessageAction("Click here", "profile")
+//                    )),
+//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
+//                            new MessageAction("Click here", "daily")
+//                    )),
+//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
+//                            new MessageAction("Click here", "food")
+//                    )),
+//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
+//                            new MessageAction("Click here", "menu")
+//                    )),
+//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
+//                            new MessageAction("Click here", "friend")
+//                    ))
+//            ));
+//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -305,6 +332,33 @@ public class KitchenSinkController {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
 
+	private TemplateMessage getMenuTemplate() {
+	    imageProfile = createUri("/static/buttons/menuProfile.jpg");
+	    imageDaily = createUri("/static/buttons/menuDaily.jpg");
+	    imageFood = createUri("/static/buttons/menuFood.jpg");
+	    imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
+	    imageFriend = createUri("/static/buttons/menuFriend.jpg");
+	    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
+	            Arrays.asList(
+	                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
+	                            new MessageAction("Click here", "profile")
+	                    )),
+	                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
+	                            new MessageAction("Click here", "daily")
+	                    )),
+	                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
+	                            new MessageAction("Click here", "food")
+	                    )),
+	                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
+	                            new MessageAction("Click here", "menu")
+	                    )),
+	                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
+	                            new MessageAction("Click here", "friend")
+	                    ))
+	            ));
+	   TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+	   return menuTemplateMessage;
+	}
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
@@ -338,9 +392,11 @@ public class KitchenSinkController {
 			menu = menuList.get(index);
 		}
 		
-		if (categories == null) {
+		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
-			this.replyText(replyToken, showMainMenu);
+			messages.add(mainMenuMessage);
+			messages.add(getMenuTemplate());
+			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
@@ -349,7 +405,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
@@ -360,7 +416,7 @@ public class KitchenSinkController {
 			    			messages.add(response);
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			if(messages.size()!=0) {
 			    			this.reply(replyToken, messages);
@@ -370,7 +426,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleFood(text));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);	    			
 		    			break;
@@ -378,7 +434,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
@@ -530,7 +586,7 @@ public class KitchenSinkController {
 			    		case "interest": {
 			    			profile = Profile.SET_INTEREST;
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
-			                CarouselTemplate carouselTemplate = new CarouselTemplate(
+			                CarouselTemplate interestCarouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
 			                                new CarouselColumn(imageUrl, "Select your interests", "Type \"done\" if you finish, \"reset\" if you want to reset", Arrays.asList(
 			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/ Breakfast Cereals"),
@@ -559,8 +615,8 @@ public class KitchenSinkController {
 			                                ))
 			                                
 			                        ));
-			                TemplateMessage templateMessage = new TemplateMessage("Choosing your interests", carouselTemplate);
-			                this.reply(replyToken, templateMessage);
+			                TemplateMessage interestTemplateMessage = new TemplateMessage("Choosing your interests", interestCarouselTemplate);
+			                this.reply(replyToken, interestTemplateMessage);
 			    			break;
 			    		}
 				}
