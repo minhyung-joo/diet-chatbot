@@ -383,11 +383,6 @@ public class KitchenSinkController {
 		    			break;
 		    		case CODE:
 		    			String res = handleCode(text, event);
-		    			System.out.print(res);
-		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add(mainMenuMessage);
-		    			}
-		    			this.reply(replyToken, messages);
 		    			break; 
 		    		case CAMPAIGN:
 		    			this.replyText(replyToken, "Please upload the coupon image.");
@@ -747,8 +742,8 @@ public class KitchenSinkController {
 	}
 	
 	private String handleCode (String text, Event event) {
+		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		//check if there code is 6 digits
 		if (text.length() != 6) {
 			result = "That is not 6 digits";
 		}
@@ -757,7 +752,7 @@ public class KitchenSinkController {
 			
 			if (id.length()>11) {
 				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-				reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+				messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
 				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
 			}
 			
@@ -776,8 +771,10 @@ public class KitchenSinkController {
 						break;
 					}
 				}
-				replyText(((MessageEvent) event).getReplyToken(), result);
+				messages.add(new TextMessage(result));
 
+				messages.add(mainMenuMessage);
+				reply(((MessageEvent) event).getReplyToken(), messages);
 			}	
 		}
 		
