@@ -508,8 +508,8 @@ public class KitchenSinkController {
 			                                new PostbackAction("言 hello2",
 			                                                   "hello こんにちは",
 			                                                   "hello こんにちは"),
-			                                new MessageAction("Dairy and Egg Products",
-			                                                  "Dairy and Egg Products")
+			                                new MessageAction("Say message",
+			                                                  "Rice=米")
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", buttonsTemplate);
 			                this.reply(replyToken, templateMessage);
