@@ -133,12 +133,7 @@ public class KitchenSinkController {
             + "Menu - Input menu and let me pick a food for you to eat this meal\n"
             + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
-	String imageProfile;
-	
-	@PostConstruct
-	public void init() {
-		imageProfile = createUri("/static/buttons/menuProfile.jpg");
-	}
+
 //    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
 //    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
 //    String imageFood = createUri("/static/buttons/menuFood.jpg");
@@ -371,8 +366,32 @@ public class KitchenSinkController {
 		}
 		
 		if (categories == null) {
+		    String imageProfile = createUri("/static/buttons/menuProfile.jpg");
+		    String imageDaily = createUri("/static/buttons/menuDaily.jpg");
+		    String imageFood = createUri("/static/buttons/menuFood.jpg");
+		    String imageMenu = createUri("/static/buttons/menuMenu.jpg"); 
+		    String imageFriend = createUri("/static/buttons/menuFriend.jpg");
+		    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
+		            Arrays.asList(
+		                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
+		                            new MessageAction("Click here", "profile")
+		                    )),
+		                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
+		                            new MessageAction("Click here", "daily")
+		                    )),
+		                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
+		                            new MessageAction("Click here", "food")
+		                    )),
+		                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
+		                            new MessageAction("Click here", "menu")
+		                    )),
+		                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
+		                            new MessageAction("Click here", "friend")
+		                    ))
+		            ));
+		    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 			user.addUser(event.getSource().getUserId());
-			this.replyText(replyToken, showMainMenu); 
+			this.replyText(replyToken, menuTemplateMessage); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
