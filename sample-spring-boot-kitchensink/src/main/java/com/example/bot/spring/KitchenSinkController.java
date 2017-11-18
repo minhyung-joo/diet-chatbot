@@ -404,6 +404,7 @@ public class KitchenSinkController {
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(mainMenuMessage);
+		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
 		    			break;
