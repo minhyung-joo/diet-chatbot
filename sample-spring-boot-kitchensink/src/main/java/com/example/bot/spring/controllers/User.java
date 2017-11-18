@@ -49,16 +49,18 @@ public class User {
 	private MenuController mc;
 	
 	public void addUser(String id) {
-		boolean userFound = false;
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-	        		userFound = true;
-	        }
-		}
-		if (!userFound) {
-			Profile pf = new Profile();
+		
+		Profile pf = profileRepository.findByUserID(id);
+		if (pf == null) {
+			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
+			if (profileRepository.count() == 0) {
+				pf.setAdmin(true);
+			}
+			else {
+				pf.setAdmin(false);
+			}
 			profileRepository.save(pf);
 		}
 	}
@@ -127,20 +129,46 @@ public class User {
 		}
 	}
 	
-	public String outputInterest(String id) {		
+	public String outputGeneral(String id) {		
+		Profile pf = profileRepository.findByUserID(id);
+		String outputStr = "Gender: ";
+		Integer age = pf.getAge();
+		String gender = pf.getGender();
+		Double height = pf.getHeight();
+		if(pf.getGender()=="Female") {
+			outputStr += "Female\n";
+		}
+		else {
+			outputStr += "Male\n";
+		}
+		outputStr += "Age: ";
+		if(age == null) {
+			outputStr += "44\n";
+		}
+		else {
+			outputStr += age.toString()+"\n";
+		}
+		outputStr += "Height: ";
+		if(height == null) {
+			outputStr += "177cm\n\n";
+		}
+		else {
+			outputStr += height.toString()+"\n\n";
+		}
+		return outputStr;
+	}
+	
+	public String outputInterest(String id) {
 		boolean interestFound = false;
 		String outputStr = "";
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-				if(pf.getInterests() != null) {
-					interestFound = true;
-					outputStr += "Your interests in food are: \n";
-					for(int i=0; i<pf.getInterests().length; i++) {
-						outputStr += pf.getInterests()[i] + "\n";
-					}
-					return outputStr;
-				}
-	        }
+		Profile pf = profileRepository.findByUserID(id);
+		if(pf.getInterests() != null) {
+			interestFound = true;
+			outputStr += "Your interests in food are: \n";
+			for(int i=0; i<pf.getInterests().length; i++) {
+				outputStr += pf.getInterests()[i] + "\n";
+			}
+			return outputStr;
 		}
 		outputStr += "You did not tell me your food interests yet.";		
 		return outputStr;
@@ -182,14 +210,13 @@ public class User {
 	public String makeRecommendation(String id) {		
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
-		rd.setUniqueCode(makeUniqueCode("123456"));
 		rd.setClaimed(false);
 		recommendationRepository.save(rd);	
-		return rd.getUniqueCode();
+		return Long.toString(rd.getID());
 	}
 	
 	public String acceptRecommendation(String uniqueCode, String userID) {		
-		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
+		Recommendation rd = recommendationRepository.findById(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
 				if (!rd.getUserID().equals(userID)) {
@@ -218,12 +245,8 @@ public class User {
 
 		}
 	}
-	
-	public String makeUniqueCode(String code) {
-		return code;
-	}
-	
-	public void uploadCouponCampaign(InputStream is) {		
+		
+	public void uploadCouponCampaign(InputStream is) {
 		
 		Campaign campaign = null;
 		for(Campaign cp : campaignRepository.findAll()) {
@@ -243,7 +266,7 @@ public class User {
 		campaignRepository.save(campaign);	
 	}
 	
-	public byte [] getCoupon() {	
+	public byte[] getCoupon() {	
 		Campaign campaign;
 		for(Campaign cp : campaignRepository.findAll()) {
 			cp.incrementCount();
@@ -253,11 +276,11 @@ public class User {
 		return null;
 	}
 	
-	public boolean checkValidityOfUser(String id) {	
+	public String checkValidityOfUser (String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
-			//already claimed new user coupon
-			return false;
+			
+			return "claimed";
 		}
 		
 		Campaign campaign=null;
@@ -268,26 +291,33 @@ public class User {
 		if (campaign != null) {
 			if (campaign.getCount()>=5000) {
 				//5000 coupons already taken
-				return false;
+				return "taken";
 			}
 			if (campaign.getTime().getTime()>pf.getRegisteredTime().getTime()) {
 				//user registered before campaign began
-				return false;
+				return "before";
 			}
 			else {
-				return true;
+				return "valid";
 			}	
 		}
 		else {
 			//no campaign
-			return false;
+			return "none";
 		}
 		
 		
 	}
 	
-	public boolean isAdmin (String userID) {	
-		return true;
+	public boolean isAdmin(String userID) {
+		//TODO
+		Profile pf = profileRepository.findByUserID(userID);
+		if (pf !=null) {
+			if (pf.getAdmin()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public byte[] readImage(InputStream is) throws IOException

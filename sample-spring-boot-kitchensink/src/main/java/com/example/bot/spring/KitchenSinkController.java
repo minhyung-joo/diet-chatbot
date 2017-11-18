@@ -166,6 +166,30 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		
+		int index = -1;
+		for(int i=0;i<userList.size();i++) {
+			if(userList.get(i).equals(event.getSource().getUserId())) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			categories = null;
+			profile = null;
+			menu = null;
+			index = userList.size();
+			userList.add(event.getSource().getUserId());
+			catList.add(categories);
+			profList.add(profile);
+			menuList.add(menu);
+		}
+		else {
+			categories = catList.get(index);
+			profile = profList.get(index);
+			menu = menuList.get(index);
+		}
+		
+		
 		if (categories == Categories.CAMPAIGN) {
 			InputStream initialStream = response.getStream();
 			user.uploadCouponCampaign(initialStream);
@@ -176,6 +200,7 @@ public class KitchenSinkController {
 			messages.add(mainMenuMessage);
 			this.reply(replyToken, messages);
 		}
+		
 		else if (categories == Categories.MENU && menu == Menu.JPEG) {
 			DownloadedContent jpg = saveContent("jpg", response);
 			String menu = inputToFood.readFromJPEG(jpg); // Use this menu string for features
@@ -187,6 +212,11 @@ public class KitchenSinkController {
 			String message = "What is this image for?";
 			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
 		}
+		
+		catList.set(index, categories);
+		profList.set(index, profile);
+		menuList.set(index, menu);
+
 	}
 
 	@EventMapping
@@ -274,6 +304,7 @@ public class KitchenSinkController {
 	private void handleSticker(String replyToken, StickerMessageContent content) {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
+
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
@@ -308,8 +339,7 @@ public class KitchenSinkController {
 		}
 		
 		if (categories == null) {
-            user.addUser(""+ event.getSource().getUserId());
-            
+			user.addUser(event.getSource().getUserId());
 			this.replyText(replyToken, showMainMenu);
 			categories = Categories.MAIN_MENU;
 		}
@@ -353,10 +383,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case CODE:
-		    			handleCode(text, event);
-		    			if (categories == Categories.MAIN_MENU) {
-			    			this.reply(replyToken, mainMenuMessage);
-		    			}
+		    			String res = handleCode(text, event);
 		    			break; 
 		    		case CAMPAIGN:
 		    			this.replyText(replyToken, "Please upload the coupon image.");
@@ -418,12 +445,20 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "code": {
-		    			if (user.checkValidityOfUser(event.getSource().getUserId())) {
-		    				categories = Categories.CODE;
-			    			result = "Insert the 6 digit code";
-		    			}
-		    			else {
-		    				result = "Not valid";
+		    			switch(user.checkValidityOfUser(event.getSource().getUserId())) {
+			    			case "claimed":
+			    				result = "You already accepted a recommendation";
+			    				break;
+			    			case "taken":
+			    				result = "This recommendation code is already used";
+			    				break;
+			    			case "before":
+			    				result = "This campaign started after you registered";
+			    				break;
+			    			case "valid":
+				    			result = "Insert the 6 digit code";
+			    				categories = Categories.CODE;
+			    				break;	
 		    			}
 		    			
 		    			break;
@@ -489,7 +524,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to view your profile for weight, meal or interest?";
+			    			result = "Would you like to view your general profile, or your past weights or meals?";
 			    			break;
 			    		}
 			    		
@@ -589,7 +624,7 @@ public class KitchenSinkController {
 	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
-		Matcher m = Pattern.compile("weight|meal|interest", Pattern.CASE_INSENSITIVE).matcher(text);
+		Matcher m = Pattern.compile("weight|meal|general", Pattern.CASE_INSENSITIVE).matcher(text);
 		if (m.find()) {
 			switch (m.group().toLowerCase()) {
 				case "weight": {
@@ -600,8 +635,9 @@ public class KitchenSinkController {
 					result = user.outputMeal(""+event.getSource().getUserId());
 					break;
 				}
-				case "interest": {
-					result = user.outputInterest(""+event.getSource().getUserId());
+				case "general": {
+					result = user.outputGeneral(""+event.getSource().getUserId());
+					result += user.outputInterest(""+event.getSource().getUserId());
 					break;
 				}
 			}
@@ -712,17 +748,18 @@ public class KitchenSinkController {
 	}
 	
 	private String handleCode (String text, Event event) {
+		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		//check if there code is 6 digits
 		if (text.length() != 6) {
 			result = "That is not 6 digits";
+			messages.add(new TextMessage(result));
 		}
 		else {
 			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
 			
 			if (id.length()>11) {
 				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-				reply(((MessageEvent) event).getReplyToken(), new ImageMessage(jpg.getUri(), jpg.getUri()));
+				messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
 				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
 			}
 			
@@ -741,10 +778,14 @@ public class KitchenSinkController {
 						break;
 					}
 				}
-				replyText(((MessageEvent) event).getReplyToken(), result);
+				messages.add(new TextMessage(result));
 
 			}	
+			messages.add(mainMenuMessage);
+
 		}
+		
+		reply(((MessageEvent) event).getReplyToken(), messages);
 		
 		categories = Categories.MAIN_MENU;
 		
