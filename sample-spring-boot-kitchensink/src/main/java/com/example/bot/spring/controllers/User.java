@@ -1,11 +1,5 @@
 package com.example.bot.spring.controllers;
-import java.util.function.Consumer;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -124,15 +118,21 @@ public class User {
 	
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
-		
+		Profile pf = profileRepository.findByUserID(id);
 		String[] splitInterest = interest.split("/");
 		
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-				pf.setInterest(splitInterest);
-				profileRepository.save(pf);
-	        }
+		if(pf.getInterests() == null) {
+			pf.setInterest(splitInterest);
+		} else {
+			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
+			for(int i=0; i<splitInterest.length; i++) {
+				temp.add(splitInterest[i]);
+			}
+			String[] tempInterest = new String[list.size()];
+			temp.toArray(tempInterest);
+			pf.setInterest(tempInterest);
 		}
+		profileRepository.save(pf);
 	}
 	
 	@GetMapping(path="/getgeneral")
