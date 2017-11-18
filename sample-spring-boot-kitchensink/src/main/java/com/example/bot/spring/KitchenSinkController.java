@@ -514,9 +514,13 @@ public class KitchenSinkController {
 			                        "My button sample",
 			                        "Hello, my button",
 			                        Arrays.asList(
+			                                new URIAction("Go to line.me",
+			                                              "https://line.me"),
+			                                new PostbackAction("Say hello1",
+			                                                   "hello こんにちは"),
 			                                new MessageAction("Breakfast Dairy and Egg",
-	                                                  		"Rice=米"),
-			                                new MessageAction("Fast foods",
+			                                                   "hello こんにちは"),
+			                                new MessageAction("Say ",
 			                                                  "Rice=米")
 			                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("Button alt text", buttonsTemplate);
