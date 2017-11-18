@@ -592,13 +592,17 @@ public class KitchenSinkController {
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case SET_INTEREST:
-		    			if(text.toLowerCase().equals("done")) {
-			    			result = "I successfully recorded your interests";
-			    			profile = null;
-			    			categories = Categories.MAIN_MENU;
-		    			} else {
-			    			user.inputInterest(""+ event.getSource().getUserId(),text);
-		    			}
+//		    			if(text.toLowerCase().equals("done")) {
+//			    			result = "I successfully recorded your interests";
+//			    			profile = null;
+//			    			categories = Categories.MAIN_MENU;
+//		    			} else {
+//			    			user.inputInterest(""+ event.getSource().getUserId(),text);
+//		    			}
+		    			user.inputInterest(""+ event.getSource().getUserId(),text);
+		    			result = "I successfully recorded your interests";
+		    			profile = null;
+		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = handRequestProfile(text, event);
