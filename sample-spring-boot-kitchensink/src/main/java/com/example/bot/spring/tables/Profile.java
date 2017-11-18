@@ -6,8 +6,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
 @Entity
+
 public class Profile {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -19,6 +21,7 @@ public class Profile {
 	private String[] interests;
 	private Timestamp registeredTime;
 	private boolean claimedNewUserCoupon;
+	private boolean admin;
 	public long getID() {
 		return id;
 	}
@@ -51,6 +54,9 @@ public class Profile {
 	public boolean getClaimedNewUserCoupon() {
 		return claimedNewUserCoupon;
 	}
+	public boolean getAdmin() {
+		return admin;
+	}
 	
 	public void setUserID(String id) {
 		userID = id;
@@ -80,6 +86,9 @@ public class Profile {
 		claimedNewUserCoupon = claimed;
 	}
 	
+	public void setAdmin(boolean admin) {
+		this.admin=admin;
+	}
 	
 	
 	

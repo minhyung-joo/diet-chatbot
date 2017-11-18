@@ -50,16 +50,19 @@ public class User {
 	
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
-		boolean userFound = false;
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-	        		userFound = true;
-	        }
-		}
-		if (!userFound) {
-			Profile pf = new Profile();
+		
+		Profile pf = profileRepository.findByUserID(id);
+		if (pf == null) {
+			
+			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
+			if (profileRepository.count() == 0) {
+				pf.setAdmin(true);
+			}
+			else {
+				pf.setAdmin(false);
+			}
 			profileRepository.save(pf);
 		}
 	}
@@ -221,15 +224,14 @@ public class User {
 	public @ResponseBody String makeRecommendation (@RequestParam String id) {		
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
-		rd.setUniqueCode(makeUniqueCode("123456"));
 		rd.setClaimed(false);
 		recommendationRepository.save(rd);	
-		return rd.getUniqueCode();
+		return Long.toString(rd.getID());
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
 	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
-		Recommendation rd = recommendationRepository.findByUniqueCode(uniqueCode);
+		Recommendation rd = recommendationRepository.findById(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
 				if (!rd.getUserID().equals(userID)) {
@@ -258,11 +260,7 @@ public class User {
 
 		}
 	}
-	
-	public String makeUniqueCode(String code) {
-		return code;
-	}
-	
+		
 	@GetMapping(path="/uploadCouponCampaign")
 	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
 		
@@ -296,11 +294,11 @@ public class User {
 	}
 	
 	@GetMapping(path="/checkValidity")
-	public @ResponseBody boolean checkValidityOfUser (String id) {	
+	public @ResponseBody String checkValidityOfUser (String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
-			//already claimed new user coupon
-			return false;
+			
+			return "claimed";
 		}
 		
 		Campaign campaign=null;
@@ -311,27 +309,34 @@ public class User {
 		if (campaign != null) {
 			if (campaign.getCount()>=5000) {
 				//5000 coupons already taken
-				return false;
+				return "taken";
 			}
 			if (campaign.getTime().getTime()>pf.getRegisteredTime().getTime()) {
 				//user registered before campaign began
-				return false;
+				return "before";
 			}
 			else {
-				return true;
+				return "valid";
 			}	
 		}
 		else {
 			//no campaign
-			return false;
+			return "none";
 		}
 		
 		
 	}
 	
 	@GetMapping(path="/isAdmin")
-	public @ResponseBody boolean isAdmin (String userID) {	
-		return true;
+	public @ResponseBody boolean isAdmin (String userID) {
+		//TODO
+		Profile pf = profileRepository.findByUserID(userID);
+		if (pf !=null) {
+			if (pf.getAdmin()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	
