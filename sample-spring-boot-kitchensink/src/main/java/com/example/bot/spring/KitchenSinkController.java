@@ -508,25 +508,10 @@ public class KitchenSinkController {
 	                                        new MessageAction("Sausage", "Sausages and Luncheon Meats"),
 	                                        new MessageAction("Poultry", "Poultry Products")
 	                                )),
-	                                new CarouselColumn(imageUrl, "Datetime Picker", "Please select a date, time or datetime", Arrays.asList(
-	                                        new DatetimePickerAction("Datetime",
-	                                                "action=sel",
-	                                                "datetime",
-	                                                "2017-06-18T06:15",
-	                                                "2100-12-31T23:59",
-	                                                "1900-01-01T00:00"),
-	                                        new DatetimePickerAction("Date",
-	                                                "action=sel&only=date",
-	                                                "date",
-	                                                "2017-06-18",
-	                                                "2100-12-31",
-	                                                "1900-01-01"),
-	                                        new DatetimePickerAction("Time",
-	                                                "action=sel&only=time",
-	                                                "time",
-	                                                "06:15",
-	                                                "23:59",
-	                                                "00:00")
+	                                new CarouselColumn(imageUrl, "Your food interests", "Choose your food interests", Arrays.asList(
+	                                        new MessageAction("Dairy and Egg", "Dairy and Egg Products"),
+	                                        new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
+	                                        new MessageAction("Fast Food", "Fast Foods")
 	                                ))
 	                        ));
 			                TemplateMessage templateMessage = new TemplateMessage("ChoosePlease:", carouselTemplate);
