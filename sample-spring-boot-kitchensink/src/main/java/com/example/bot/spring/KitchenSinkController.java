@@ -750,7 +750,7 @@ public class KitchenSinkController {
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		if (text.length() != 6 || isInteger(text)) {
+		if (text.length() != 6 || !isInteger(text)) {
 			result = "That is not 6 digit number";
 			messages.add(new TextMessage(result));
 		}
