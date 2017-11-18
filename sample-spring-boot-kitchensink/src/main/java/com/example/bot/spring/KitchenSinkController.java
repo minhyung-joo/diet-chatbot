@@ -139,7 +139,6 @@ public class KitchenSinkController {
     String imageFood;
     String imageMenu; 
     String imageFriend;
-    TemplateMessage menuTemplateMessage;
 //    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
 //            Arrays.asList(
 //                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
@@ -357,7 +356,8 @@ public class KitchenSinkController {
 	                            new MessageAction("Click here", "friend")
 	                    ))
 	            ));
-	    menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+	   TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
+	   return menuTemplateMessage;
 	}
 	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
