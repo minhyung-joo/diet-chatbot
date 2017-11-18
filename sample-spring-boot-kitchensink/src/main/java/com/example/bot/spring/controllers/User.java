@@ -42,7 +42,7 @@ public class User {
 	
 	@Autowired
 	private MenuController mc;
-	
+		
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
 		boolean userFound = false;
@@ -118,15 +118,32 @@ public class User {
 	
 	@GetMapping(path="/inputinterest")
 	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
-		Profile pf = profileRepository.findByUserID(id);
+		int categoryFound = 0;
 		String[] splitInterest = interest.split("/");
+
+		//Check for validity/existence of interest
+		for(int i=0; i<splitInterest.length; i++) {
+			for(Food fd : foodRepository.findAll()) {
+				if(fd.getCategory().equals(splitInterest[i])) {
+					categoryFound++;
+					break;
+				}
+			}
+			continue;
+		}
 		
+		if(categoryFound != splitInterest.length) {
+			return;
+		}
+		
+		Profile pf = profileRepository.findByUserID(id);	
 		if(pf.getInterests() == null) {
 			pf.setInterest(splitInterest);
 		} else {
 			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
 			for(int i=0; i<splitInterest.length; i++) {
-				temp.add(splitInterest[i]);
+				if(!temp.contains(splitInterest[i]))
+					temp.add(splitInterest[i]);
 			}
 			String[] tempInterest = new String[temp.size()];
 			temp.toArray(tempInterest);

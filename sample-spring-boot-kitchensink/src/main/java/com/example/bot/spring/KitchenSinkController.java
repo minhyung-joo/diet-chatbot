@@ -593,7 +593,7 @@ public class KitchenSinkController {
 		    			break;
 		    		case SET_INTEREST:
 		    			if(text.toLowerCase().equals("done")) {
-			    			result = "I successfully recorded your interests";
+			    			result = "I successfully recorded all your valid interests";
 			    			profile = null;
 			    			categories = Categories.MAIN_MENU;
 		    			} else {
