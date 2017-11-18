@@ -391,7 +391,7 @@ public class KitchenSinkController {
 		            ));
 		    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 			user.addUser(event.getSource().getUserId());
-			this.replyText(replyToken, menuTemplateMessage); 
+			this.reply(replyToken, menuTemplateMessage); 
 			categories = Categories.MAIN_MENU;
 		}
 		else {
