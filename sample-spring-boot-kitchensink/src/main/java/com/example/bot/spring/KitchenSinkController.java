@@ -503,12 +503,12 @@ public class KitchenSinkController {
 	                                        new MessageAction("Fish", "Finfish and Shellfish Products"),
 	                                        new MessageAction("Beef", "Beef Products")
 	                                )),
-	                                new CarouselColumn(null, "", "", Arrays.asList(
+	                                new CarouselColumn("", "", "", Arrays.asList(
 	                                        new MessageAction("Pork", "Pork Products"),
 	                                        new MessageAction("Sausage", "Sausages and Luncheon Meats"),
 	                                        new MessageAction("Poultry", "Poultry Products")
 	                                )),
-	                                new CarouselColumn(imageUrl, "Your food interests", "Choose your food interests", Arrays.asList(
+	                                new CarouselColumn("", "", "", Arrays.asList(
 	                                        new MessageAction("Dairy and Egg", "Dairy and Egg Products"),
 	                                        new MessageAction("Vegetables", "Vegetables and Vegetable Products"),
 	                                        new MessageAction("Fast Food", "Fast Foods")
