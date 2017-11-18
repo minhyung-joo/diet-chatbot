@@ -463,7 +463,6 @@ public class KitchenSinkController {
 			                );
 							TemplateMessage templateMessage = new TemplateMessage("Confirm alt text", confirmTemplate);
 			                this.reply(replyToken, templateMessage);			                
-			    			result = "";
 			                break;
 						}
 						case "age":{
@@ -498,27 +497,27 @@ public class KitchenSinkController {
 			                String imageUrl = createUri("/static/buttons/foodCat.jpg");
 			                CarouselTemplate carouselTemplate = new CarouselTemplate(
 			                        Arrays.asList(
-			                                new CarouselColumn(imageUrl, "Categories 1", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 1", "Please choose all your interests and type \"done\" if you finish selecting.", Arrays.asList(
 			                                        new MessageAction("Breakfast/Eggs", "Dairy and Egg Products/Breakfast Cereals"),
 			                                        new MessageAction("Fast Foods", "Fast Foods/Fats and Oils"),
 			                                        new MessageAction("Spices/Herbs/Sauces", "Spices and Herbs/Soups, Sauces, and Gravies")
 			                                )),
-			                                new CarouselColumn(imageUrl, "Categories 2", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 2", "Please choose all your interests and type \\\"done\\\" if you finish selecting.", Arrays.asList(
 			                                        new MessageAction("Sweets and Snacks", "Sweets/Snacks"),
 			                                        new MessageAction("Pork", "Pork Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Beef", "Beef Products")
 			                                )),
-			                                new CarouselColumn(imageUrl, "Categories 3", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 3", "Please choose all your interests and type \\\"done\\\" if you finish selecting.", Arrays.asList(
 			                                        new MessageAction("Chicken", "Poultry Products/Sausages and Luncheon Meats"),
 			                                        new MessageAction("Lamb", "Lamb, Veal, and Game Products"),
 			                                        new MessageAction("Nuts and Seeds", "Nut and Seed Products")
 			                                )),
-			                                new CarouselColumn(imageUrl, "Categories 4", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 4", "Please choose all your interests and type \\\"done\\\" if you finish selecting.", Arrays.asList(
 			                                        new MessageAction("Fruits/Vegetables", "Fruits and Fruit Juices/Vegetables and Vegetable Products"),
 			                                        new MessageAction("Beverages", "Beverages"),
 			                                        new MessageAction("Country Cuisines", "American Indian/Alaska Native Foods/Meals, Entrees, and Sidedishes")
 			                                )),
-			                                new CarouselColumn(imageUrl, "Categories 5", "Please choose all your interests", Arrays.asList(
+			                                new CarouselColumn(imageUrl, "Categories 5", "Please choose all your interests and type \\\"done\\\" if you finish selecting.", Arrays.asList(
 			                                        new MessageAction("Bakeries", "Baked Products"),
 			                                        new MessageAction("Rice, Pasta, Grains", "Cereal Grains and Pasta"),
 			                                        new MessageAction("Baby Food", "Baby Foods")
@@ -593,10 +592,13 @@ public class KitchenSinkController {
 		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case SET_INTEREST:
-		    			user.inputInterest(""+ event.getSource().getUserId(),text);
-		    			result = "I successfully recorded your interests";
-		    			profile = null;
-		    			categories = Categories.MAIN_MENU;
+		    			if(text.toLowerCase().equals("done")) {
+			    			result = "I successfully recorded your interests";
+			    			profile = null;
+			    			categories = Categories.MAIN_MENU;
+		    			} else {
+			    			user.inputInterest(""+ event.getSource().getUserId(),text);
+		    			}
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = handRequestProfile(text, event);

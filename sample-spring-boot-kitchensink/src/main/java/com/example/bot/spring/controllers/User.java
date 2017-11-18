@@ -137,8 +137,6 @@ public class User {
 	
 	@GetMapping(path="/getgeneral")
 	public @ResponseBody String outputGeneral (@RequestParam String id) {	
-		System.out.println("General gets called");
-
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
 		Integer age = pf.getAge();
@@ -169,8 +167,6 @@ public class User {
 	
 	@GetMapping(path="/getInterests")
 	public @ResponseBody String outputInterest (@RequestParam String id) {
-		System.out.println("Interest gets called");
-
 		
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
