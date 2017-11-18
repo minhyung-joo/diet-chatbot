@@ -149,7 +149,7 @@ public class User {
 			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
 			for(int i=0; i<splitInterest.length; i++) {
 				if(!temp.contains(splitInterest[i])) {
-					temp.add("-" + splitInterest[i]);
+					temp.add(splitInterest[i]);
 				} else {
 					return "I already recorded that";
 				}
@@ -200,7 +200,7 @@ public class User {
 		if(pf.getInterests() != null) {
 			outputStr += "Your interests in food are: \n";
 			for(int i=0; i<pf.getInterests().length; i++) {
-				outputStr += pf.getInterests()[i] + "\n";
+				outputStr += "-" + pf.getInterests()[i] + "\n";
 			}
 			return outputStr;
 		}
