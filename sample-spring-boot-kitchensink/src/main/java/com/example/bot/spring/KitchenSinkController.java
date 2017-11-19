@@ -127,39 +127,13 @@ public class KitchenSinkController {
 	public List<Menu> menuList = new ArrayList<Menu>();
 
 	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
-//            + "Profile - Record and view your weights and meals\n"
-//			+ "Daily - View your progress on nutrients today\n"
-//            + "Food - Get nutritional details of a food\n"
-//            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-//            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
-	public Message mainMenuMessage = new TextMessage(showMainMenu);
 
     String imageProfile;
     String imageDaily;
     String imageFood;
     String imageMenu; 
     String imageFriend;
-//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
-//            Arrays.asList(
-//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
-//                            new MessageAction("Click here", "profile")
-//                    )),
-//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
-//                            new MessageAction("Click here", "daily")
-//                    )),
-//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
-//                            new MessageAction("Click here", "food")
-//                    )),
-//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
-//                            new MessageAction("Click here", "menu")
-//                    )),
-//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
-//                            new MessageAction("Click here", "friend")
-//                    ))
-//            ));
-//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 
-	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -224,7 +198,7 @@ public class KitchenSinkController {
 			List<Message> messages = new ArrayList<Message>();
 			TextMessage reply = new TextMessage("Uploaded successful");
 			messages.add(reply);
-			messages.add(mainMenuMessage);
+			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages);
 		}
 		
@@ -394,7 +368,6 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
-			messages.add(mainMenuMessage);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
@@ -641,7 +614,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+						if (Integer.parseInt(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your age";
 			    			profile = null;
@@ -655,7 +632,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+						if (Double.parseDouble(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your height";
 			    			profile = null;
@@ -669,7 +650,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+		    			if (Double.parseDouble(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your weight";
 			    			profile = null;
@@ -837,8 +822,8 @@ public class KitchenSinkController {
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		if (text.length() != 6) {
-			result = "That is not 6 digits";
+		if (text.length() != 6 || !isInteger(text)) {
+			result = "That is not a 6 digit number.";
 			messages.add(new TextMessage(result));
 		}
 		else {
@@ -861,23 +846,36 @@ public class KitchenSinkController {
 						break;
 					}
 					case "none": {
-						result = "No such code";
+						result = "There is no such code";
 						break;
 					}
 				}
 				messages.add(new TextMessage(result));
 
 			}	
-			messages.add(mainMenuMessage);
 
 		}
-		
+		messages.add(getMenuTemplate());
+
 		reply(((MessageEvent) event).getReplyToken(), messages);
 		
 		categories = Categories.MAIN_MENU;
 		
 		return result;
 	}
+	
+	public boolean isInteger (String string) {
+		int size = string.length();
+		
+		for (int i = 0; i < size; i++) {
+	        if (!Character.isDigit(string.charAt(i))) {
+	            return false;
+	        }
+	    }
+
+	    return size > 0;
+	}
+	
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
