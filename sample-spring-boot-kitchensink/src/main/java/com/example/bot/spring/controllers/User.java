@@ -254,6 +254,7 @@ public class User {
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
+		recommendationRepository.save(rd);
 		long code = rd.getID()%1000000;
 		if (code<100000) {
 			code += 100000;
