@@ -416,9 +416,7 @@ public class KitchenSinkController {
 		    			break;
 		    		case PROFILE:
 		    			String responseText = handleProfile(replyToken, text, event);
-		    			if(responseText.equals("")) {
-			    			messages.add(getProfileTemplate());
-		    			}
+			    		messages.add(getProfileTemplate());
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(getMenuTemplate());
 		    			}
