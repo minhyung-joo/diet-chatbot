@@ -7,4 +7,5 @@ public interface MealRepository extends CrudRepository<Meal, Long> {
 	
 	/** This is the repository for the meal table.
 	 */
+	
 }

@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Service;
 
-@Controller// This means that this class is a Controller
-@RequestMapping(path="/user")
+@Service
 public class User {
 	
 	/** This controller has access to the models corresponding to the users' information
@@ -52,12 +52,9 @@ public class User {
 	 * 
 	 * @param id the ID of the new user
 	 */
-	@GetMapping(path="/createuser")
-	public @ResponseBody void addUser (@RequestParam String id) {
-		
+	public void addUser(String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf == null) {
-			
 			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
@@ -76,8 +73,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @param gender the gender of the user
 	 */
-	@GetMapping(path="/inputgender")
-	public @ResponseBody void inputGender (@RequestParam String id, @RequestParam String gender) {
+	public void inputGender(String id, String gender) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setGender(gender);
 		profileRepository.save(pf);
@@ -88,8 +84,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @param age the age of the user
 	 */
-	@GetMapping(path="/inputage")
-	public @ResponseBody void inputAge (@RequestParam String id, @RequestParam int age) {
+	public void inputAge(String id, int age) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setAge(age);
 		profileRepository.save(pf);
@@ -100,8 +95,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @param height the height of the user
 	 */
-	@GetMapping(path="/inputheight")
-	public @ResponseBody void inputHeight (@RequestParam String id, @RequestParam Double height) {
+	public void inputHeight(String id, Double height) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setHeight(height);
 		profileRepository.save(pf);
@@ -112,8 +106,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @param weight the weight of the user
 	 */
-	@GetMapping(path="/inputweight")
-	public @ResponseBody void inputWeight (@RequestParam String id, @RequestParam Double weight) {		
+	public void inputWeight(String id, Double weight) {		
 		Weight wt = new Weight();
 		wt.setUserID(id);
 		wt.setTime();
@@ -126,8 +119,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the log of the user's weights
 	 */
-	@GetMapping(path="/getWeights")
-	public @ResponseBody String outputWeight (@RequestParam String id) {		
+	public String outputWeight(String id) {		
 		boolean weightFound = false;
 		String outputStr = "";
 		for(Weight wt : weightRepository.findAll()) {
@@ -158,8 +150,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the response informing the user that his/her interests have been reset.
 	 */
-	@GetMapping(path="/resetinterest")
-	public @ResponseBody String resetInterest (@RequestParam String id) {	
+	public String resetInterest(String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setInterest(null);
 		profileRepository.save(pf);
@@ -172,8 +163,7 @@ public class User {
 	 * @param interest the String containing the interests of the user
 	 * @return responses according to the user's actions
 	 */
-	@GetMapping(path="/inputinterest")
-	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
+	public String inputInterest(String id, String interest) {	
 		int categoryFound = 0;
 		String[] splitInterest = interest.split("/ ");
 
@@ -217,8 +207,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the user's general profile
 	 */
-	@GetMapping(path="/getgeneral")
-	public @ResponseBody String outputGeneral (@RequestParam String id) {	
+	public String outputGeneral(String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
 		Integer age = pf.getAge();
@@ -252,9 +241,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the user's interests in a String
 	 */
-	@GetMapping(path="/getInterests")
-	public @ResponseBody String outputInterest (@RequestParam String id) {
-		
+	public String outputInterest(String id) {
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
 		if(pf.getInterests() != null) {
@@ -267,28 +254,26 @@ public class User {
 		outputStr += "You did not tell me your food interests yet.";		
 		return outputStr;
 	}
-	
+
 	/** This saves the meal that the user consumed in the database.
 	 * 
 	 * @param id the ID of the user
 	 * @param food the String of the meal that the user consumed
 	 */
-	@GetMapping(path="/inputmeal")
-	public @ResponseBody void inputMeal (@RequestParam String id, @RequestParam String food) {		
+	public void inputMeal(String id, String food) {		
 		Meal ml = new Meal();
 		ml.setUserID(id);
 		ml.setTime();
 		ml.setFood(food);
 		mealRepository.save(ml);	
 	}
-	
+
 	/** This is the getter for the meals that the user has consumed.
 	 * 
 	 * @param id the ID of the user
 	 * @return the log of the meals that the user has consumed
 	 */
-	@GetMapping(path="/getMeals")
-	public @ResponseBody String outputMeal (@RequestParam String id) {		
+	public String outputMeal(String id) {		
 		boolean mealFound = false;
 		String outputStr = "";
 		for(Meal ml : mealRepository.findAll()) {
@@ -318,8 +303,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the unique 6-digit code for the user
 	 */
-	@GetMapping(path="/makeRecommendation")
-	public @ResponseBody String makeRecommendation (@RequestParam String id) {		
+	public String makeRecommendation(String id) {		
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
@@ -339,8 +323,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the corresponding responses base on the state of the user
 	 */
-	@GetMapping(path="/acceptRecommendation")
-	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
+	public String acceptRecommendation(String uniqueCode, String userID) {		
 		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
@@ -367,17 +350,14 @@ public class User {
 		else {
 			//no such code
 			return "none";
-
 		}
 	}
 	
 	/** This method allows the administrator to upload a coupon to start a campaign.
 	 * 
 	 * @param is the input stream of the image of the coupon
-	 */
-	@GetMapping(path="/uploadCouponCampaign")
-	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
-		
+	 */	
+	public void uploadCouponCampaign(InputStream is) {
 		Campaign campaign = null;
 		for(Campaign cp : campaignRepository.findAll()) {
 			campaign = cp;
@@ -400,8 +380,7 @@ public class User {
 	 * 
 	 * @return the byte format of the coupon image
 	 */
-	@GetMapping(path="/getCoupon")
-	public @ResponseBody byte [] getCoupon () {	
+	public byte[] getCoupon() {	
 		Campaign campaign;
 		for(Campaign cp : campaignRepository.findAll()) {
 			cp.incrementCount();
@@ -416,8 +395,7 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the state of the user
 	 */
-	@GetMapping(path="/checkValidity")
-	public @ResponseBody String checkValidityOfUser (String id) {	
+	public String checkValidityOfUser (String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
 			
@@ -455,9 +433,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return whether or not the user is an administrator
 	 */
-	@GetMapping(path="/isAdmin")
-	public @ResponseBody boolean isAdmin (String userID) {
-		//TODO
+	public boolean isAdmin(String userID) {
 		Profile pf = profileRepository.findByUserID(userID);
 		if (pf !=null) {
 			if (pf.getAdmin()) {
@@ -516,8 +492,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the BMR of the user
 	 */
-	@GetMapping(path="/getbmr")
-	public @ResponseBody double getBMR (@RequestParam String userID) {		
+	public double getBMR(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
 		Double height = pf.getHeight();
@@ -540,14 +515,13 @@ public class User {
 		}
 		return bmr;
 	}
-	
+
 	/** This method calculates the BMI of the user.
 	 * 
 	 * @param userID the ID of the user
 	 * @return the BMI of the user
 	 */
-	@GetMapping(path="/getbmi")
-	public @ResponseBody double getBMI (@RequestParam String userID) {		
+	public double getBMI(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
 		Double height = pf.getHeight()/100.0;
@@ -565,8 +539,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the BMI category of the user
 	 */
-	@GetMapping(path="/getbmicategory")
-	public @ResponseBody String getBMICategory (@RequestParam String userID) {		
+	public String getBMICategory(String userID) {		
 		double bmi = getBMI(userID);
 		if(bmi<18.5) {
 			return "Underweight";
@@ -587,8 +560,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the BFP of the user
 	 */
-	@GetMapping(path="/getbfp")
-	public @ResponseBody double getBFP (@RequestParam String userID) {		
+	public double getBFP (String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Integer age = pf.getAge();
 		if(age == null || age == 0) {
@@ -632,8 +604,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the remainig calories for the user today.
 	 */
-	@GetMapping(path="/getremainingcalories")
-	public @ResponseBody double getRemainingCalories (@RequestParam String userID) {		
+	public double getRemainingCalories(String userID) {		
 		double currentCalories = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -647,8 +618,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the remainig protein for the user today.
 	 */
-	@GetMapping(path="/getremainingprotein")
-	public @ResponseBody double getRemainingProtein (@RequestParam String userID) {		
+	public double getRemainingProtein(String userID) {		
 		double currentProtein = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -662,8 +632,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the remainig carbohydrate for the user today.
 	 */
-	@GetMapping(path="/getremainingcarbohydrate")
-	public @ResponseBody double getRemainingCarbohydrate (@RequestParam String userID) {		
+	public double getRemainingCarbohydrate(String userID) {		
 		double currentCarbohydrate = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -677,8 +646,7 @@ public class User {
 	 * @param userID the ID of the user
 	 * @return the remainig fat for the user today.
 	 */
-	@GetMapping(path="/getremainingfat")
-	public @ResponseBody double getRemainingFat (@RequestParam String userID) {		
+	public double getRemainingFat(String userID) {		
 		double currentFat = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -686,14 +654,13 @@ public class User {
 		}
 		return getBMR(userID)*0.25/9.0 - currentFat;
 	}
-	
+
 	/** This shows the daily progress on nutrients and other information of the user.
 	 * 
 	 * @param userID the ID of the user
 	 * @return daily report
 	 */
-	@GetMapping(path="/showdailyprogress")
-	public @ResponseBody String showDailyProgress (@RequestParam String userID) {
+	public String showDailyProgress(String userID) {
 		DecimalFormat format = new DecimalFormat("##.00");
 		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
 				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+

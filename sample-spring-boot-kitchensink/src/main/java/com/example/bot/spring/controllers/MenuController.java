@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping(path="/menu")
+@Service
 public class MenuController{
 	
 	/** This controller helps the user to pick a food from the menu.
@@ -80,8 +80,7 @@ public class MenuController{
 	 * 
 	 * @return the name of the choice from the menu
 	 */
-	@GetMapping(path="/pickfood")
-	public @ResponseBody String pickFood() {
+	public String pickFood() {
 		String[] choices = menu.split(System.getProperty("line.separator"));
 		
 		//For scoring and generating reply based on reasons

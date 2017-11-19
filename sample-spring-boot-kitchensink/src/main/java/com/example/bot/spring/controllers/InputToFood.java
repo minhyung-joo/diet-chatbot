@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import com.example.bot.spring.models.Menu;
 import com.example.bot.spring.models.OCRResponse;
 import com.example.bot.spring.models.Response;
@@ -31,8 +32,10 @@ import org.springframework.http.MediaType;
  *  user has requested for.
  */
 
-@Controller
-@RequestMapping(path="/input")
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
@@ -46,19 +49,22 @@ public class InputToFood {
 	 * @param text the text menu passed in by the user
 	 * @return the choice from the menu
 	 */
-	@GetMapping(path="/readfromtext")
-    public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
+    public String readFromText(String userId, String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
     	return menuController.pickFood();
     }
-	
-	/** This method reads the url menu (JSON) passed in by the user and passes it to MenuController.
-	 * 
-	 * @param url the link to the JSON menu
-	 * @return the choice from the menu
-	 */
+
+    /**
+     * This method is used to convert JSON HTTP response to menu format.  
+     * @param url URL to the JSON source
+     * @return String Formatted String of the menu
+     */
     public String readFromJSON(String url) {
+    	if (url == null) {
+    		return "Invalid input";
+    	}
+    	
     	try {
     		RestTemplate restTemplate = new RestTemplate();
         	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
@@ -84,13 +90,18 @@ public class InputToFood {
     		return "Failed to load URL.";
     	}
     }
-    
-    /** This method reads the picture menu (JPEG) passed in by the user and passes it to MenuController.
-     * 
-     * @param jpeg the picture of the menu
-     * @return the choice from the menu
+
+    /**
+     * This method uses OCR feature of the Google Vision API to extract menu String
+     * from the image uploaded by the user through Line
+     * @param jpeg DownloadedContent instance of the image file uploaded by the user
+     * @return String Menu String processed from the image using Google Vision API
      */
     public String readFromJPEG(DownloadedContent jpeg) {
+    	if (jpeg == null || jpeg.getPath() == null || jpeg.getUri() == null) {
+    		return "Invalid input";
+    	}
+    	
     	String menu = "";
     	RestTemplate restTemplate = new RestTemplate();
     	String apiKey = "AIzaSyCrPOUDlYLaAQLAXbFSiRgb16OSikBooP8";
@@ -140,9 +151,8 @@ public class InputToFood {
      * @param food the name of the food the user requested
      * @return the details of the food
      */
-    @GetMapping(path="/getfooddetails")
-    public @ResponseBody String getFoodDetails(@RequestParam String food) {
-    		String resultFood = "You have entered " + food + "\n";
+    public String getFoodDetails(String food) {
+    		String resultFood = "You have entered " + food + ".\n";
     		String[] splitFood = food.split("\\s+");
     		
 	    	for (int i = 0; i < splitFood.length; i++) {	
@@ -156,7 +166,7 @@ public class InputToFood {
 	            		fdName = fdName.substring(0, fdName.length()-1);
 	            	}
 	            	
-	    		    if (checkEquality(fdName, splitFood[i]) || splitFood[i].toLowerCase().contains(fdName)) { 
+	    		    if (splitFood[i].toLowerCase().contains(fdName)) { 
 	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    }
@@ -165,53 +175,5 @@ public class InputToFood {
     		
     		return resultFood;
     }
-    
-    /** This method checks whether or not two Strings are close enough that are equal to each other
-     * 
-     * @param s1 the first String
-     * @param s2 the second String
-     * @return whether or not they are equal
-     */
-    private boolean checkEquality(String s1, String s2) {
-    	return getDistance(s1, s2) <= 2;
-    }
-    
-    /** This method returns the minimum of three integers.
-     * 
-     * @param a the first integer
-     * @param b the second integer
-     * @param c the third integer
-     * @return the minimum value
-     */
-    private int min(int a, int b, int c) {
-        return Math.min(a, Math.min(b, c));
-    }
-
-    /**
-     * Using Dynamic Programming, the Wagner-Fischer algorithm is able to 
-     * calculate the edit distance between two strings.
-     * @param str1 the first String
-     * @param str2 the second String
-     * @return edit distance between s1 and s2
-     */
-    private int getDistance(String str1, String str2) {
-    	char[] s1 = str1.toCharArray();
-    	char[] s2 = str2.toCharArray();
-    	
-        int[][] dp = new int[s1.length + 1][s2.length + 1];
-        for (int i = 0; i <= s1.length; dp[i][0] = i++);
-        for (int j = 0; j <= s2.length; dp[0][j] = j++);
-
-        for (int i = 1; i <= s1.length; i++) {
-            for (int j = 1; j <= s2.length; j++) {
-                if (s1[i - 1] == s2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, 
-                    		dp[i - 1][j - 1] + 1);
-                }
-            }
-        }
-        return dp[s1.length][s2.length];
-    }
 }
+

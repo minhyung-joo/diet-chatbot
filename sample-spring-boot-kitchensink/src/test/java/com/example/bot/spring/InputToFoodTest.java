@@ -56,6 +56,11 @@ public class InputToFoodTest {
 	private InputToFood inputToFood = new InputToFood();
 	
 	@Test
+	public void testGetFoodDetails() throws Exception {
+		
+	}
+	
+	@Test
 	public void testReadFromJSON() throws Exception {
 		String nullStr = null;
 		String emptyStr = "";
@@ -76,6 +81,33 @@ public class InputToFoodTest {
 				"1. Pork, Bean curd, Rice, \n" + 
 				"2. Pork, Sweet and Sour Sauce, Pork, \n" + 
 				"3. Chili, Chicken, Rice, ");
+	}
+	
+	@Test
+	public void testReadFromJPEG() throws Exception {
+		DownloadedContent nullContent = null;
+		DownloadedContent invalidFormatContent = new DownloadedContent(null, "");
+		URI uri = getClass().getResource("/static/test/sample-menu2.jpg").toURI();
+		File file = new File(uri);
+		Path path = file.toPath();
+		DownloadedContent jpeg = new DownloadedContent(path, uri.toString());
+		
+		String nullResult = inputToFood.readFromJPEG(nullContent);
+		assertEquals(nullResult, "Invalid input");
+		
+		String invalidResult = inputToFood.readFromJPEG(invalidFormatContent);
+		assertEquals(nullResult, "Invalid input");
+		
+		String result = inputToFood.readFromJPEG(jpeg);
+		System.out.println(result);
+		assertEquals(result, "Spicy Bean curd with Minced Pork served with Rice\n" + 
+				"Sweet and Sour Pork served with Rice\n" + 
+				"Chili Chicken on Rice\n" + 
+				"Fried instance noodle with Luncheon Meat\n" + 
+				"35\n" + 
+				"36\n" + 
+				"28 F\n" + 
+				"40\n");
 	}
 	
 }

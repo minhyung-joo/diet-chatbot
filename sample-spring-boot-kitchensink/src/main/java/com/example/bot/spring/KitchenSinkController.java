@@ -168,6 +168,16 @@ public class KitchenSinkController {
 	 */
 	public List<Menu> menuList = new ArrayList<Menu>();
 	
+	/** This is the default message of the chat bot.
+	 * 
+	 */
+	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
+	
+	/** This is the message of the default text.
+	 * 
+	 */
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
+
 	/** This is the text for the profile option.
 	 * 
 	 */
@@ -192,7 +202,7 @@ public class KitchenSinkController {
 	 * 
 	 */
     String imageFriend;
-	
+
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -444,6 +454,7 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
+			messages.add(mainMenuMessage);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
@@ -518,14 +529,14 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
+		    			result = "What would you like to do?\n\n"
 		    				 + "Gender - Set your gender\n"
 		    				 + "Age - Update your age\n"
 		    				 + "Height - Update your height\n"
-		                     + "Weight - Record your weight\n"
-		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles\n"
-		                     + "Interest - Record your interests";
+		                  + "Weight - Record your weight\n"
+		                  + "Meal - Record your meal\n"
+		                  + "Interest - Record your interests\n"
+		                  + "View - View your profile";
 		    			break;
 		    		}
 		    		case "daily": {
@@ -640,7 +651,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to view your general profile, or your past weights or meals?";
+			    			result = "Would you like to view your \"general\" profile, or your past \"weights\" or \"meals\"?";
 			    			break;
 			    		}
 			    		
