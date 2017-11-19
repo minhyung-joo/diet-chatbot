@@ -26,6 +26,11 @@ import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 
+/** This controller takes in the menu inputs from the user, turn them into text, and then pass it to 
+ *  MenuController to pick the food for the user. It also provides the details of the food that the 
+ *  user has requested for.
+ */
+
 @Controller
 @RequestMapping(path="/input")
 public class InputToFood {
@@ -34,14 +39,25 @@ public class InputToFood {
 	
 	@Autowired
 	private MenuController menuController;
-
+	
+	/** This method reads the text menu passed in by the user and passes it to MenuController.
+	 * 
+	 * @param userId the ID of the user
+	 * @param text the text menu passed in by the user
+	 * @return the choice from the menu
+	 */
 	@GetMapping(path="/readfromtext")
     public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
     	return menuController.pickFood();
     }
-
+	
+	/** This method reads the url menu (JSON) passed in by the user and passes it to MenuController.
+	 * 
+	 * @param url the link to the JSON menu
+	 * @return the choice from the menu
+	 */
     public String readFromJSON(String url) {
     	try {
     		RestTemplate restTemplate = new RestTemplate();
@@ -68,7 +84,12 @@ public class InputToFood {
     		return "Failed to load URL.";
     	}
     }
-
+    
+    /** This method reads the picture menu (JPEG) passed in by the user and passes it to MenuController.
+     * 
+     * @param jpeg the picture of the menu
+     * @return the choice from the menu
+     */
     public String readFromJPEG(DownloadedContent jpeg) {
     	String menu = "";
     	RestTemplate restTemplate = new RestTemplate();
@@ -87,6 +108,11 @@ public class InputToFood {
     	return menu;
     }
     
+    /** This method builds the menu in JSON format from a picture of the menu
+     * 
+     * @param jpeg the picture of the menu
+     * @return the JSON format of the menu
+     */
     private String buildJson(DownloadedContent jpeg) {
     	try {
     		StringBuilder jsonBuilder = new StringBuilder();
@@ -109,6 +135,11 @@ public class InputToFood {
     	}
     }
     
+    /** This method returns the details of the food that the user requested.
+     * 
+     * @param food the name of the food the user requested
+     * @return the details of the food
+     */
     @GetMapping(path="/getfooddetails")
     public @ResponseBody String getFoodDetails(@RequestParam String food) {
     		String resultFood = "You have entered " + food + "\n";
@@ -135,10 +166,23 @@ public class InputToFood {
     		return resultFood;
     }
     
+    /** This method checks whether or not two Strings are close enough that are equal to each other
+     * 
+     * @param s1 the first String
+     * @param s2 the second String
+     * @return whether or not they are equal
+     */
     private boolean checkEquality(String s1, String s2) {
     	return getDistance(s1, s2) <= 2;
     }
     
+    /** This method returns the minimum of three integers.
+     * 
+     * @param a the first integer
+     * @param b the second integer
+     * @param c the third integer
+     * @return the minimum value
+     */
     private int min(int a, int b, int c) {
         return Math.min(a, Math.min(b, c));
     }
@@ -146,6 +190,8 @@ public class InputToFood {
     /**
      * Using Dynamic Programming, the Wagner-Fischer algorithm is able to 
      * calculate the edit distance between two strings.
+     * @param str1 the first String
+     * @param str2 the second String
      * @return edit distance between s1 and s2
      */
     private int getDistance(String str1, String str2) {
