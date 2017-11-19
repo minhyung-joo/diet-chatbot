@@ -126,42 +126,14 @@ public class KitchenSinkController {
 	public List<Profile> profList = new ArrayList<Profile>();
 	public List<Menu> menuList = new ArrayList<Menu>();
 
-//	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-//            + "Profile - Record and view your weights and meals\n"
-//			+ "Daily - View your progress on nutrients today\n"
-//            + "Food - Get nutritional details of a food\n"
-//            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-//            + "Friend - Make recommendations to a friend to get an ice cream coupon!\n"
-//            + "Code - Accept recommendations to get an ice cream coupon";	
-//
-//	public Message mainMenuMessage = new TextMessage(showMainMenu);
+	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
 
     String imageProfile;
     String imageDaily;
     String imageFood;
     String imageMenu; 
     String imageFriend;
-//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
-//            Arrays.asList(
-//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
-//                            new MessageAction("Click here", "profile")
-//                    )),
-//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
-//                            new MessageAction("Click here", "daily")
-//                    )),
-//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
-//                            new MessageAction("Click here", "food")
-//                    )),
-//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
-//                            new MessageAction("Click here", "menu")
-//                    )),
-//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
-//                            new MessageAction("Click here", "friend")
-//                    ))
-//            ));
-//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
 
-	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -464,14 +436,14 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
+		    			result = "What would you like to do?\n\n"
 		    				 + "Gender - Set your gender\n"
 		    				 + "Age - Update your age\n"
 		    				 + "Height - Update your height\n"
-		                     + "Weight - Record your weight\n"
-		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles\n"
-		                     + "Interest - Record your interests";
+		                  + "Weight - Record your weight\n"
+		                  + "Meal - Record your meal\n"
+		                  + "Interest - Record your interests\n"
+		                  + "View - View your profile";
 		    			break;
 		    		}
 		    		case "daily": {
@@ -580,7 +552,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to view your general profile, or your past weights or meals?";
+			    			result = "Would you like to view your \"general\" profile, or your past \"weights\" or \"meals\"?";
 			    			break;
 			    		}
 			    		
