@@ -139,6 +139,8 @@ public class KitchenSinkController {
     String imageFood;
     String imageMenu; 
     String imageFriend;
+    String imageRecord;
+    String imageView;
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -341,8 +343,8 @@ public class KitchenSinkController {
 	}
 	
 	private TemplateMessage getProfileTemplate() {
-	   String imageRecord = createUri("/static/buttons/profileRecord.jpg");
-	   String imageView = createUri("/static/buttons/profileView.jpg");
+	   imageRecord = createUri("/static/buttons/profileRecord.jpg");
+	   imageView = createUri("/static/buttons/profileView.jpg");
 	    CarouselTemplate profileCarouselTemplate = new CarouselTemplate(
 	            Arrays.asList(
 	                    new CarouselColumn(imageRecord, "Edit your profile", "Click below to set/update your information", Arrays.asList(
