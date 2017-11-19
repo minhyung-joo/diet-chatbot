@@ -127,6 +127,7 @@ public class KitchenSinkController {
 	public List<Menu> menuList = new ArrayList<Menu>();
 
 	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
 
     String imageProfile;
     String imageDaily;
@@ -368,6 +369,7 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
+			messages.add(mainMenuMessage);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
