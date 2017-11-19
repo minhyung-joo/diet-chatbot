@@ -139,26 +139,6 @@ public class KitchenSinkController {
     String imageFood;
     String imageMenu; 
     String imageFriend;
-//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
-//            Arrays.asList(
-//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
-//                            new MessageAction("Click here", "profile")
-//                    )),
-//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
-//                            new MessageAction("Click here", "daily")
-//                    )),
-//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
-//                            new MessageAction("Click here", "food")
-//                    )),
-//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
-//                            new MessageAction("Click here", "menu")
-//                    )),
-//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
-//                            new MessageAction("Click here", "friend")
-//                    ))
-//            ));
-//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
-
 	
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -361,8 +341,8 @@ public class KitchenSinkController {
 	}
 	
 	private TemplateMessage getProfileTemplate() {
-	    imageRecord = createUri("/static/buttons/profileRecord.jpg");
-	    imageView = createUri("/static/buttons/profileView.jpg");
+	   String imageRecord = createUri("/static/buttons/profileRecord.jpg");
+	   String imageView = createUri("/static/buttons/profileView.jpg");
 	    CarouselTemplate profileCarouselTemplate = new CarouselTemplate(
 	            Arrays.asList(
 	                    new CarouselColumn(imageRecord, "Edit your profile", "Click below to set/update your information", Arrays.asList(
