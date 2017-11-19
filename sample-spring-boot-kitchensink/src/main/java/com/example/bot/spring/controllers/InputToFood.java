@@ -42,11 +42,12 @@ public class InputToFood {
 		menuController.setMenu(text);
     	return menuController.pickFood();
     }
-    
-//    public String readFromText(String userId, String text) {
-//    	return "";
-//    }
 
+    /**
+     * This method is used to convert JSON HTTP response to menu format.  
+     * @param url URL to the JSON source
+     * @return String Formatted String of the menu
+     */
     public String readFromJSON(String url) {
     	if (url == null) {
     		return "Invalid input";
@@ -78,6 +79,12 @@ public class InputToFood {
     	}
     }
 
+    /**
+     * This method uses OCR feature of the Google Vision API to extract menu String
+     * from the image uploaded by the user through Line
+     * @param jpeg DownloadedContent instance of the image file uploaded by the user
+     * @return String Menu String processed from the image using Google Vision API
+     */
     public String readFromJPEG(DownloadedContent jpeg) {
     	if (jpeg == null || jpeg.getPath() == null || jpeg.getUri() == null) {
     		return "Invalid input";
