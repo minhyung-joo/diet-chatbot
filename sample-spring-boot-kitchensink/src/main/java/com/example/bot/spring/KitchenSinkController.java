@@ -413,6 +413,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
+		    			String responseText = handleProfile(replyToken, text, event);
 		    			if(responseText.equals("")) {
 			    			messages.add(getProfileTemplate());
 		    			}
