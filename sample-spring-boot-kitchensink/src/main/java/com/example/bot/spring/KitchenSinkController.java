@@ -379,7 +379,6 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
-		    				messages.add
 		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
