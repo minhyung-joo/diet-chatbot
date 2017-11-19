@@ -1,10 +1,5 @@
 package com.example.bot.spring.controllers;
-import java.util.function.Consumer;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -117,19 +112,53 @@ public class User {
 		return outputStr;
 	}
 	
-	public void inputInterest(String id, String interest) {	
-		
-		String[] splitInterest = interest.split(", ");
-		
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-				pf.setInterest(splitInterest);
-				profileRepository.save(pf);
-	        }
-		}
+	public String resetInterest(String id) {	
+		Profile pf = profileRepository.findByUserID(id);
+		pf.setInterest(null);
+		profileRepository.save(pf);
+		return "Your interest records were deleted. Tell me your interests again.";
 	}
 	
-	public String outputGeneral(String id) {		
+	public String inputInterest(String id, String interest) {	
+		int categoryFound = 0;
+		String[] splitInterest = interest.split("/ ");
+
+		//Check for validity/existence of interest
+		for(int i=0; i<splitInterest.length; i++) {
+			for(Food fd : foodRepository.findAll()) {
+				if(fd.getCategory().equals(splitInterest[i])) {
+					categoryFound++;
+					break;
+				}
+			}
+			continue;
+		}
+		
+		if(categoryFound != splitInterest.length) {
+			return "Those interests are not valid.";
+		}
+		
+		Profile pf = profileRepository.findByUserID(id);	
+		if(pf.getInterests() == null) {
+			pf.setInterest(splitInterest);
+		} else {
+			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
+			for(int i=0; i<splitInterest.length; i++) {
+				if(!temp.contains(splitInterest[i])) {
+					temp.add(splitInterest[i]);
+				} else {
+					return "I already recorded that";
+				}
+			}
+			String[] tempInterest = new String[temp.size()];
+			temp.toArray(tempInterest);
+			pf.setInterest(tempInterest);
+		}
+		profileRepository.save(pf);
+		return "";
+	}
+	
+	public String outputGeneral(String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
 		Integer age = pf.getAge();
@@ -142,14 +171,14 @@ public class User {
 			outputStr += "Male\n";
 		}
 		outputStr += "Age: ";
-		if(age == null) {
+		if(age == null || age == 0) {
 			outputStr += "44\n";
 		}
 		else {
 			outputStr += age.toString()+"\n";
 		}
 		outputStr += "Height: ";
-		if(height == null) {
+		if(height == null || height == 0) {
 			outputStr += "177cm\n\n";
 		}
 		else {
@@ -159,14 +188,12 @@ public class User {
 	}
 	
 	public String outputInterest(String id) {
-		boolean interestFound = false;
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
 		if(pf.getInterests() != null) {
-			interestFound = true;
 			outputStr += "Your interests in food are: \n";
 			for(int i=0; i<pf.getInterests().length; i++) {
-				outputStr += pf.getInterests()[i] + "\n";
+				outputStr += "-" + pf.getInterests()[i] + "\n";
 			}
 			return outputStr;
 		}
@@ -211,12 +238,18 @@ public class User {
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
-		recommendationRepository.save(rd);	
-		return Long.toString(rd.getID());
+		recommendationRepository.save(rd);
+		long code = rd.getID()%1000000;
+		if (code<100000) {
+			code += 100000;
+		}
+		rd.setUniqueCode(code);
+		recommendationRepository.save(rd);
+		return Long.toString(rd.getUniqueCode());
 	}
 	
 	public String acceptRecommendation(String uniqueCode, String userID) {		
-		Recommendation rd = recommendationRepository.findById(Long.parseLong(uniqueCode));
+		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
 				if (!rd.getUserID().equals(userID)) {
@@ -242,7 +275,6 @@ public class User {
 		else {
 			//no such code
 			return "none";
-
 		}
 	}
 		
@@ -361,10 +393,10 @@ public class User {
 		if(weight == null) {
 			weight = 89.0;
 		}
-		if(height == null) {
+		if(height == null || height == 0) {
 			height = 177.0;
 		}
-		if(age == null) {
+		if(age == null || age == 0) {
 			age = 44;
 		}
 		double bmr = 10*weight + 6.25*height - 5*age;
@@ -384,7 +416,7 @@ public class User {
 		if(weight == null) {
 			weight = 89.0;
 		}
-		if(height == null) {
+		if(height == null || height == 0) {
 			height = 1.77;
 		}
 		return weight/(height*height);
@@ -409,7 +441,7 @@ public class User {
 	public double getBFP (String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Integer age = pf.getAge();
-		if(age == null) {
+		if(age == null || age == 0) {
 			age = 44;
 		}
 		double bfp = 1.2*getBMI(userID) + 0.23*age;
