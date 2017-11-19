@@ -27,16 +27,28 @@ import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 
+/** This controller takes in the menu inputs from the user, turn them into text, and then pass it to 
+ *  MenuController to pick the food for the user. It also provides the details of the food that the 
+ *  user has requested for.
+ */
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
 	
 	@Autowired
 	private MenuController menuController;
-
+	
+	/** This method reads the text menu passed in by the user and passes it to MenuController.
+	 * 
+	 * @param userId the ID of the user
+	 * @param text the text menu passed in by the user
+	 * @return the choice from the menu
+	 */
     public String readFromText(String userId, String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
@@ -107,6 +119,11 @@ public class InputToFood {
     	return menu;
     }
     
+    /** This method builds the menu in JSON format from a picture of the menu
+     * 
+     * @param jpeg the picture of the menu
+     * @return the JSON format of the menu
+     */
     private String buildJson(DownloadedContent jpeg) {
     	try {
     		StringBuilder jsonBuilder = new StringBuilder();
@@ -129,6 +146,11 @@ public class InputToFood {
     	}
     }
     
+    /** This method returns the details of the food that the user requested.
+     * 
+     * @param food the name of the food the user requested
+     * @return the details of the food
+     */
     public String getFoodDetails(String food) {
     		String resultFood = "You have entered " + food + ".\n";
     		String[] splitFood = food.split("\\s+");

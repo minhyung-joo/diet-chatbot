@@ -101,6 +101,11 @@ import java.io.FileReader;
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
+	
+	/** This is the class that handles the view of the chat bot. This handles the messages the user will
+	 * receive, as well as passing the user's messages to the corresponding controllers.
+	 */
+	
 	@Autowired
 	private FoodRepository foodRepository;
 	
@@ -113,26 +118,89 @@ public class KitchenSinkController {
 	@Autowired
 	private User user;
 	
+	/** This is the enumeration of the categories of functions provided by the chat bot.
+	 *
+	 */
 	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	
+	/** This is the enumeration of the functions provided in the profile category.
+	 *
+	 */
 	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	
+	/** This is the enumeration of the functions provided in the menu category.
+	 *
+	 */
 	public enum Menu {TEXT, URL, JPEG}
-
+	
+	/** This is the variable that tracks the function that the user is currently on.
+	 *
+	 */
 	public Categories categories = null;
+	
+	/** This is the variable that tracks the function in profile that the user is currently on.
+	 *
+	 */
 	public Profile profile = null;
+	
+	/** This is the variable that tracks the function in menu that the user is currently on.
+	 *
+	 */
 	public Menu menu = null;
 	
+	/** This is the list of the users currently using the chat bot.
+	 * 
+	 */
 	public List<String> userList = new ArrayList<String>();
+	
+	/** This is the list of the category variable that each user is on.
+	 * 
+	 */
 	public List<Categories> catList = new ArrayList<Categories>();
+	
+	/** This is the list of the profile variable that each user is on.
+	 * 
+	 */
 	public List<Profile> profList = new ArrayList<Profile>();
+	
+	/** This is the list of the menu variable that each user is on.
+	 * 
+	 */
 	public List<Menu> menuList = new ArrayList<Menu>();
-
+	
+	/** This is the default message of the chat bot.
+	 * 
+	 */
 	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
+	
+	/** This is the message of the default text.
+	 * 
+	 */
 	public Message mainMenuMessage = new TextMessage(showMainMenu);
 
+	/** This is the text for the profile option.
+	 * 
+	 */
     String imageProfile;
+    
+    /** This is the text for the daily progress option.
+	 * 
+	 */
     String imageDaily;
+    
+    /** This is the text for the food details option.
+	 * 
+	 */
     String imageFood;
+    
+    /** This is the text for the menu option.
+	 * 
+	 */
     String imageMenu; 
+    
+    /** This is the text for the friend option.
+	 * 
+	 */
     String imageFriend;
 
 	@EventMapping
@@ -155,7 +223,13 @@ public class KitchenSinkController {
 		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
 				locationMessage.getLatitude(), locationMessage.getLongitude()));
 	}
-
+	
+	/** This method handles the image message events, which is choosing the corresponding functions
+	 * provided by the chat bot.
+	 * 
+	 * @param event action of the user chooses by tapping a button
+	 * @throws IOException
+	 */
 	@EventMapping
 	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		final MessageContentResponse response;
@@ -306,7 +380,11 @@ public class KitchenSinkController {
 	private void handleSticker(String replyToken, StickerMessageContent content) {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
-
+	
+	/** This creates the main menu template in the chat bot.
+	 * 
+	 * @return the template message containing the menu template
+	 */
 	private TemplateMessage getMenuTemplate() {
 	    imageProfile = createUri("/static/buttons/menuProfile.jpg");
 	    imageDaily = createUri("/static/buttons/menuDaily.jpg");
@@ -335,6 +413,13 @@ public class KitchenSinkController {
 	   return menuTemplateMessage;
 	}
 	
+	/** This method handles the responses of the user, and refer them to corresponding controllers.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param event the message event
+	 * @param content the content of the message from the user
+	 * @throws Exception
+	 */
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
@@ -430,6 +515,12 @@ public class KitchenSinkController {
 		menuList.set(index, menu);
     }
 	
+	/** This method handles the main menu function.
+	 * 
+	 * @param text the text message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
 		Matcher m = Pattern.compile("profile|daily|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
@@ -513,7 +604,13 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	/** This method handles the profile function.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleProfile (String replyToken, String text, Event event) {
 		String result = "";
 		if (profile == null) {
@@ -679,10 +776,6 @@ public class KitchenSinkController {
 		    			} else {
 			    			result = user.inputInterest(""+ event.getSource().getUserId(),text);
 		    			}
-//		    			user.inputInterest(""+ event.getSource().getUserId(),text);
-//		    			result = "I successfully recorded your interests";
-//		    			profile = null;
-//		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = handRequestProfile(text, event);
@@ -694,6 +787,12 @@ public class KitchenSinkController {
 
 	}
 	
+	/** This method handles the viewing option in the profile function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
@@ -724,6 +823,11 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @return the corresponding response to the user
+	 */
 	private String handleFood (String text) {
 		categories = Categories.MAIN_MENU;
 		String result = "";
@@ -731,6 +835,9 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+	/** This method handles the initialization of the food database.
+	 * 
+	 */
 	private void handleInit() {
 		try {
             String filePath = "/app/FOOD_DATA.txt";
@@ -771,6 +878,12 @@ public class KitchenSinkController {
         }
 	}
 	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleMenu (String text, Event event) {
 		String result = "";
 		if(menu == null) {
@@ -821,6 +934,12 @@ public class KitchenSinkController {
 			
 	}
 	
+	/** This method handles the unique 6-digit code from the user.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
@@ -866,6 +985,11 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+	/** This method checks whether or not the String is an integer.
+	 * 
+	 * @param string a String
+	 * @return whether or not the String is an integer
+	 */
 	public boolean isInteger (String string) {
 		int size = string.length();
 		
@@ -877,7 +1001,6 @@ public class KitchenSinkController {
 
 	    return size > 0;
 	}
-	
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();

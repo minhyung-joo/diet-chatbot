@@ -109,4 +109,5 @@ public class InputToFoodTest {
 				"28 F\n" + 
 				"40\n");
 	}
+	
 }
