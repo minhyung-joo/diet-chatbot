@@ -352,8 +352,8 @@ public class KitchenSinkController {
 	                    )),
 	                    new CarouselColumn(imageRecord, "Edit your profile", "Click below to set/update your information", Arrays.asList(
 	                            new MessageAction("Weight", "weight"),
-	                            new MessageAction("Record your meals", "meal"),
-	                            new MessageAction("Set your interests", "interest")
+	                            new MessageAction("meals", "meal"),
+	                            new MessageAction("interests", "interest")
 	                    )),
 	                    new CarouselColumn(imageView, "View your profile", "Click below to view your updated profile", Arrays.asList(
 	                            new MessageAction("Click here", "view")
@@ -413,10 +413,7 @@ public class KitchenSinkController {
 		    			this.reply(replyToken, messages);
 		    			break;
 		    		case PROFILE:
-		    			String responseText = handleProfile(replyToken, text, event);
-		    			if(!responseText.equals("")) {
-			    			response = new TextMessage(responseText);
-			    			messages.add(response);
+		    			if(responseText.equals("")) {
 			    			messages.add(getProfileTemplate());
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
@@ -467,7 +464,7 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n";
+		    			result = "";
 		    			break;
 		    		}
 		    		case "daily": {
