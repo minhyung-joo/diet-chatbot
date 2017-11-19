@@ -71,101 +71,23 @@ public class MenuController{
     		result.add(foods);
     	}
     	
-    	double minimum = Double.MAX_VALUE;
-    	int minIndex = -1;
-    	double difference;
-    	//Check calories
-		for(int i=0;i<choices.length;i++) {
-    		double totalCalories = 0; 
-    		for(Food f : result.get(i)) {
-    			totalCalories += f.getCalories();
-    		}
-    		if(totalCalories>user.getRemainingCalories(userID)) {
-    			scores[i][2] = "Over";
-    		}
-    		else {
-    			difference = Math.abs(totalCalories - user.getBMR(userID)/3.0);
-    			if(difference<minimum) {
-    				minimum = difference;
-    				minIndex = i;
-    			}
-    		}
-    	}
-		if(minIndex!=-1) {
-	    	scores[minIndex][2] = "calories";
-		}
-		
-		//Check protein
-		minimum = Double.MAX_VALUE;
-		minIndex = -1;
-		for(int i=0;i<choices.length;i++) {
-    		double totalProtein = 0; 
-    		for(Food f : result.get(i)) {
-    			totalProtein += f.getProtein();
-    		}
-    		if(totalProtein>user.getRemainingProtein(userID)) {
-    			scores[i][3] = "Over";
-    		}
-    		else {
-    			difference = Math.abs(totalProtein - user.getBMR(userID)*0.2/4.0/3.0);
-    			if(difference<minimum) {
-    				minimum = difference;
-    				minIndex = i;
-    			}
-    		}
-    	}
-		if(minIndex!=-1) {
-	    	scores[minIndex][3] = "protein";
-		}
-		
-		//Check carbohydrate
-		minimum = Double.MAX_VALUE;
-		minIndex = -1;
-		for(int i=0;i<choices.length;i++) {
-    		double totalCarbohydrate = 0; 
-    		for(Food f : result.get(i)) {
-    			totalCarbohydrate += f.getCarbohydrate();
-    		}
-    		if(totalCarbohydrate>user.getRemainingCarbohydrate(userID)) {
-    			scores[i][4] = "Over";
-    		}
-    		else {
-    			difference = Math.abs(totalCarbohydrate - user.getBMR(userID)*0.55/4.0/3.0);
-    			if(difference<minimum) {
-    				minimum = difference;
-    				minIndex = i;
-    			}
-    		}
-    	}
-		if(minIndex!=-1) {
-	    	scores[minIndex][4] = "carbohydrate";
-		}
-		
-		//Check fat
-		minimum = Double.MAX_VALUE;
-		minIndex = -1;
-		for(int i=0;i<choices.length;i++) {
-	  		double totalFat = 0; 
-    		minimum = Double.MAX_VALUE;
-    		minIndex = -1;
-    		for(Food f : result.get(i)) {
-    			totalFat += f.getSaturatedFat();
-    		}
-    		if(totalFat>user.getRemainingFat(userID)) {
-    			scores[i][5] = "Over";
-    		}
-    		else {
-    			difference = Math.abs(totalFat - user.getBMR(userID)*0.25/9.0/3.0);
-	    		if(difference<minimum) {
-	    			minimum = difference;
-		    		minIndex = i;
-		    	}
-		    }
-		}
-		if(minIndex!=-1) {
-		    scores[minIndex][5] = "fat";
-		}
+    	//Check nutrients
+    	String[] nutrientScores = 
+    			checkNutrient(result, "calories", user.getRemainingCalories(userID), user.getBMR(userID)/3.0);
+    	String[] proteinScores = 
+    	    	checkNutrient(result, "protein", user.getRemainingProtein(userID), user.getBMR(userID)*0.2/4.0/3.0);
+    	String[] carboScores = 
+    	    	checkNutrient(result, "carbohydrate", user.getRemainingCarbohydrate(userID), user.getBMR(userID)*0.55/4.0/3.0);
+    	String[] fatScores = 
+    	    	checkNutrient(result, "fat", user.getRemainingFat(userID), user.getBMR(userID)*0.25/9.0/3.0);
     	
+    	for(int i=0;i<choices.length;i++) {
+    		scores[i][2] = nutrientScores[i];
+    		scores[i][3] = proteinScores[i];
+    		scores[i][4] = carboScores[i];
+    		scores[i][5] = fatScores[i];
+    	}
+		
 		//Get FoodIDs from past few days
 		Set<Food> pastFoods = getFoodsFromPastMeals();
 		
@@ -260,6 +182,45 @@ public class MenuController{
 	        }
 		}
 		return foods;
+	}
+	
+	private String[] checkNutrient(List<Set<Food>> result, String type, double remaining, double perMeal) {
+		String[] scores = new String[result.size()];
+		double minimum = Double.MAX_VALUE;
+    	int minIndex = -1;
+    	double difference;
+
+		for(int i=0;i<result.size();i++) {
+    		double total = 0; 
+    		for(Food f : result.get(i)) {
+    			if(type.equals("calories")) {
+        			total += f.getCalories();
+    			}
+    			else if(type.equals("protein")) {
+    				total += f.getProtein();
+    			}
+    			else if(type.equals("carbohydrate")) {
+    				total += f.getCarbohydrate();
+    			}
+    			else if(type.equals("fat")) {
+    				total += f.getSaturatedFat();
+    			}
+    		}
+    		if(total>remaining) {
+    			scores[i] = "Over";
+    		}
+    		else if(total!=0){
+    			difference = Math.abs(total - perMeal);
+    			if(difference<minimum) {
+    				minimum = difference;
+    				minIndex = i;
+    			}
+    		}
+    	}
+		if(minIndex!=-1) {
+	    	scores[minIndex] = type;
+		}
+		return scores;
 	}
 	
 	private int[] calculateScores(String[][] scores) {
