@@ -153,4 +153,5 @@ public class InputToFood {
     		
     		return resultFood;
     }
+}
 
