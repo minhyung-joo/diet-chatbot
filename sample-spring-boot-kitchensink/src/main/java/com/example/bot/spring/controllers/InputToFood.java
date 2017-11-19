@@ -148,7 +148,7 @@ public class InputToFood {
 	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    } else {
-	    		    		resultFood += "This food does not exist.\n"
+	    		    		resultFood += "This food does not exist.\n";
 	    		    }
 	    		}
 	    	}
