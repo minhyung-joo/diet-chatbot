@@ -1,10 +1,5 @@
 package com.example.bot.spring.controllers;
-import java.util.function.Consumer;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 import java.text.SimpleDateFormat;
 import java.text.DecimalFormat;
@@ -47,7 +42,7 @@ public class User {
 	
 	@Autowired
 	private MenuController mc;
-	
+		
 	@GetMapping(path="/createuser")
 	public @ResponseBody void addUser (@RequestParam String id) {
 		
@@ -124,21 +119,56 @@ public class User {
 		return outputStr;
 	}
 	
+	@GetMapping(path="/resetinterest")
+	public @ResponseBody String resetInterest (@RequestParam String id) {	
+		Profile pf = profileRepository.findByUserID(id);
+		pf.setInterest(null);
+		profileRepository.save(pf);
+		return "Your interest records were deleted. Tell me your interests again.";
+	}
+	
 	@GetMapping(path="/inputinterest")
-	public @ResponseBody void inputInterest (@RequestParam String id, @RequestParam String interest) {	
-		
-		String[] splitInterest = interest.split(", ");
-		
-		for(Profile pf : profileRepository.findAll()) {
-			if(pf.getUserID().equals(id)) { 
-				pf.setInterest(splitInterest);
-				profileRepository.save(pf);
-	        }
+	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
+		int categoryFound = 0;
+		String[] splitInterest = interest.split("/ ");
+
+		//Check for validity/existence of interest
+		for(int i=0; i<splitInterest.length; i++) {
+			for(Food fd : foodRepository.findAll()) {
+				if(fd.getCategory().equals(splitInterest[i])) {
+					categoryFound++;
+					break;
+				}
+			}
+			continue;
 		}
+		
+		if(categoryFound != splitInterest.length) {
+			return "Those interests are not valid.";
+		}
+		
+		Profile pf = profileRepository.findByUserID(id);	
+		if(pf.getInterests() == null) {
+			pf.setInterest(splitInterest);
+		} else {
+			ArrayList<String> temp = new ArrayList<String>(Arrays.asList(pf.getInterests()));
+			for(int i=0; i<splitInterest.length; i++) {
+				if(!temp.contains(splitInterest[i])) {
+					temp.add(splitInterest[i]);
+				} else {
+					return "I already recorded that";
+				}
+			}
+			String[] tempInterest = new String[temp.size()];
+			temp.toArray(tempInterest);
+			pf.setInterest(tempInterest);
+		}
+		profileRepository.save(pf);
+		return "";
 	}
 	
 	@GetMapping(path="/getgeneral")
-	public @ResponseBody String outputGeneral (@RequestParam String id) {		
+	public @ResponseBody String outputGeneral (@RequestParam String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
 		Integer age = pf.getAge();
@@ -168,15 +198,14 @@ public class User {
 	}
 	
 	@GetMapping(path="/getInterests")
-	public @ResponseBody String outputInterest (@RequestParam String id) {		
-		boolean interestFound = false;
+	public @ResponseBody String outputInterest (@RequestParam String id) {
+		
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
 		if(pf.getInterests() != null) {
-			interestFound = true;
 			outputStr += "Your interests in food are: \n";
 			for(int i=0; i<pf.getInterests().length; i++) {
-				outputStr += pf.getInterests()[i] + "\n";
+				outputStr += "-" + pf.getInterests()[i] + "\n";
 			}
 			return outputStr;
 		}
