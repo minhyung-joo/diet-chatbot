@@ -126,13 +126,15 @@ public class KitchenSinkController {
 	public List<Profile> profList = new ArrayList<Profile>();
 	public List<Menu> menuList = new ArrayList<Menu>();
 
-	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n";
+//	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
 //            + "Profile - Record and view your weights and meals\n"
 //			+ "Daily - View your progress on nutrients today\n"
 //            + "Food - Get nutritional details of a food\n"
 //            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-//            + "Friend - Make recommendations to a friend to get an ice cream coupon!";	
-	public Message mainMenuMessage = new TextMessage(showMainMenu);
+//            + "Friend - Make recommendations to a friend to get an ice cream coupon!\n"
+//            + "Code - Accept recommendations to get an ice cream coupon";	
+//
+//	public Message mainMenuMessage = new TextMessage(showMainMenu);
 
     String imageProfile;
     String imageDaily;
@@ -224,7 +226,7 @@ public class KitchenSinkController {
 			List<Message> messages = new ArrayList<Message>();
 			TextMessage reply = new TextMessage("Uploaded successful");
 			messages.add(reply);
-			messages.add(mainMenuMessage);
+			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages);
 		}
 		
@@ -394,7 +396,6 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
-			messages.add(mainMenuMessage);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
@@ -837,8 +838,8 @@ public class KitchenSinkController {
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		if (text.length() != 6) {
-			result = "That is not 6 digits";
+		if (text.length() != 6 || !isInteger(text)) {
+			result = "That is not a 6 digit number.";
 			messages.add(new TextMessage(result));
 		}
 		else {
@@ -861,23 +862,36 @@ public class KitchenSinkController {
 						break;
 					}
 					case "none": {
-						result = "No such code";
+						result = "There is no such code";
 						break;
 					}
 				}
 				messages.add(new TextMessage(result));
 
 			}	
-			messages.add(mainMenuMessage);
 
 		}
-		
+		messages.add(getMenuTemplate());
+
 		reply(((MessageEvent) event).getReplyToken(), messages);
 		
 		categories = Categories.MAIN_MENU;
 		
 		return result;
 	}
+	
+	public boolean isInteger (String string) {
+		int size = string.length();
+		
+		for (int i = 0; i < size; i++) {
+	        if (!Character.isDigit(string.charAt(i))) {
+	            return false;
+	        }
+	    }
+
+	    return size > 0;
+	}
+	
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();

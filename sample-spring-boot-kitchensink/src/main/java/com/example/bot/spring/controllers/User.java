@@ -254,13 +254,19 @@ public class User {
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
-		recommendationRepository.save(rd);	
-		return Long.toString(rd.getID());
+		recommendationRepository.save(rd);
+		long code = rd.getID()%1000000;
+		if (code<100000) {
+			code += 100000;
+		}
+		rd.setUniqueCode(code);
+		recommendationRepository.save(rd);
+		return Long.toString(rd.getUniqueCode());
 	}
 	
 	@GetMapping(path="/acceptRecommendation")
 	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
-		Recommendation rd = recommendationRepository.findById(Long.parseLong(uniqueCode));
+		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
 				if (!rd.getUserID().equals(userID)) {

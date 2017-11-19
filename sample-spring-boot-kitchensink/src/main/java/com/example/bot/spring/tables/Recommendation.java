@@ -14,12 +14,13 @@ import java.util.Date;
 
 @Entity
 
-@SequenceGenerator(name="seq", initialValue=100000, allocationSize=10000)
+@SequenceGenerator(name="seq", initialValue=1, allocationSize=1)
 public class Recommendation {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
     @Id long id;
 	private String userID;
 	private boolean claimed;
+	private long uniqueCode;
 	
 	public long getID () {
 		return id;
@@ -32,11 +33,18 @@ public class Recommendation {
 		return claimed;
 	}
 	
+	public long getUniqueCode() {
+		return uniqueCode;
+	}
+	
 	public void setUserID(String id) {
 		userID = id;
 	}
 		
 	public void setClaimed(boolean claim) {
 		claimed = claim;
+	}
+	public void setUniqueCode(long unique) {
+		uniqueCode = unique;
 	}
 }
