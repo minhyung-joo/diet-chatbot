@@ -8,9 +8,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class DatabaseInitializer {
+	
+	/** This class initializes the food database.
+	 * 
+	 */
+	
 	@Autowired
 	private static FoodRepository foodRepository;
 	
+	/** This method initializes the food database.
+	 * 
+	 */
     public static void initializeDatabase() {
         try {
             String fileName = "FOOD_DATA.txt";
