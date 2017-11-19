@@ -368,6 +368,7 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
+			messages.add(showMainMenu);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
@@ -378,6 +379,7 @@ public class KitchenSinkController {
 		    			response = new TextMessage(handleMainMenu(text, event));
 		    			messages.add(response);
 		    			if (categories == Categories.MAIN_MENU) {
+		    				messages.add
 		    				messages.add(getMenuTemplate());
 		    			}
 		    			this.reply(replyToken, messages);
