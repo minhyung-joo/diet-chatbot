@@ -147,8 +147,6 @@ public class InputToFood {
 	    		    if (splitFood[i].toLowerCase().contains(fdName)) { 
 	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
-	    		    } else {
-	    		    		resultFood += "This food does not exist.\n";
 	    		    }
 	    		}
 	    	}
