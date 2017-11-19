@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import com.example.bot.spring.models.Menu;
 import com.example.bot.spring.models.OCRResponse;
 import com.example.bot.spring.models.Response;
@@ -26,8 +27,9 @@ import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 
-@Controller
-@RequestMapping(path="/input")
+import lombok.extern.slf4j.Slf4j;
+
+@Service
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
@@ -35,14 +37,21 @@ public class InputToFood {
 	@Autowired
 	private MenuController menuController;
 
-	@GetMapping(path="/readfromtext")
-    public @ResponseBody String readFromText(@RequestParam String userId, @RequestParam String text) {
+    public String readFromText(String userId, String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
     	return menuController.pickFood();
     }
+    
+//    public String readFromText(String userId, String text) {
+//    	return "";
+//    }
 
     public String readFromJSON(String url) {
+    	if (url == null) {
+    		return "Invalid input";
+    	}
+    	
     	try {
     		RestTemplate restTemplate = new RestTemplate();
         	Menu[] menuList = restTemplate.getForObject(url, Menu[].class);
@@ -70,6 +79,10 @@ public class InputToFood {
     }
 
     public String readFromJPEG(DownloadedContent jpeg) {
+    	if (jpeg == null || jpeg.getPath() == null || jpeg.getUri() == null) {
+    		return "Invalid input";
+    	}
+    	
     	String menu = "";
     	RestTemplate restTemplate = new RestTemplate();
     	String apiKey = "AIzaSyCrPOUDlYLaAQLAXbFSiRgb16OSikBooP8";
@@ -109,8 +122,7 @@ public class InputToFood {
     	}
     }
     
-    @GetMapping(path="/getfooddetails")
-    public @ResponseBody String getFoodDetails(@RequestParam String food) {
+    public String getFoodDetails(String food) {
     		String resultFood = "You have entered " + food + "\n";
     		String[] splitFood = food.split("\\s+");
     		

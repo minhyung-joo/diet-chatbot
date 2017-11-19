@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import com.example.bot.spring.tables.Meal;
 
 public interface MealRepository extends CrudRepository<Meal, Long> {
-
+	
 }

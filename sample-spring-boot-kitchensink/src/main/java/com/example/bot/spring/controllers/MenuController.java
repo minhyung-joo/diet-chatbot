@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.function.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller
-@RequestMapping(path="/menu")
+@Service
 public class MenuController{
 	
 	@Autowired
@@ -50,7 +50,6 @@ public class MenuController{
 		menu = menuList;
 	}
 	
-	@GetMapping(path="/pickfood")
 	public @ResponseBody String pickFood() {
 		String[] choices = menu.split(System.getProperty("line.separator"));
 		
