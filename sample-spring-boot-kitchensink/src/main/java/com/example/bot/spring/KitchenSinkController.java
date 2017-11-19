@@ -126,7 +126,7 @@ public class KitchenSinkController {
 	public List<Profile> profList = new ArrayList<Profile>();
 	public List<Menu> menuList = new ArrayList<Menu>();
 
-	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n";
+	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
 //            + "Profile - Record and view your weights and meals\n"
 //			+ "Daily - View your progress on nutrients today\n"
 //            + "Food - Get nutritional details of a food\n"
@@ -360,6 +360,29 @@ public class KitchenSinkController {
 	   return menuTemplateMessage;
 	}
 	
+	private TemplateMessage getProfileTemplate() {
+	    imageRecord = createUri("/static/buttons/profileRecord.jpg");
+	    imageView = createUri("/static/buttons/profileView.jpg");
+	    CarouselTemplate profileCarouselTemplate = new CarouselTemplate(
+	            Arrays.asList(
+	                    new CarouselColumn(imageRecord, "Edit your profile", "Click below to set/update your information", Arrays.asList(
+	                            new MessageAction("Gender", "gender"),
+	                            new MessageAction("Age", "age"),
+	                            new MessageAction("Height", "height")
+	                    )),
+	                    new CarouselColumn(imageRecord, "Edit your profile", "Click below to set/update your information", Arrays.asList(
+	                            new MessageAction("Weight", "weight"),
+	                            new MessageAction("Record your meals", "meal"),
+	                            new MessageAction("Set your interests", "interest")
+	                    )),
+	                    new CarouselColumn(imageView, "View your profile", "Click below to view your updated profile", Arrays.asList(
+	                            new MessageAction("Click here", "view")
+	                    ))
+	            ));
+	   TemplateMessage profileTemplateMessage = new TemplateMessage("Profile", profileCarouselTemplate);
+	   return profileTemplateMessage;
+	}
+	
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
@@ -414,6 +437,7 @@ public class KitchenSinkController {
 		    			if(!responseText.equals("")) {
 			    			response = new TextMessage(responseText);
 			    			messages.add(response);
+			    			messages.add(getProfileTemplate());
 		    			}
 		    			if (categories == Categories.MAIN_MENU) {
 		    				messages.add(getMenuTemplate());
@@ -463,14 +487,7 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
-		    				 + "Gender - Set your gender\n"
-		    				 + "Age - Update your age\n"
-		    				 + "Height - Update your height\n"
-		                     + "Weight - Record your weight\n"
-		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles\n"
-		                     + "Interest - Record your interests";
+		    			result = "Under profile, these are the features that we provide:\n";
 		    			break;
 		    		}
 		    		case "daily": {
@@ -579,7 +596,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to view your general profile, or your past weights or meals?";
+			    			result = "Would you like to view your \"general\" profile, or your past \"weights\" or \"meals\"?";
 			    			break;
 			    		}
 			    		
