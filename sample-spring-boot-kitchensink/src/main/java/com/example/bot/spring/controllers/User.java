@@ -250,7 +250,10 @@ public class User {
 	}
 	
 	@GetMapping(path="/makeRecommendation")
-	public @ResponseBody String makeRecommendation (@RequestParam String id) {		
+	public @ResponseBody String makeRecommendation (@RequestParam String id) {	
+		if (campaignRepository.count() == 0) {
+			return null;
+		}
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);

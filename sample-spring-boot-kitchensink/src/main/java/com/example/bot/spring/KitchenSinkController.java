@@ -498,7 +498,13 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "friend": {
-		    			result = "Your unique code is " + user.makeRecommendation(event.getSource().getUserId());
+		    			String uniqueCode = user.makeRecommendation(event.getSource().getUserId());
+		    			if (uniqueCode == null) {
+		    				result = "There is no campaign currently";
+		    			}
+		    			else {
+			    			result = "Your unique code is " + uniqueCode;
+		    			}
 		    			break;
 		    		}
 		    		case "code": {
