@@ -20,6 +20,7 @@ public class Recommendation {
     @Id long id;
 	private String userID;
 	private boolean claimed;
+	private long uniqueCode;
 	
 	public long getID () {
 		return id;
@@ -32,11 +33,18 @@ public class Recommendation {
 		return claimed;
 	}
 	
+	public long getUniqueCode() {
+		return uniqueCode;
+	}
+	
 	public void setUserID(String id) {
 		userID = id;
 	}
 		
 	public void setClaimed(boolean claim) {
 		claimed = claim;
+	}
+	public void setUniqueCode(long unique) {
+		uniqueCode = unique;
 	}
 }
