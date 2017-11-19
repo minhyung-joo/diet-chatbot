@@ -642,7 +642,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+						if (Integer.parseInt(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your age";
 			    			profile = null;
@@ -656,7 +660,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+						if (Double.parseDouble(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your height";
 			    			profile = null;
@@ -670,7 +678,11 @@ public class KitchenSinkController {
 		    			    //error
 		    				nan= true;
 		    				return "Not a number. Please enter again";
-		    			}		    			
+		    			}
+		    			if (Double.parseDouble(text)<=0) {
+							nan = true;
+							return "Please enter a number greater than 0.";
+						}
 		    			if (!nan) {
 			    			result = "I successfully recorded your weight";
 			    			profile = null;
