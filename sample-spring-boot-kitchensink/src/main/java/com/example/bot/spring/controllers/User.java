@@ -303,7 +303,10 @@ public class User {
 	 * @param id the ID of the user
 	 * @return the unique 6-digit code for the user
 	 */
-	public String makeRecommendation(String id) {		
+	public String makeRecommendation(String id) {	
+		if (campaignRepository.count() == 0) {
+			return null;
+		}
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
@@ -317,13 +320,20 @@ public class User {
 		return Long.toString(rd.getUniqueCode());
 	}
 	
+
 	/** This allows the user the accept the recommendation.
 	 * 
 	 * @param uniqueCode the 6-digit unique code
 	 * @param userID the ID of the user
 	 * @return the corresponding responses base on the state of the user
 	 */
-	public String acceptRecommendation(String uniqueCode, String userID) {		
+	public String acceptRecommendation(String uniqueCode, String userID) {
+		
+		
+		if (uniqueCode == null||uniqueCode.length() != 6 || !isInteger(uniqueCode)) {
+			return "Error: That is not a 6 digit number";
+		}
+		
 		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
@@ -338,21 +348,35 @@ public class User {
 				}
 				
 				else {
-					//the recommender entered the code
-					return "recommender";
+					return "Error: You made this recommendation";
 				}
 			}
 			else {
-				//already claimed
-				return "claimed";
+				return "Error: has already been claimed";
 			}
 		}
 		else {
-			//no such code
-			return "none";
+			return "Error: There is no such code";
 		}
 	}
 	
+	/** This method checks whether or not the String is an integer.
+	 * 
+	 * @param string a String
+	 * @return whether or not the String is an integer
+	 */
+	public boolean isInteger (String string) {
+		int size = string.length();
+		
+		for (int i = 0; i < size; i++) {
+	        if (!Character.isDigit(string.charAt(i))) {
+	            return false;
+	        }
+	    }
+
+	    return size > 0;
+	}
+		
 	/** This method allows the administrator to upload a coupon to start a campaign.
 	 * 
 	 * @param is the input stream of the image of the coupon
