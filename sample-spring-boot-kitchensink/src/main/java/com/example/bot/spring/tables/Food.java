@@ -4,8 +4,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Column;
 
 @Entity
+@Table(name="food")
 public class Food {
 	
 	/** This is the table model for the food in the database.
@@ -16,42 +19,50 @@ public class Food {
 	 * 
 	 */
 	@Id
+	@Column(name="foodID")
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	long foodID;
 	
 	/** This is the name of the food.
 	 * 
 	 */
+	@Column(name="name")
 	String name;
 	
 	/** This is the name of the category of the food.
 	 * 
 	 */
+	@Column(name="category")
 	String category;
 	
 	/** This is the amount of calories in this food.
 	 * 
 	 */
+	@Column(name="calories")
 	double calories;
 	
 	/** This is the amount of sodium in this food.
 	 * 
 	 */
+	@Column(name="sodium")
 	double sodium;
 	
 	/** This is the amount of saturated fat in this food.
 	 * 
 	 */
+	@Column(name="saturatedFat")
 	double saturatedFat;
 	
 	/** This is the amount of protein in this food.
 	 * 
 	 */
+	@Column(name="protein")
 	double protein;
 	
 	/** This is the amount of carbohydrate in this food.
 	 * 
 	 */
+	@Column(name="carbohydrate")
 	double carbohydrate;
 	
 	/** This method is the getter of the food's ID.
