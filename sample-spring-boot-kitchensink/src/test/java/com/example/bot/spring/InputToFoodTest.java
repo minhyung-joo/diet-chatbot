@@ -6,9 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.io.File;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,39 +22,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.boot.test.autoconfigure.orm.jpa.*;
 
 import com.google.common.io.ByteStreams;
 
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.model.ReplyMessage;
-import com.linecorp.bot.model.event.Event;
-import com.linecorp.bot.model.event.FollowEvent;
-import com.linecorp.bot.model.event.MessageEvent;
-import com.linecorp.bot.model.event.message.MessageContent;
-import com.linecorp.bot.model.event.message.TextMessageContent;
-import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.spring.boot.annotation.LineBotMessages;
-
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.controllers.InputToFood;
+import com.example.bot.spring.controllers.MenuController;
+import com.example.bot.spring.controllers.User;
 import com.example.bot.spring.tables.FoodRepository;
+import com.example.bot.spring.tables.Food;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
+import com.example.bot.spring.RepoFactory4Test;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.*;
+import org.springframework.test.context.transaction.*;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.PropertiesBasedJdbcDatabaseTester;
+import org.dbunit.dataset.*;
+import org.dbunit.*;
+import org.h2.*;
+import org.h2.tools.*;
+import org.junit.*;
+import junit.framework.*;
+import org.dbunit.operation.*;
+import java.nio.charset.StandardCharsets;
+import org.springframework.transaction.annotation.*;
 
 @RunWith(SpringRunner.class)
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class })
+@Transactional
+@SpringBootTest(classes={ RepoFactory4Test.class, 
+		InputToFoodTest.class, 
+		InputToFood.class, 
+		MenuController.class, 
+		User.class })
 public class InputToFoodTest {
-	private InputToFood inputToFood = new InputToFood();
+	@Autowired
+	private InputToFood inputToFood;
 	
+	@Autowired
+	private FoodRepository foodRepository;
+    
 	@Test
 	public void testReadFromJSON() throws Exception {
 		String nullStr = null;
@@ -103,5 +117,29 @@ public class InputToFoodTest {
 				"36\n" + 
 				"28 F\n" + 
 				"40\n");
+	}
+	
+	@Test
+	public void testGetFoodDetails() throws Exception {
+		Food food = new Food();
+        food.setName("pork");
+        food.setCategory("meat");
+        food.setCalories(300);
+        food.setSodium(30);
+        food.setSaturatedFat(10);
+        food.setProtein(10);
+        food.setCarbohydrate(10);
+        foodRepository.save(food);
+        
+		String foodName = "pork";
+		String result = inputToFood.getFoodDetails(foodName);
+		assertEquals(result, "You have entered pork\n" + 
+				"Here are the details for pork\n" + 
+				"Calories: 300.0\n" + 
+				"Sodium: 30.0\n" + 
+				"Saturated Fat: 10.0\n" + 
+				"Protein: 10.0\n" + 
+				"Carbohydrate: 10.0\n" + 
+				"\n");
 	}
 }
