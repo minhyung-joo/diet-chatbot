@@ -65,7 +65,7 @@ import org.springframework.transaction.annotation.*;
     DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class })
 @Transactional
-@SpringBootTest(classes={ RepoFactory4Test.class, 
+@SpringBootTest(classes={ RepoFactory4Test.class,
 		RecommendationTest.class,
 		MenuController.class, 
 		User.class })
@@ -86,6 +86,7 @@ public class RecommendationTest {
 	
 	private String userID1 = "1234567890123456789012345678901234";
 	private String userID2 = "1234567890123456789012345678901235";
+	private String userID3 = "1234567890123456789012345678901230";	
 	private long uniqueCode1 = 999999;
 	private long uniqueCode2 = 999997;
 
@@ -104,6 +105,13 @@ public class RecommendationTest {
 		pf2.setAdmin(true);
 		profileRepository.save(pf2);
 		
+		Profile pf3 = new Profile();
+		pf3.setUserID(userID3);
+		pf3.setClaimedNewUserCoupon(true);
+		pf3.setAdmin(false);
+		profileRepository.save(pf3);
+		
+		
 		Recommendation rec = new Recommendation();
 		rec.setUserID(userID2);
 		rec.setClaimed(false);
@@ -118,7 +126,7 @@ public class RecommendationTest {
 		
 	}
 	
-//	
+	
 	@Test
 	public void testAcceptRecommendation() throws Exception {
 		
@@ -165,9 +173,12 @@ public class RecommendationTest {
 	public void testIsAdmin() throws Exception {
 		boolean validInput = user.isAdmin(userID2);
 		boolean invalidInput = user.isAdmin(userID1);
-		
+
 		assertEquals(validInput,true);
 		assertEquals(invalidInput,false);
+		invalidInput = user.isAdmin("1234567890");
+		assertEquals(invalidInput,false);
+
 	}
 	
 	@Test
@@ -214,6 +225,10 @@ public class RecommendationTest {
 		pf1.setAdmin(false);
 		pf1.setTime();
 		profileRepository.save(pf1);
+		
+		invalidInput = user.checkValidityOfUser(userID3);
+		assertEquals(invalidInput,claimed);
+		
 		
 		String validInput = user.checkValidityOfUser(userID4);
 		assertEquals(validInput,valid);

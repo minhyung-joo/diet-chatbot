@@ -68,11 +68,10 @@ import org.springframework.transaction.annotation.*;
 		InputToFoodTest.class, 
 		InputToFood.class, 
 		MenuController.class,
-		DatabaseInitializer.class,
 		User.class })
 public class InputToFoodTest {
 	@Autowired
-	private InputToFood inputToFood;
+	private InputToFood inputToFood;	
 	
 	@Autowired
 	private User user;
@@ -133,7 +132,7 @@ public class InputToFoodTest {
 	public void testreadFromText() {
 		assertEquals(inputToFood.readFromText("1",""),"No menu is entered.");
 		assertEquals(inputToFood.readFromText("1","Candies"+System.getProperty("line.separator")+"Rice"),
-				"I recommend you to choose Candies because I know that you like foods that are sweets. 	This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
+				"I recommend you to choose Candies because I know that you like foods that are sweets. This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
 		assertEquals(inputToFood.readFromText("2","Candies"+System.getProperty("line.separator")+"Rice"),
 				"I know that you have eaten candies in the past few days. But I still recommend you to choose Candies because I know that you like foods that are sweets. This choice has the most suitable amount of calories, protein, fat.");
 		assertEquals(inputToFood.readFromText("3","Candies"+System.getProperty("line.separator")+"Rice"),
