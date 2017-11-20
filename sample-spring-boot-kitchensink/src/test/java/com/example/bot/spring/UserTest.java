@@ -56,8 +56,7 @@ import org.springframework.transaction.annotation.*;
     TransactionalTestExecutionListener.class })
 @Transactional
 @SpringBootTest(classes={ RepoFactory4Test.class, 
-		InputToFoodTest.class, 
-		InputToFood.class, 
+		UserTest.class, 
 		MenuController.class,
 		DatabaseInitializer.class,
 		User.class })
@@ -105,11 +104,16 @@ public class UserTest {
 	
 	@Test
 	public void testShowDailyProgress() {
-		String result1 = user.showDailyProgress("1");
-		String result2 = user.showDailyProgress("2");
-		String result3 = user.showDailyProgress("3");
-		assertNotEquals(result1,"Basal Metabolic Rate (BMR): ");
-		assertNotEquals(result2,"Basal Metabolic Rate (BMR): ");
-		assertNotEquals(result3,"Basal Metabolic Rate (BMR): ");
+		String result = user.showDailyProgress("1");
+		assertEquals(result,"Basal Metabolic Rate (BMR): 1817.50\n" + 
+				"Body Mass Index (BMI): 29.41\n" + 
+				"Body Fat Percentage (BFP): 34.49\n" + 
+				"Current Status: Overweight\n" + 
+				"\n" + 
+				"Remaining Nutrients for today: \n" + 
+				"Calories: 1817.50\n" + 
+				"Protein: 90.88\n" + 
+				"Carbohydrate: 249.91\n" + 
+				"Fat: 50.49\n");
 	}
 }

@@ -66,8 +66,7 @@ import org.springframework.transaction.annotation.*;
     TransactionalTestExecutionListener.class })
 @Transactional
 @SpringBootTest(classes={ RepoFactory4Test.class, 
-		InputToFoodTest.class, 
-		InputToFood.class, 
+		RecommendationTest.class,
 		MenuController.class, 
 		User.class })
 public class RecommendationTest {
