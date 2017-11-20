@@ -84,4 +84,8 @@ public class Campaign {
 	public void incrementCount() {
 		count +=2;
 	}
+	
+	public void setCount(int count) {
+		this.count = count;
+	}
 }

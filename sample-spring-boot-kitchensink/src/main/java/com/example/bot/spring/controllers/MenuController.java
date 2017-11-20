@@ -81,10 +81,13 @@ public class MenuController{
 	 * @return the name of the choice from the menu
 	 */
 	public String pickFood() {
+		if(menu.equals("")) {
+			return "No menu is entered.";
+		}
 		String[] choices = menu.split(System.getProperty("line.separator"));
 		
 		//For scoring and generating reply based on reasons
-		String[][] scores = new String[choices.length][10];
+		String[][] scores = new String[choices.length][6];
 		//0 - eaten
 		//1 - interest
 		//2 - calories
