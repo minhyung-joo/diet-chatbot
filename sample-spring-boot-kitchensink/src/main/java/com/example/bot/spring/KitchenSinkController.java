@@ -96,6 +96,8 @@ import com.example.bot.spring.tables.Food;
 import com.example.bot.spring.tables.FoodRepository;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import com.example.bot.spring.ListSingleton;
+
 
 
 @Slf4j
@@ -223,6 +225,9 @@ public class KitchenSinkController {
 		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
 				locationMessage.getLatitude(), locationMessage.getLongitude()));
 	}
+
+	int index = -1;
+	
 	
 	/** This method handles the image message events, which is choosing the corresponding functions
 	 * provided by the chat bot.
@@ -242,29 +247,33 @@ public class KitchenSinkController {
 			throw new RuntimeException(e);
 		}
 		
-		int index = -1;
-		for(int i=0;i<userList.size();i++) {
-			if(userList.get(i).equals(event.getSource().getUserId())) {
-				index = i;
-				break;
-			}
-		}
-		if(index == -1) {
-			categories = null;
-			profile = null;
-			menu = null;
-			index = userList.size();
-			userList.add(event.getSource().getUserId());
-			catList.add(categories);
-			profList.add(profile);
-			menuList.add(menu);
-		}
-		else {
-			categories = catList.get(index);
-			profile = profList.get(index);
-			menu = menuList.get(index);
-		}
-		
+//		int index = -1;
+//		for(int i=0;i<userList.size();i++) {
+//			if(userList.get(i).equals(event.getSource().getUserId())) {
+//				index = i;
+//				break;
+//			}
+//		}
+//		if(index == -1) {
+//			categories = null;
+//			profile = null;
+//			menu = null;
+//			index = userList.size();
+//			userList.add(event.getSource().getUserId());
+//			catList.add(categories);
+//			profList.add(profile);
+//			menuList.add(menu);
+//		}
+//		else {
+//			categories = catList.get(index);
+//			profile = profList.get(index);
+//			menu = menuList.get(index);
+//		}
+		ListSingleton singleton = ListSingleton.getInstance();
+		index = singleton.initiate(event.getSource().getUserId());
+		categories = singleton.getCategories();
+		profile = singleton.getProfile();
+		menu = singleton.getMenu();
 		
 		if (categories == Categories.CAMPAIGN) {
 			InputStream initialStream = response.getStream();
@@ -288,10 +297,8 @@ public class KitchenSinkController {
 			String message = "What is this image for?";
 			reply(((MessageEvent) event).getReplyToken(), new TextMessage(message));
 		}
-		
-		catList.set(index, categories);
-		profList.set(index, profile);
-		menuList.set(index, menu);
+				
+		singleton.setValues(index, categories, profile, menu);
 
 	}
 
@@ -429,28 +436,34 @@ public class KitchenSinkController {
 		List<Message> messages = new ArrayList<Message>();
 		log.info("Got text message from {}: {}", replyToken, text);
 		
-		int index = -1;
-		for(int i=0;i<userList.size();i++) {
-			if(userList.get(i).equals(event.getSource().getUserId())) {
-				index = i;
-				break;
-			}
-		}
-		if(index == -1) {
-			categories = null;
-			profile = null;
-			menu = null;
-			index = userList.size();
-			userList.add(event.getSource().getUserId());
-			catList.add(categories);
-			profList.add(profile);
-			menuList.add(menu);
-		}
-		else {
-			categories = catList.get(index);
-			profile = profList.get(index);
-			menu = menuList.get(index);
-		}
+		ListSingleton singleton = ListSingleton.getInstance();
+		index = singleton.initiate(event.getSource().getUserId());
+		categories = singleton.getCategories();
+		profile = singleton.getProfile();
+		menu = singleton.getMenu();
+		
+//		int index = -1;
+//		for(int i=0;i<userList.size();i++) {
+//			if(userList.get(i).equals(event.getSource().getUserId())) {
+//				index = i;
+//				break;
+//			}
+//		}
+//		if(index == -1) {
+//			categories = null;
+//			profile = null;
+//			menu = null;
+//			index = userList.size();
+//			userList.add(event.getSource().getUserId());
+//			catList.add(categories);
+//			profList.add(profile);
+//			menuList.add(menu);
+//		}
+//		else {
+//			categories = catList.get(index);
+//			profile = profList.get(index);
+//			menu = menuList.get(index);
+//		}
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
@@ -510,9 +523,7 @@ public class KitchenSinkController {
 		    			break;
 			}
 		}
-		catList.set(index, categories);
-		profList.set(index, profile);
-		menuList.set(index, menu);
+		singleton.setValues(index, categories, profile, menu);
     }
 	
 	/** This method handles the main menu function.
@@ -563,7 +574,13 @@ public class KitchenSinkController {
 		    			break;
 		    		}
 		    		case "friend": {
-		    			result = "Your unique code is " + user.makeRecommendation(event.getSource().getUserId());
+		    			String uniqueCode = user.makeRecommendation(event.getSource().getUserId());
+		    			if (uniqueCode == null) {
+		    				result = "There is no campaign currently";
+		    			}
+		    			else {
+			    			result = "Your unique code is " + uniqueCode;
+		    			}
 		    			break;
 		    		}
 		    		case "code": {
@@ -943,39 +960,19 @@ public class KitchenSinkController {
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
-		if (text.length() != 6 || !isInteger(text)) {
-			result = "That is not a 6 digit number.";
-			messages.add(new TextMessage(result));
+		
+		String id = user.acceptRecommendation(text ,event.getSource().getUserId());
+			
+		if (!id.contains("Error")) {
+			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
+			messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
+			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
 		}
+			
 		else {
-			String id = user.acceptRecommendation(text ,event.getSource().getUserId());
-			
-			if (id.length()>11) {
-				DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
-				messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
-				sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
-			}
-			
-			else {
-				switch (id) {
-					case "recommender": {
-						result = "You made this recommendation";
-						break;
-					}
-					case "claimed": {
-						result = "Coupon has already been claimed";
-						break;
-					}
-					case "none": {
-						result = "There is no such code";
-						break;
-					}
-				}
-				messages.add(new TextMessage(result));
-
-			}	
-
-		}
+			messages.add(new TextMessage(id));
+		}	
+		
 		messages.add(getMenuTemplate());
 
 		reply(((MessageEvent) event).getReplyToken(), messages);
@@ -985,22 +982,7 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-	/** This method checks whether or not the String is an integer.
-	 * 
-	 * @param string a String
-	 * @return whether or not the String is an integer
-	 */
-	public boolean isInteger (String string) {
-		int size = string.length();
-		
-		for (int i = 0; i < size; i++) {
-	        if (!Character.isDigit(string.charAt(i))) {
-	            return false;
-	        }
-	    }
 
-	    return size > 0;
-	}
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();
