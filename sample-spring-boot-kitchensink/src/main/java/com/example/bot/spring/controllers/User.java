@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Service;
 
-@Controller// This means that this class is a Controller
-@RequestMapping(path="/user")
+@Service
 public class User {
 	@Autowired
 	private ProfileRepository profileRepository;
@@ -42,13 +42,11 @@ public class User {
 	
 	@Autowired
 	private MenuController mc;
-		
-	@GetMapping(path="/createuser")
-	public @ResponseBody void addUser (@RequestParam String id) {
+	
+	public void addUser(String id) {
 		
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf == null) {
-			
 			pf = new Profile();
 			pf.setUserID(id);
 			pf.setTime();
@@ -62,29 +60,25 @@ public class User {
 		}
 	}
 	
-	@GetMapping(path="/inputgender")
-	public @ResponseBody void inputGender (@RequestParam String id, @RequestParam String gender) {
+	public void inputGender(String id, String gender) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setGender(gender);
 		profileRepository.save(pf);
 	}
 	
-	@GetMapping(path="/inputage")
-	public @ResponseBody void inputAge (@RequestParam String id, @RequestParam int age) {
+	public void inputAge(String id, int age) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setAge(age);
 		profileRepository.save(pf);
 	}
 	
-	@GetMapping(path="/inputheight")
-	public @ResponseBody void inputHeight (@RequestParam String id, @RequestParam Double height) {
+	public void inputHeight(String id, Double height) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setHeight(height);
 		profileRepository.save(pf);
 	}
 	
-	@GetMapping(path="/inputweight")
-	public @ResponseBody void inputWeight (@RequestParam String id, @RequestParam Double weight) {		
+	public void inputWeight(String id, Double weight) {		
 		Weight wt = new Weight();
 		wt.setUserID(id);
 		wt.setTime();
@@ -92,8 +86,7 @@ public class User {
 		weightRepository.save(wt);
 	}
 	
-	@GetMapping(path="/getWeights")
-	public @ResponseBody String outputWeight (@RequestParam String id) {		
+	public String outputWeight(String id) {		
 		boolean weightFound = false;
 		String outputStr = "";
 		for(Weight wt : weightRepository.findAll()) {
@@ -119,16 +112,14 @@ public class User {
 		return outputStr;
 	}
 	
-	@GetMapping(path="/resetinterest")
-	public @ResponseBody String resetInterest (@RequestParam String id) {	
+	public String resetInterest(String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setInterest(null);
 		profileRepository.save(pf);
 		return "Your interest records were deleted. Tell me your interests again.";
 	}
 	
-	@GetMapping(path="/inputinterest")
-	public @ResponseBody String inputInterest (@RequestParam String id, @RequestParam String interest) {	
+	public String inputInterest(String id, String interest) {	
 		int categoryFound = 0;
 		String[] splitInterest = interest.split("/ ");
 
@@ -167,8 +158,7 @@ public class User {
 		return "";
 	}
 	
-	@GetMapping(path="/getgeneral")
-	public @ResponseBody String outputGeneral (@RequestParam String id) {	
+	public String outputGeneral(String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
 		Integer age = pf.getAge();
@@ -181,14 +171,14 @@ public class User {
 			outputStr += "Male\n";
 		}
 		outputStr += "Age: ";
-		if(age == null) {
+		if(age == null || age == 0) {
 			outputStr += "44\n";
 		}
 		else {
 			outputStr += age.toString()+"\n";
 		}
 		outputStr += "Height: ";
-		if(height == null) {
+		if(height == null || height == 0) {
 			outputStr += "177cm\n\n";
 		}
 		else {
@@ -197,9 +187,7 @@ public class User {
 		return outputStr;
 	}
 	
-	@GetMapping(path="/getInterests")
-	public @ResponseBody String outputInterest (@RequestParam String id) {
-		
+	public String outputInterest(String id) {
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
 		if(pf.getInterests() != null) {
@@ -213,9 +201,7 @@ public class User {
 		return outputStr;
 	}
 	
-	
-	@GetMapping(path="/inputmeal")
-	public @ResponseBody void inputMeal (@RequestParam String id, @RequestParam String food) {		
+	public void inputMeal(String id, String food) {		
 		Meal ml = new Meal();
 		ml.setUserID(id);
 		ml.setTime();
@@ -223,8 +209,7 @@ public class User {
 		mealRepository.save(ml);	
 	}
 	
-	@GetMapping(path="/getMeals")
-	public @ResponseBody String outputMeal (@RequestParam String id) {		
+	public String outputMeal(String id) {		
 		boolean mealFound = false;
 		String outputStr = "";
 		for(Meal ml : mealRepository.findAll()) {
@@ -249,11 +234,11 @@ public class User {
 		return outputStr;
 	}
 	
-	@GetMapping(path="/makeRecommendation")
-	public @ResponseBody String makeRecommendation (@RequestParam String id) {	
+	public String makeRecommendation(String id) {	
 		if (campaignRepository.count() == 0) {
 			return null;
 		}
+
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
@@ -267,8 +252,13 @@ public class User {
 		return Long.toString(rd.getUniqueCode());
 	}
 	
-	@GetMapping(path="/acceptRecommendation")
-	public @ResponseBody String acceptRecommendation (@RequestParam String uniqueCode, @RequestParam String userID) {		
+	public String acceptRecommendation(String uniqueCode, String userID) {
+		
+		
+		if (uniqueCode == null||uniqueCode.length() != 6 || !isInteger(uniqueCode)) {
+			return "That is not a 6 digit number";
+		}
+		
 		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
 		if (rd!=null) {
 			if (!rd.getClaimed()) {
@@ -283,24 +273,31 @@ public class User {
 				}
 				
 				else {
-					//the recommender entered the code
-					return "recommender";
+					return "You made this recommendation";
 				}
 			}
 			else {
-				//already claimed
-				return "claimed";
+				return "Coupon has already been claimed";
 			}
 		}
 		else {
-			//no such code
-			return "none";
-
+			return "There is no such code";
 		}
 	}
+	
+	public boolean isInteger (String string) {
+		int size = string.length();
 		
-	@GetMapping(path="/uploadCouponCampaign")
-	public @ResponseBody void uploadCouponCampaign (@RequestParam InputStream is) {		
+		for (int i = 0; i < size; i++) {
+	        if (!Character.isDigit(string.charAt(i))) {
+	            return false;
+	        }
+	    }
+
+	    return size > 0;
+	}
+		
+	public void uploadCouponCampaign(InputStream is) {
 		
 		Campaign campaign = null;
 		for(Campaign cp : campaignRepository.findAll()) {
@@ -320,8 +317,7 @@ public class User {
 		campaignRepository.save(campaign);	
 	}
 	
-	@GetMapping(path="/getCoupon")
-	public @ResponseBody byte [] getCoupon () {	
+	public byte[] getCoupon() {	
 		Campaign campaign;
 		for(Campaign cp : campaignRepository.findAll()) {
 			cp.incrementCount();
@@ -331,8 +327,7 @@ public class User {
 		return null;
 	}
 	
-	@GetMapping(path="/checkValidity")
-	public @ResponseBody String checkValidityOfUser (String id) {	
+	public String checkValidityOfUser (String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
 			
@@ -365,8 +360,7 @@ public class User {
 		
 	}
 	
-	@GetMapping(path="/isAdmin")
-	public @ResponseBody boolean isAdmin (String userID) {
+	public boolean isAdmin(String userID) {
 		//TODO
 		Profile pf = profileRepository.findByUserID(userID);
 		if (pf !=null) {
@@ -376,8 +370,6 @@ public class User {
 		}
 		return false;
 	}
-	
-	
 	
 	public byte[] readImage(InputStream is) throws IOException
 	{
@@ -412,8 +404,7 @@ public class User {
 		}
 	}
 	
-	@GetMapping(path="/getbmr")
-	public @ResponseBody double getBMR (@RequestParam String userID) {		
+	public double getBMR(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
 		Double height = pf.getHeight();
@@ -421,10 +412,10 @@ public class User {
 		if(weight == null) {
 			weight = 89.0;
 		}
-		if(height == null) {
+		if(height == null || height == 0) {
 			height = 177.0;
 		}
-		if(age == null) {
+		if(age == null || age == 0) {
 			age = 44;
 		}
 		double bmr = 10*weight + 6.25*height - 5*age;
@@ -437,22 +428,20 @@ public class User {
 		return bmr;
 	}
 	
-	@GetMapping(path="/getbmi")
-	public @ResponseBody double getBMI (@RequestParam String userID) {		
+	public double getBMI(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
 		Double height = pf.getHeight()/100.0;
 		if(weight == null) {
 			weight = 89.0;
 		}
-		if(height == null) {
+		if(height == null || height == 0) {
 			height = 1.77;
 		}
 		return weight/(height*height);
 	}
 	
-	@GetMapping(path="/getbmicategory")
-	public @ResponseBody String getBMICategory (@RequestParam String userID) {		
+	public String getBMICategory(String userID) {		
 		double bmi = getBMI(userID);
 		if(bmi<18.5) {
 			return "Underweight";
@@ -468,11 +457,10 @@ public class User {
 		}
 	}
 	
-	@GetMapping(path="/getbfp")
-	public @ResponseBody double getBFP (@RequestParam String userID) {		
+	public double getBFP (String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Integer age = pf.getAge();
-		if(age == null) {
+		if(age == null || age == 0) {
 			age = 44;
 		}
 		double bfp = 1.2*getBMI(userID) + 0.23*age;
@@ -503,8 +491,7 @@ public class User {
 		return foods;
 	}
 	
-	@GetMapping(path="/getremainingcalories")
-	public @ResponseBody double getRemainingCalories (@RequestParam String userID) {		
+	public double getRemainingCalories(String userID) {		
 		double currentCalories = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -513,8 +500,7 @@ public class User {
 		return getBMR(userID) - currentCalories;
 	}
 	
-	@GetMapping(path="/getremainingprotein")
-	public @ResponseBody double getRemainingProtein (@RequestParam String userID) {		
+	public double getRemainingProtein(String userID) {		
 		double currentProtein = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -523,8 +509,7 @@ public class User {
 		return getBMR(userID)*0.2/4.0 - currentProtein;
 	}
 	
-	@GetMapping(path="/getremainingcarbohydrate")
-	public @ResponseBody double getRemainingCarbohydrate (@RequestParam String userID) {		
+	public double getRemainingCarbohydrate(String userID) {		
 		double currentCarbohydrate = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -533,8 +518,7 @@ public class User {
 		return getBMR(userID)*0.55/4.0 - currentCarbohydrate;
 	}
 	
-	@GetMapping(path="/getremainingfat")
-	public @ResponseBody double getRemainingFat (@RequestParam String userID) {		
+	public double getRemainingFat(String userID) {		
 		double currentFat = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
 		for(Food fd : mealsToday) {
@@ -543,8 +527,7 @@ public class User {
 		return getBMR(userID)*0.25/9.0 - currentFat;
 	}
 	
-	@GetMapping(path="/showdailyprogress")
-	public @ResponseBody String showDailyProgress (@RequestParam String userID) {
+	public String showDailyProgress(String userID) {
 		DecimalFormat format = new DecimalFormat("##.00");
 		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
 				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+
