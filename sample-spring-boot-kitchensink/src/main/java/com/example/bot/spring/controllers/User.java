@@ -22,6 +22,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class User {
+	
+	/** This controller has access to the models corresponding to the users' information
+	 * and use them to process the requests from the users.
+	 */
+	
 	@Autowired
 	private ProfileRepository profileRepository;
 	
@@ -43,8 +48,11 @@ public class User {
 	@Autowired
 	private MenuController mc;
 	
+	/** This method creates a new user in the database.
+	 * 
+	 * @param id the ID of the new user
+	 */
 	public void addUser(String id) {
-		
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf == null) {
 			pf = new Profile();
@@ -60,24 +68,44 @@ public class User {
 		}
 	}
 	
+	/** This saves the gender of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param gender the gender of the user
+	 */
 	public void inputGender(String id, String gender) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setGender(gender);
 		profileRepository.save(pf);
 	}
 	
+	/** This saves the age of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param age the age of the user
+	 */
 	public void inputAge(String id, int age) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setAge(age);
 		profileRepository.save(pf);
 	}
 	
+	/** This saves the height of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param height the height of the user
+	 */
 	public void inputHeight(String id, Double height) {
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setHeight(height);
 		profileRepository.save(pf);
 	}
 	
+	/** This saves the weight of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param weight the weight of the user
+	 */
 	public void inputWeight(String id, Double weight) {		
 		Weight wt = new Weight();
 		wt.setUserID(id);
@@ -86,6 +114,11 @@ public class User {
 		weightRepository.save(wt);
 	}
 	
+	/** This is the getter for the user's weight.
+	 * 
+	 * @param id the ID of the user
+	 * @return the log of the user's weights
+	 */
 	public String outputWeight(String id) {		
 		boolean weightFound = false;
 		String outputStr = "";
@@ -112,6 +145,11 @@ public class User {
 		return outputStr;
 	}
 	
+	/** This method resets the interests that have been chosen by the user.
+	 * 
+	 * @param id the ID of the user
+	 * @return the response informing the user that his/her interests have been reset.
+	 */
 	public String resetInterest(String id) {	
 		Profile pf = profileRepository.findByUserID(id);
 		pf.setInterest(null);
@@ -119,6 +157,12 @@ public class User {
 		return "Your interest records were deleted. Tell me your interests again.";
 	}
 	
+	/** This saves the interests of the user in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param interest the String containing the interests of the user
+	 * @return responses according to the user's actions
+	 */
 	public String inputInterest(String id, String interest) {	
 		int categoryFound = 0;
 		String[] splitInterest = interest.split("/ ");
@@ -158,6 +202,11 @@ public class User {
 		return "";
 	}
 	
+	/** This method gets the general profile of the user, including his/her gender, age, and height.
+	 * 
+	 * @param id the ID of the user
+	 * @return the user's general profile
+	 */
 	public String outputGeneral(String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		String outputStr = "Gender: ";
@@ -187,6 +236,11 @@ public class User {
 		return outputStr;
 	}
 	
+	/** This is the getter for the user's interests.
+	 * 
+	 * @param id the ID of the user
+	 * @return the user's interests in a String
+	 */
 	public String outputInterest(String id) {
 		String outputStr = "";
 		Profile pf = profileRepository.findByUserID(id);
@@ -200,7 +254,12 @@ public class User {
 		outputStr += "You did not tell me your food interests yet.";		
 		return outputStr;
 	}
-	
+
+	/** This saves the meal that the user consumed in the database.
+	 * 
+	 * @param id the ID of the user
+	 * @param food the String of the meal that the user consumed
+	 */
 	public void inputMeal(String id, String food) {		
 		Meal ml = new Meal();
 		ml.setUserID(id);
@@ -208,7 +267,12 @@ public class User {
 		ml.setFood(food);
 		mealRepository.save(ml);	
 	}
-	
+
+	/** This is the getter for the meals that the user has consumed.
+	 * 
+	 * @param id the ID of the user
+	 * @return the log of the meals that the user has consumed
+	 */
 	public String outputMeal(String id) {		
 		boolean mealFound = false;
 		String outputStr = "";
@@ -234,11 +298,15 @@ public class User {
 		return outputStr;
 	}
 	
+	/** This creates a new recommendation and provides the user with a unique code.
+	 * 
+	 * @param id the ID of the user
+	 * @return the unique 6-digit code for the user
+	 */
 	public String makeRecommendation(String id) {	
 		if (campaignRepository.count() == 0) {
 			return null;
 		}
-
 		Recommendation rd = new Recommendation();
 		rd.setUserID(id);
 		rd.setClaimed(false);
@@ -252,6 +320,13 @@ public class User {
 		return Long.toString(rd.getUniqueCode());
 	}
 	
+
+	/** This allows the user the accept the recommendation.
+	 * 
+	 * @param uniqueCode the 6-digit unique code
+	 * @param userID the ID of the user
+	 * @return the corresponding responses base on the state of the user
+	 */
 	public String acceptRecommendation(String uniqueCode, String userID) {
 		
 		
@@ -285,6 +360,11 @@ public class User {
 		}
 	}
 	
+	/** This method checks whether or not the String is an integer.
+	 * 
+	 * @param string a String
+	 * @return whether or not the String is an integer
+	 */
 	public boolean isInteger (String string) {
 		int size = string.length();
 		
@@ -297,8 +377,11 @@ public class User {
 	    return size > 0;
 	}
 		
+	/** This method allows the administrator to upload a coupon to start a campaign.
+	 * 
+	 * @param is the input stream of the image of the coupon
+	 */	
 	public void uploadCouponCampaign(InputStream is) {
-		
 		Campaign campaign = null;
 		for(Campaign cp : campaignRepository.findAll()) {
 			campaign = cp;
@@ -317,6 +400,10 @@ public class User {
 		campaignRepository.save(campaign);	
 	}
 	
+	/** This method is a getter for the coupon image.
+	 * 
+	 * @return the byte format of the coupon image
+	 */
 	public byte[] getCoupon() {	
 		Campaign campaign;
 		for(Campaign cp : campaignRepository.findAll()) {
@@ -327,6 +414,11 @@ public class User {
 		return null;
 	}
 	
+	/** This method checks the validitiy for the user to claim the coupon.
+	 * 
+	 * @param id the ID of the user
+	 * @return the state of the user
+	 */
 	public String checkValidityOfUser (String id) {
 		Profile pf = profileRepository.findByUserID(id);
 		if (pf.getClaimedNewUserCoupon()) {
@@ -360,8 +452,12 @@ public class User {
 		
 	}
 	
+	/** This method checks whether or not the user is an administrator.
+	 * 
+	 * @param userID the ID of the user
+	 * @return whether or not the user is an administrator
+	 */
 	public boolean isAdmin(String userID) {
-		//TODO
 		Profile pf = profileRepository.findByUserID(userID);
 		if (pf !=null) {
 			if (pf.getAdmin()) {
@@ -371,6 +467,12 @@ public class User {
 		return false;
 	}
 	
+	/** This method reads the image by converting it from an input stream to an array of bytes.
+	 * 
+	 * @param is the input stream of the image
+	 * @return the byte array of the image
+	 * @throws IOException
+	 */
 	public byte[] readImage(InputStream is) throws IOException
 	{
 	    byte[] buffer = new byte[8192];
@@ -384,6 +486,11 @@ public class User {
 
 	}
 	
+	/** This method gets the latest row fo the user's weight in the database.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the latest weight of the user
+	 */
 	private Double getLastWeight(String userID) {
 		Date closest = new Date(0);
 		Weight lastWeight = null;
@@ -404,6 +511,11 @@ public class User {
 		}
 	}
 	
+	/** This method calculates the BMR of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMR of the user
+	 */
 	public double getBMR(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
@@ -427,7 +539,12 @@ public class User {
 		}
 		return bmr;
 	}
-	
+
+	/** This method calculates the BMI of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMI of the user
+	 */
 	public double getBMI(String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Double weight = getLastWeight(userID);
@@ -441,6 +558,11 @@ public class User {
 		return weight/(height*height);
 	}
 	
+	/** This method determines the BMI category of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BMI category of the user
+	 */
 	public String getBMICategory(String userID) {		
 		double bmi = getBMI(userID);
 		if(bmi<18.5) {
@@ -457,6 +579,11 @@ public class User {
 		}
 	}
 	
+	/** This method calculates the BFP of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the BFP of the user
+	 */
 	public double getBFP (String userID) {		
 		Profile pf = profileRepository.findByUserID(userID);
 		Integer age = pf.getAge();
@@ -473,6 +600,11 @@ public class User {
 		return bfp;
 	}
 	
+	/** This method gets the set of food consumed by the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the set of food consumed by the user today
+	 */
 	private Set<Food> getFoodsFromToday(String userID){
 		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
@@ -491,6 +623,11 @@ public class User {
 		return foods;
 	}
 	
+	/** This calculates the remainig calories for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig calories for the user today.
+	 */
 	public double getRemainingCalories(String userID) {		
 		double currentCalories = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
@@ -500,6 +637,11 @@ public class User {
 		return getBMR(userID) - currentCalories;
 	}
 	
+	/** This calculates the remainig protein for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig protein for the user today.
+	 */
 	public double getRemainingProtein(String userID) {		
 		double currentProtein = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
@@ -509,6 +651,11 @@ public class User {
 		return getBMR(userID)*0.2/4.0 - currentProtein;
 	}
 	
+	/** This calculates the remainig carbohydrate for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig carbohydrate for the user today.
+	 */
 	public double getRemainingCarbohydrate(String userID) {		
 		double currentCarbohydrate = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
@@ -518,6 +665,11 @@ public class User {
 		return getBMR(userID)*0.55/4.0 - currentCarbohydrate;
 	}
 	
+	/** This calculates the remainig fat for the user today.
+	 * 
+	 * @param userID the ID of the user
+	 * @return the remainig fat for the user today.
+	 */
 	public double getRemainingFat(String userID) {		
 		double currentFat = 0;
 		Set<Food> mealsToday = getFoodsFromToday(userID);
@@ -526,14 +678,19 @@ public class User {
 		}
 		return getBMR(userID)*0.25/9.0 - currentFat;
 	}
-	
+
+	/** This shows the daily progress on nutrients and other information of the user.
+	 * 
+	 * @param userID the ID of the user
+	 * @return daily report
+	 */
 	public String showDailyProgress(String userID) {
 		DecimalFormat format = new DecimalFormat("##.00");
 		return "Basal Metabolic Rate (BMR): "+format.format(getBMR(userID))+"\n"+
 				"Body Mass Index (BMI): "+format.format(getBMI(userID))+"\n"+
 				"Body Fat Percentage (BFP): "+format.format(getBFP(userID))+"\n"+
 				"Current Status: "+getBMICategory(userID)+"\n"+"\n"+
-				"Remaining Nutrients: \n"+
+				"Remaining Nutrients for today: \n"+
 				"Calories: "+format.format(getRemainingCalories(userID))+"\n"+
 				"Protein: "+format.format(getRemainingProtein(userID))+"\n"+
 				"Carbohydrate: "+format.format(getRemainingCarbohydrate(userID))+"\n"+

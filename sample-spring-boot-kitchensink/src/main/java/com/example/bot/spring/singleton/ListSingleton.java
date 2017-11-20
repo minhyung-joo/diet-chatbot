@@ -10,9 +10,24 @@ import com.example.bot.spring.KitchenSinkController.Profile;
 public class ListSingleton {
 	private static ListSingleton instance = new ListSingleton();
 	
+	/** This is the list of the users currently using the chat bot.
+	 * 
+	 */
 	private static List<String> userList;
+	
+	/** This is the list of the category variable that each user is on.
+	 * 
+	 */
 	private static List<Categories> catList;
+	
+	/** This is the list of the profile variable that each user is on.
+	 * 
+	 */
 	private static List<Profile> profList;
+	
+	/** This is the list of the menu variable that each user is on.
+	 * 
+	 */
 	private static List<Menu> menuList;
 	Categories categories=null;
 	Profile profile=null;

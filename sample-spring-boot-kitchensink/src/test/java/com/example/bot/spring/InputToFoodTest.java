@@ -56,6 +56,11 @@ public class InputToFoodTest {
 	private InputToFood inputToFood = new InputToFood();
 	
 	@Test
+	public void testGetFoodDetails() throws Exception {
+		
+	}
+	
+	@Test
 	public void testReadFromJSON() throws Exception {
 		String nullStr = null;
 		String emptyStr = "";
@@ -104,4 +109,5 @@ public class InputToFoodTest {
 				"28 F\n" + 
 				"40\n");
 	}
+	
 }

@@ -103,6 +103,11 @@ import com.example.bot.spring.ListSingleton;
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
+	
+	/** This is the class that handles the view of the chat bot. This handles the messages the user will
+	 * receive, as well as passing the user's messages to the corresponding controllers.
+	 */
+	
 	@Autowired
 	private FoodRepository foodRepository;
 	
@@ -115,55 +120,91 @@ public class KitchenSinkController {
 	@Autowired
 	private User user;
 	
+	/** This is the enumeration of the categories of functions provided by the chat bot.
+	 *
+	 */
 	public enum Categories {MAIN_MENU, PROFILE, DAILY, FOOD, MENU, CODE, INIT, CAMPAIGN}
+	
+	/** This is the enumeration of the functions provided in the profile category.
+	 *
+	 */
 	public enum Profile {SET_GENDER,SET_AGE,SET_HEIGHT,SET_INTEREST, INPUT_WEIGHT, INPUT_MEAL, REQUEST_PROFILE}
+	
+	/** This is the enumeration of the functions provided in the menu category.
+	 *
+	 */
 	public enum Menu {TEXT, URL, JPEG}
-
+	
+	/** This is the variable that tracks the function that the user is currently on.
+	 *
+	 */
 	public Categories categories = null;
+	
+	/** This is the variable that tracks the function in profile that the user is currently on.
+	 *
+	 */
 	public Profile profile = null;
+	
+	/** This is the variable that tracks the function in menu that the user is currently on.
+	 *
+	 */
 	public Menu menu = null;
 	
+	/** This is the list of the users currently using the chat bot.
+	 * 
+	 */
 	public List<String> userList = new ArrayList<String>();
-	public List<Categories> catList = new ArrayList<Categories>();
-	public List<Profile> profList = new ArrayList<Profile>();
-	public List<Menu> menuList = new ArrayList<Menu>();
-
-//	public String showMainMenu = "Hello I am your diet chatbot! \n These are the features we provide:\n"
-//            + "Profile - Record and view your weights and meals\n"
-//			+ "Daily - View your progress on nutrients today\n"
-//            + "Food - Get nutritional details of a food\n"
-//            + "Menu - Input menu and let me pick a food for you to eat this meal\n"
-//            + "Friend - Make recommendations to a friend to get an ice cream coupon!\n"
-//            + "Code - Accept recommendations to get an ice cream coupon";	
-//
-//	public Message mainMenuMessage = new TextMessage(showMainMenu);
-
-    String imageProfile;
-    String imageDaily;
-    String imageFood;
-    String imageMenu; 
-    String imageFriend;
-//    CarouselTemplate menuCarouselTemplate = new CarouselTemplate(
-//            Arrays.asList(
-//                    new CarouselColumn(imageProfile, "Your Profile", "Edit and view your profile", Arrays.asList(
-//                            new MessageAction("Click here", "profile")
-//                    )),
-//                    new CarouselColumn(imageDaily, "Daily Progress", "View your nutritional progress today", Arrays.asList(
-//                            new MessageAction("Click here", "daily")
-//                    )),
-//                    new CarouselColumn(imageFood, "Food Details", "Get nutritional details of a food", Arrays.asList(
-//                            new MessageAction("Click here", "food")
-//                    )),
-//                    new CarouselColumn(imageMenu, "Choose Menu", "Let me choose a menu for you", Arrays.asList(
-//                            new MessageAction("Click here", "menu")
-//                    )),
-//                    new CarouselColumn(imageFriend, "Refer a Friend", "Make recommendations to a friend to get an ice cream coupon!", Arrays.asList(
-//                            new MessageAction("Click here", "friend")
-//                    ))
-//            ));
-//    TemplateMessage menuTemplateMessage = new TemplateMessage("Front Menu", menuCarouselTemplate);
-
 	
+	/** This is the list of the category variable that each user is on.
+	 * 
+	 */
+	public List<Categories> catList = new ArrayList<Categories>();
+	
+	/** This is the list of the profile variable that each user is on.
+	 * 
+	 */
+	public List<Profile> profList = new ArrayList<Profile>();
+	
+	/** This is the list of the menu variable that each user is on.
+	 * 
+	 */
+	public List<Menu> menuList = new ArrayList<Menu>();
+	
+	/** This is the default message of the chat bot.
+	 * 
+	 */
+	public String showMainMenu = "Hello I am your diet coach! What can I help you with?";
+	
+	/** This is the message of the default text.
+	 * 
+	 */
+	public Message mainMenuMessage = new TextMessage(showMainMenu);
+
+	/** This is the text for the profile option.
+	 * 
+	 */
+    String imageProfile;
+    
+    /** This is the text for the daily progress option.
+	 * 
+	 */
+    String imageDaily;
+    
+    /** This is the text for the food details option.
+	 * 
+	 */
+    String imageFood;
+    
+    /** This is the text for the menu option.
+	 * 
+	 */
+    String imageMenu; 
+    
+    /** This is the text for the friend option.
+	 * 
+	 */
+    String imageFriend;
+
 	@EventMapping
 	public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
 		log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -187,6 +228,13 @@ public class KitchenSinkController {
 
 	int index = -1;
 	
+	
+	/** This method handles the image message events, which is choosing the corresponding functions
+	 * provided by the chat bot.
+	 * 
+	 * @param event action of the user chooses by tapping a button
+	 * @throws IOException
+	 */
 	@EventMapping
 	public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
 		final MessageContentResponse response;
@@ -339,7 +387,11 @@ public class KitchenSinkController {
 	private void handleSticker(String replyToken, StickerMessageContent content) {
 		reply(replyToken, new StickerMessage(content.getPackageId(), content.getStickerId()));
 	}
-
+	
+	/** This creates the main menu template in the chat bot.
+	 * 
+	 * @return the template message containing the menu template
+	 */
 	private TemplateMessage getMenuTemplate() {
 	    imageProfile = createUri("/static/buttons/menuProfile.jpg");
 	    imageDaily = createUri("/static/buttons/menuDaily.jpg");
@@ -368,6 +420,13 @@ public class KitchenSinkController {
 	   return menuTemplateMessage;
 	}
 	
+	/** This method handles the responses of the user, and refer them to corresponding controllers.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param event the message event
+	 * @param content the content of the message from the user
+	 * @throws Exception
+	 */
 	private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
 		
@@ -408,6 +467,7 @@ public class KitchenSinkController {
 		
 		if (categories == null) {		
 			user.addUser(event.getSource().getUserId());
+			messages.add(mainMenuMessage);
 			messages.add(getMenuTemplate());
 			this.reply(replyToken, messages); 
 			categories = Categories.MAIN_MENU;
@@ -466,6 +526,12 @@ public class KitchenSinkController {
 		singleton.setValues(index, categories, profile, menu);
     }
 	
+	/** This method handles the main menu function.
+	 * 
+	 * @param text the text message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleMainMenu (String text, Event event) {
 		String result = "";
 		Matcher m = Pattern.compile("profile|daily|food|menu|initdb|friend|code|admin", Pattern.CASE_INSENSITIVE).matcher(text);
@@ -474,14 +540,14 @@ public class KitchenSinkController {
 			switch (m.group().toLowerCase()) {
 		    		case "profile": {
 		    			categories = Categories.PROFILE;
-		    			result = "Under profile, these are the features that we provide:\n"
+		    			result = "What would you like to do?\n\n"
 		    				 + "Gender - Set your gender\n"
 		    				 + "Age - Update your age\n"
 		    				 + "Height - Update your height\n"
-		                     + "Weight - Record your weight\n"
-		                     + "Meal - Record your meal\n"
-		                     + "View - View your recorded profiles\n"
-		                     + "Interest - Record your interests";
+		                  + "Weight - Record your weight\n"
+		                  + "Meal - Record your meal\n"
+		                  + "Interest - Record your interests\n"
+		                  + "View - View your profile";
 		    			break;
 		    		}
 		    		case "daily": {
@@ -555,7 +621,13 @@ public class KitchenSinkController {
 		return result;
 	}
 	
-	// public enum Profile {SET_INTEREST, INPUT_WEIGHT, REQUEST_PROFILE}
+	/** This method handles the profile function.
+	 * 
+	 * @param replyToken the reply token to the user
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleProfile (String replyToken, String text, Event event) {
 		String result = "";
 		if (profile == null) {
@@ -596,7 +668,7 @@ public class KitchenSinkController {
 			    		
 			    		case "view": {
 			    			profile = Profile.REQUEST_PROFILE;
-			    			result = "Would you like to view your general profile, or your past weights or meals?";
+			    			result = "Would you like to view your \"general\" profile, or your past \"weights\" or \"meals\"?";
 			    			break;
 			    		}
 			    		
@@ -721,10 +793,6 @@ public class KitchenSinkController {
 		    			} else {
 			    			result = user.inputInterest(""+ event.getSource().getUserId(),text);
 		    			}
-//		    			user.inputInterest(""+ event.getSource().getUserId(),text);
-//		    			result = "I successfully recorded your interests";
-//		    			profile = null;
-//		    			categories = Categories.MAIN_MENU;
 		    			break;
 		    		case REQUEST_PROFILE:
 		    			result = handRequestProfile(text, event);
@@ -736,6 +804,12 @@ public class KitchenSinkController {
 
 	}
 	
+	/** This method handles the viewing option in the profile function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handRequestProfile (String text, Event event) {
 		String result = "";
 		
@@ -766,6 +840,11 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @return the corresponding response to the user
+	 */
 	private String handleFood (String text) {
 		categories = Categories.MAIN_MENU;
 		String result = "";
@@ -773,6 +852,9 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+	/** This method handles the initialization of the food database.
+	 * 
+	 */
 	private void handleInit() {
 		try {
             String filePath = "/app/FOOD_DATA.txt";
@@ -813,6 +895,12 @@ public class KitchenSinkController {
         }
 	}
 	
+	/** This method handles the food details function.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleMenu (String text, Event event) {
 		String result = "";
 		if(menu == null) {
@@ -863,6 +951,12 @@ public class KitchenSinkController {
 			
 	}
 	
+	/** This method handles the unique 6-digit code from the user.
+	 * 
+	 * @param text the text content of the message from the user
+	 * @param event the event of the user sending this message
+	 * @return the corresponding response to the user
+	 */
 	private String handleCode (String text, Event event) {
 		List<Message> messages = new ArrayList<Message>();
 		String result = "";
@@ -888,6 +982,7 @@ public class KitchenSinkController {
 		return result;
 	}
 	
+
 	
 	static String createUri(String path) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).build().toUriString();

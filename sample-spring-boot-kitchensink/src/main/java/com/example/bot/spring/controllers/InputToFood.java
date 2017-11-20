@@ -27,16 +27,28 @@ import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.apache.commons.io.FileUtils;
 import org.springframework.http.MediaType;
 
+/** This controller takes in the menu inputs from the user, turn them into text, and then pass it to 
+ *  MenuController to pick the food for the user. It also provides the details of the food that the 
+ *  user has requested for.
+ */
+
 import lombok.extern.slf4j.Slf4j;
 
 @Service
+
 public class InputToFood {
 	@Autowired
 	private FoodRepository foodRepository;
 	
 	@Autowired
 	private MenuController menuController;
-
+	
+	/** This method reads the text menu passed in by the user and passes it to MenuController.
+	 * 
+	 * @param userId the ID of the user
+	 * @param text the text menu passed in by the user
+	 * @return the choice from the menu
+	 */
     public String readFromText(String userId, String text) {
 		menuController.setUserID(userId);
 		menuController.setMenu(text);
@@ -107,6 +119,11 @@ public class InputToFood {
     	return menu;
     }
     
+    /** This method builds the menu in JSON format from a picture of the menu
+     * 
+     * @param jpeg the picture of the menu
+     * @return the JSON format of the menu
+     */
     private String buildJson(DownloadedContent jpeg) {
     	try {
     		StringBuilder jsonBuilder = new StringBuilder();
@@ -129,8 +146,13 @@ public class InputToFood {
     	}
     }
     
+    /** This method returns the details of the food that the user requested.
+     * 
+     * @param food the name of the food the user requested
+     * @return the details of the food
+     */
     public String getFoodDetails(String food) {
-    		String resultFood = "You have entered " + food + "\n";
+    		String resultFood = "You have entered " + food + ".\n";
     		String[] splitFood = food.split("\\s+");
     		
 	    	for (int i = 0; i < splitFood.length; i++) {	
@@ -144,7 +166,7 @@ public class InputToFood {
 	            		fdName = fdName.substring(0, fdName.length()-1);
 	            	}
 	            	
-	    		    if (checkEquality(fdName, splitFood[i]) || splitFood[i].toLowerCase().contains(fdName)) { 
+	    		    if (splitFood[i].toLowerCase().contains(fdName)) { 
 	    		    		resultFood += "Here are the details for " + fdName + "\n" + fd.getDetails() + "\n" + "\n";
 	    		    		break;
 	    		    }
@@ -153,38 +175,5 @@ public class InputToFood {
     		
     		return resultFood;
     }
-    
-    private boolean checkEquality(String s1, String s2) {
-    	return getDistance(s1, s2) <= 2;
-    }
-    
-    private int min(int a, int b, int c) {
-        return Math.min(a, Math.min(b, c));
-    }
-
-    /**
-     * Using Dynamic Programming, the Wagner-Fischer algorithm is able to 
-     * calculate the edit distance between two strings.
-     * @return edit distance between s1 and s2
-     */
-    private int getDistance(String str1, String str2) {
-    	char[] s1 = str1.toCharArray();
-    	char[] s2 = str2.toCharArray();
-    	
-        int[][] dp = new int[s1.length + 1][s2.length + 1];
-        for (int i = 0; i <= s1.length; dp[i][0] = i++);
-        for (int j = 0; j <= s2.length; dp[0][j] = j++);
-
-        for (int i = 1; i <= s1.length; i++) {
-            for (int j = 1; j <= s2.length; j++) {
-                if (s1[i - 1] == s2[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1];
-                } else {
-                    dp[i][j] = min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, 
-                    		dp[i - 1][j - 1] + 1);
-                }
-            }
-        }
-        return dp[s1.length][s2.length];
-    }
 }
+
