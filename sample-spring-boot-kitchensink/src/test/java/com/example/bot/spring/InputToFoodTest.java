@@ -42,9 +42,8 @@ import com.example.bot.spring.tables.MealRepository;
 import com.example.bot.spring.tables.Meal;
 import com.example.bot.spring.tables.ProfileRepository;
 import com.example.bot.spring.tables.Profile;
-import com.example.bot.spring.DatabaseInitializer;
-import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import com.example.bot.spring.RepoFactory4Test;
+import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.*;
 import org.springframework.test.context.transaction.*;
@@ -95,8 +94,6 @@ public class InputToFoodTest {
 	
 	@Before
 	public void executedBeforeEach() {
-		init.initializeDatabase();
-		
 		user.addUser("1");
 		user.inputGender("1","Male");
 		user.inputAge("1",20);
