@@ -90,22 +90,23 @@ public class RecommendationTest {
 		String validButClaimedCode;
 		String validButOwnCode;
 		
+		String sixDigitError = "Error: That is not a 6 digit number";
 
 		
 		String userID1 = "U861b3649f59765641656b970d5a8659b";
 		String userID2 = "U23240e381b87718a1b290fd3a9fcbebe";
 		
 		String invalidInput = user.acceptRecommendation(nullStr,userID2);
-		assertEquals(invalidInput,"That is not a 6 digit number");
+		assertEquals(invalidInput,sixDigitError);
 		
 		invalidInput = user.acceptRecommendation(emptyStr,userID2);
-		assertEquals(invalidInput,"That is not a 6 digit number");
+		assertEquals(invalidInput,sixDigitError);
 
 		invalidInput = user.acceptRecommendation(notSixDigits,userID2);
-		assertEquals(invalidInput,"That is not a 6 digit number");
+		assertEquals(invalidInput,sixDigitError);
 
 		invalidInput = user.acceptRecommendation(notSixDigitNumber,userID2);
-		assertEquals(invalidInput,"That is not a 6 digit number");	
+		assertEquals(invalidInput,sixDigitError);	
 		
 //		invalidInput = user.acceptRecommendation(validButNullCode,userID2);
 //		assertEquals(invalidInput,"There is no such code");	
