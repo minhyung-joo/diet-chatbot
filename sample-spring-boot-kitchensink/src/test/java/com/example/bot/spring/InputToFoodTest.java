@@ -169,10 +169,7 @@ public class InputToFoodTest {
 				"Sweet and Sour Pork served with Rice\n" + 
 				"Chili Chicken on Rice\n" + 
 				"Fried instance noodle with Luncheon Meat\n" + 
-				"35\n" + 
-				"36\n" + 
-				"28 F\n" + 
-				"40\n");
+				"28 F");
 	}
 
 	@Test
