@@ -256,7 +256,7 @@ public class User {
 		
 		
 		if (uniqueCode == null||uniqueCode.length() != 6 || !isInteger(uniqueCode)) {
-			return "That is not a 6 digit number";
+			return "Error: That is not a 6 digit number";
 		}
 		
 		Recommendation rd = recommendationRepository.findByUniqueCode(Long.parseLong(uniqueCode));
@@ -273,15 +273,15 @@ public class User {
 				}
 				
 				else {
-					return "You made this recommendation";
+					return "Error: You made this recommendation";
 				}
 			}
 			else {
-				return "Coupon has already been claimed";
+				return "Error: has already been claimed";
 			}
 		}
 		else {
-			return "There is no such code";
+			return "Error: There is no such code";
 		}
 	}
 	

@@ -869,7 +869,7 @@ public class KitchenSinkController {
 		
 		String id = user.acceptRecommendation(text ,event.getSource().getUserId());
 			
-		if (id.length()==34) {
+		if (!id.contains("Error")) {
 			DownloadedContent jpg = saveContentFromDB("jpg", user.getCoupon());
 			messages.add(new ImageMessage(jpg.getUri(), jpg.getUri()));
 			sendPushMessage(new ImageMessage(jpg.getUri(), jpg.getUri()),id);
