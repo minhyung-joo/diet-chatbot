@@ -115,8 +115,20 @@ public class InputToFood {
     	Response response = ocrResponse.getResponses()[0];
     	TextAnnotation textAnnotation = response.getTextAnnotations()[0];
     	menu = textAnnotation.getDescription();
+    	String[] menuList = menu.split("\\r?\\n");
+    	StringBuilder builder = new StringBuilder();
+    	for (String m : menuList) {
+    		if (!isNumeric(m)) {
+    			builder.append(m);
+    			builder.append("\n");
+    		}
+    	}
     	
-    	return menu;
+    	if (builder.length() > 1) {
+    		builder.deleteCharAt(builder.length() - 1);
+    	}
+    	
+    	return builder.toString();
     }
     
     /** This method builds the menu in JSON format from a picture of the menu
@@ -174,6 +186,15 @@ public class InputToFood {
 	    	}
     		
     		return resultFood;
+    }
+    
+    /**
+     * Helper method to check if the given String is numeric
+     * @param str String to test
+     * @return True if the String is numeric; false otherwise
+     */
+    private boolean isNumeric(String str) {
+      return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 }
 
