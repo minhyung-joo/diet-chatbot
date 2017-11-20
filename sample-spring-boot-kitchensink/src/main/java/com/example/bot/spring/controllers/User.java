@@ -228,10 +228,10 @@ public class User {
 		}
 		outputStr += "Height: ";
 		if(height == null || height == 0) {
-			outputStr += "177cm\n\n";
+			outputStr += "177.0cm\n\n";
 		}
 		else {
-			outputStr += height.toString()+"\n\n";
+			outputStr += height.toString()+"cm\n\n";
 		}
 		return outputStr;
 	}

@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.CoreMatchers.containsString;
 
 import java.io.*;
 import java.net.URI;
@@ -35,6 +36,13 @@ import com.example.bot.spring.controllers.MenuController;
 import com.example.bot.spring.controllers.User;
 import com.example.bot.spring.tables.FoodRepository;
 import com.example.bot.spring.tables.Food;
+import com.example.bot.spring.tables.WeightRepository;
+import com.example.bot.spring.tables.Weight;
+import com.example.bot.spring.tables.MealRepository;
+import com.example.bot.spring.tables.Meal;
+import com.example.bot.spring.tables.ProfileRepository;
+import com.example.bot.spring.tables.Profile;
+import com.example.bot.spring.DatabaseInitializer;
 import com.example.bot.spring.KitchenSinkController.DownloadedContent;
 import com.example.bot.spring.RepoFactory4Test;
 import org.springframework.test.context.TestExecutionListeners;
@@ -60,14 +68,62 @@ import org.springframework.transaction.annotation.*;
 @SpringBootTest(classes={ RepoFactory4Test.class, 
 		InputToFoodTest.class, 
 		InputToFood.class, 
-		MenuController.class, 
+		MenuController.class,
+		DatabaseInitializer.class,
 		User.class })
 public class InputToFoodTest {
 	@Autowired
 	private InputToFood inputToFood;
 	
 	@Autowired
+	private User user;
+	
+	@Autowired
+	private ProfileRepository profileRepository;
+	
+	@Autowired
+	private MealRepository mealRepository;
+	
+	@Autowired
+	private WeightRepository weightRepository;
+	
+	@Autowired
 	private FoodRepository foodRepository;
+	
+	@Autowired 
+	private DatabaseInitializer init;
+	
+	@Before
+	public void executedBeforeEach() {
+		init.initializeDatabase();
+		
+		user.addUser("1");
+		user.inputGender("1","Male");
+		user.inputAge("1",20);
+		user.inputHeight("1",170.0);
+		user.inputWeight("1",85.0);
+		user.inputInterest("1","Sweets, Cereal Grains and Pasta");
+		user.inputMeal("1","Rice");
+		user.addUser("2");
+		user.inputGender("2","Female");
+		user.inputAge("2",22);
+		user.inputHeight("2",140.0);
+		user.inputWeight("2",55.0);
+		user.inputInterest("2","Sweets");
+		user.inputMeal("2","Rice");
+		user.addUser("3");
+	}
+	
+	@Test
+	public void testreadFromText() {
+		assertEquals(inputToFood.readFromText("1",""),"No menu is entered.");
+		assertNotEquals(inputToFood.readFromText("1","Candy ice-cream\nRice"),
+				"I know that you have eaten rice in the past few days. But I still recommend you to choose Rice. This choice has the most suitable amount of calories, protein, carbohydrate.");
+		assertNotEquals(inputToFood.readFromText("2","Syrup Candy ice-cream\nRice"),
+				"I recommend you to choose Syrup Candy ice-cream because I know that you like foods that are sweets. This choice has the most suitable amount of calories, carbohydrate, fat.");
+		assertNotEquals(inputToFood.readFromText("3","Candy ice-cream\nRice"),
+				"I recommend you to choose Rice. This choice has the most suitable amount of calories, protein, carbohydrate, fat.");
+	}
 	
 	@Test
 	public void testReadFromJSON() throws Exception {
