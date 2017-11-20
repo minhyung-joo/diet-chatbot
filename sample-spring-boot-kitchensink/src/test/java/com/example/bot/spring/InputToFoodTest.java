@@ -68,7 +68,7 @@ public class InputToFoodTest {
 	
 	@Autowired
 	private FoodRepository foodRepository;
-    
+	
 	@Test
 	public void testReadFromJSON() throws Exception {
 		String nullStr = null;
@@ -118,7 +118,7 @@ public class InputToFoodTest {
 				"28 F\n" + 
 				"40\n");
 	}
-	
+
 	@Test
 	public void testGetFoodDetails() throws Exception {
 		Food food = new Food();
@@ -133,7 +133,8 @@ public class InputToFoodTest {
         
 		String foodName = "pork";
 		String result = inputToFood.getFoodDetails(foodName);
-		assertEquals(result, "You have entered pork\n" + 
+		System.out.println(result);
+		assertEquals(result, "You have entered pork.\n" + 
 				"Here are the details for pork\n" + 
 				"Calories: 300.0\n" + 
 				"Sodium: 30.0\n" + 

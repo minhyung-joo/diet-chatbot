@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Service
 public class MenuController{
 	
+	/** This controller helps the user to pick a food from the menu.
+	 * 
+	 */
+	
 	@Autowired
 	private ProfileRepository profileRepository;
 	
@@ -31,26 +35,52 @@ public class MenuController{
 	@Autowired
 	private User user;
 	
+	/** The ID of the user
+	 * 
+	 */
 	private String userID;
+	/** The text version of the menu.
+	 * 
+	 */
 	private String menu;
 	
+	/** The getter of the user's ID.
+	 * 
+	 * @return the user's ID
+	 */
 	public String getUserID() {
 		return userID;
 	}
-
+	
+	/** The setter of the user's ID.
+	 * 
+	 * @param id the user's ID
+	 */
 	public void setUserID(String id) {
 		userID = id;
 	}
 	
+	/** The getter of the menu.
+	 * 
+	 * @return the text version of the menu
+	 */
 	public String getMenu() {
 		return menu;
 	}
 	
+	/** The setter of the menu.
+	 * 
+	 * @param menuList the text version of the menu
+	 */
 	public void setMenu(String menuList) {
 		menu = menuList;
 	}
 	
-	public @ResponseBody String pickFood() {
+	/** This method helps the user to pick a food from the menu.
+	 * 
+	 * @return the name of the choice from the menu
+	 */
+	public String pickFood() {
 		String[] choices = menu.split(System.getProperty("line.separator"));
 		
 		//For scoring and generating reply based on reasons
@@ -141,6 +171,10 @@ public class MenuController{
     	return generateReply(scores[finalChoice], choices[finalChoice]);
 	}
 	
+	/** This method processes the food name, so that only the part before the comma of the food name is used.
+	 * @param fdName the full name of the food
+	 * @return the processed food name
+	 */
 	private String processFoodName(String fdName) {
 		if(fdName.contains(",")) {
     		fdName = fdName.substring(0,fdName.indexOf(","));
@@ -148,6 +182,11 @@ public class MenuController{
     	return fdName;
 	}
 	
+	/** This method creates a set of food from a text version of a meal.
+	 * 
+	 * @param meal the text version of a meal
+	 * @return the set of food of the meal
+	 */
 	public Set<Food> generateFoods(String meal) {
 		int size = 0;
 		Set<String> foodNames = new HashSet<String>();
@@ -169,6 +208,10 @@ public class MenuController{
     	return foods;
 	}
 	
+	/** This method returns the set of food consumed by the user for the past three days.
+	 * 
+	 * @return the set of food consumed by the user for the past three days
+	 */
 	private Set<Food> getFoodsFromPastMeals(){
 		Set<Food> foods = new HashSet<Food>();
 		for(Meal ml : mealRepository.findAll()) {
@@ -183,6 +226,15 @@ public class MenuController{
 		return foods;
 	}
 	
+	/** This method checks the corresponding nutrient in each food of the menu, comparing it to the user's
+	 * remaining nutrient for the day, as well as the suitable amount per meal for the user.
+	 * 
+	 * @param result the list of food of the menu
+	 * @param type the type of nutrient
+	 * @param remaining the remaining nutrient for the day for the user
+	 * @param perMeal the suitable amount of nutrient for the user
+	 * @return an array containing the information about the amount of nutrient (suitable or not)
+	 */
 	private String[] checkNutrient(List<Set<Food>> result, String type, double remaining, double perMeal) {
 		String[] scores = new String[result.size()];
 		double minimum = Double.MAX_VALUE;
@@ -222,6 +274,11 @@ public class MenuController{
 		return scores;
 	}
 	
+	/** This method calculates the final score of each choice in the menu base on all factors.
+	 * 
+	 * @param scores the resulting scores after considering all factors
+	 * @return an array of the scores of each choice in the menu
+	 */
 	private int[] calculateScores(String[][] scores) {
 		int[] finalScore = new int[scores.length];
 		for(int i=0;i<scores.length;i++) {
@@ -247,6 +304,11 @@ public class MenuController{
 		return finalScore;
 	}
 	
+	/** This method returns the maximum integer in an array
+	 * 
+	 * @param finalScore an array of integers
+	 * @return the maximum in the array
+	 */
 	private int findMax(int[] finalScore) {
 		int max = finalScore[0];
     	int finalChoice = 0;
@@ -259,6 +321,13 @@ public class MenuController{
     	return finalChoice;
 	}
 	
+	/** This method prepares a response to the user base on all the different factors to help 
+	 * the user to pick from the menu.
+	 * 
+	 * @param scores the scoring information of the final choice in each factor
+	 * @param finalChoice the name of the final choice from the menu
+	 * @return the reply to the user
+	 */
 	private String generateReply(String[] scores, String finalChoice) {
 		String reply = new String();
     	if(scores[0]!=null && !scores[0].isEmpty()) {
