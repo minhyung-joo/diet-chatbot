@@ -115,6 +115,7 @@ public class InputToFood {
     	Response response = ocrResponse.getResponses()[0];
     	TextAnnotation textAnnotation = response.getTextAnnotations()[0];
     	menu = textAnnotation.getDescription();
+    	// Remove price
     	
     	return menu;
     }

@@ -288,10 +288,11 @@ public class KitchenSinkController {
 		
 		else if (categories == Categories.MENU && menu == Menu.JPEG) {
 			DownloadedContent jpg = saveContent("jpg", response);
-			String menu = inputToFood.readFromJPEG(jpg); // Use this menu string for features
+			String menuStr = inputToFood.readFromJPEG(jpg); // Use this menu string for features
+			menuStr = inputToFood.readFromText(""+event.getSource().getUserId(), menuStr);
 			categories = Categories.MAIN_MENU;
 			menu = null;
-			reply(((MessageEvent) event).getReplyToken(), new TextMessage(menu));
+			reply(((MessageEvent) event).getReplyToken(), new TextMessage(menuStr));
 		}
 		else {
 			String message = "What is this image for?";
@@ -929,12 +930,13 @@ public class KitchenSinkController {
 		else {
 			switch (menu) {
     		case TEXT:
-                result = inputToFood.readFromText(""+event.getSource().getUserId(),text);
+                result = inputToFood.readFromText(""+event.getSource().getUserId(), text);
                 menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
     		case URL:
     			result = inputToFood.readFromJSON(text);
+    			result = inputToFood.readFromText(""+event.getSource().getUserId(), result);
     			menu = null;
     			categories = Categories.MAIN_MENU;
     			break;
